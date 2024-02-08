@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
@@ -108,7 +108,7 @@ const Footer = () => {
     dispatch(
       rejectPendingApproval(
         currentConfirmation.id,
-        serializeError(ethErrors.provider.userRejectedRequest()),
+        serializeError(providerErrors.userRejectedRequest()),
       ),
     );
   }, [currentConfirmation]);
