@@ -77,6 +77,7 @@ export function useIsOriginalNativeTokenSymbol(
 
         const safeChainsList = await fetchWithCache({
           url: 'https://chainid.network/chains.json',
+          allowStale: true,
           cacheOptions: { cacheRefreshTime: DAY },
           functionName: 'getSafeChainsList',
         });
