@@ -81,15 +81,6 @@ export class ExtensionStore extends BaseStorage {
         'MetaMask - metadata must be set on instance of ExtensionStore before calling "set"',
       );
     }
-    if (
-      this.stateCorruptionDetected &&
-      window.localStorage.getItem('USER_OPTED_IN_TO_RESTORE') !== 'true'
-    ) {
-      log.info(
-        'State Corruption was detected and user has not opted into recovery so skipping state update',
-      );
-      return;
-    }
     try {
       // we format the data for storage as an object with the "data" key for the controller state object
       // and the "meta" key for a metadata object containing a version number that tracks how the data shape
