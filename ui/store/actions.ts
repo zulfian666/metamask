@@ -173,7 +173,7 @@ export function tryUnlockMetamask(
         dispatch(hideLoadingIndication());
       })
       .catch((err) => {
-        dispatch(unlockFailed(err.message));
+        dispatch(unlockFailed(getErrorMessage(err)));
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
       });
@@ -4224,7 +4224,7 @@ export function setConnectedStatusPopoverHasBeenShown(): ThunkAction<
   return () => {
     callBackgroundMethod('setConnectedStatusPopoverHasBeenShown', [], (err) => {
       if (isErrorWithMessage(err)) {
-        throw new Error(err.message);
+        throw new Error(getErrorMessage(err));
       }
     });
   };
@@ -4234,7 +4234,7 @@ export function setRecoveryPhraseReminderHasBeenShown() {
   return () => {
     callBackgroundMethod('setRecoveryPhraseReminderHasBeenShown', [], (err) => {
       if (isErrorWithMessage(err)) {
-        throw new Error(err.message);
+        throw new Error(getErrorMessage(err));
       }
     });
   };
@@ -4249,7 +4249,7 @@ export function setRecoveryPhraseReminderLastShown(
       [lastShown],
       (err) => {
         if (isErrorWithMessage(err)) {
-          throw new Error(err.message);
+          throw new Error(getErrorMessage(err));
         }
       },
     );
@@ -4714,12 +4714,15 @@ export function fetchSmartTransactionFees(
       return smartTransactionFees;
     } catch (err) {
       logErrorWithMessage(err);
-      if (isErrorWithMessage(err) && err.message.startsWith('Fetch error:')) {
-        const errorObj = parseSmartTransactionsError(err.message);
-        dispatch({
-          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj,
-        });
+      if (isErrorWithMessage(err)) {
+        const errorMessage = getErrorMessage(err);
+        if (errorMessage.startsWith('Fetch error:')) {
+          const errorObj = parseSmartTransactionsError(errorMessage);
+          dispatch({
+            type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+            payload: errorObj,
+          });
+        }
       }
       throw err;
     }
@@ -4794,12 +4797,15 @@ export function signAndSendSmartTransaction({
       return response.uuid;
     } catch (err) {
       logErrorWithMessage(err);
-      if (isErrorWithMessage(err) && err.message.startsWith('Fetch error:')) {
-        const errorObj = parseSmartTransactionsError(err.message);
-        dispatch({
-          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj,
-        });
+      if (isErrorWithMessage(err)) {
+        const errorMessage = getErrorMessage(err);
+        if (errorMessage.startsWith('Fetch error:')) {
+          const errorObj = parseSmartTransactionsError(errorMessage);
+          dispatch({
+            type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+            payload: errorObj,
+          });
+        }
       }
       throw err;
     }
@@ -4820,12 +4826,15 @@ export function updateSmartTransaction(
       ]);
     } catch (err) {
       logErrorWithMessage(err);
-      if (isErrorWithMessage(err) && err.message.startsWith('Fetch error:')) {
-        const errorObj = parseSmartTransactionsError(err.message);
-        dispatch({
-          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj,
-        });
+      if (isErrorWithMessage(err)) {
+        const errorMessage = getErrorMessage(err);
+        if (errorMessage.startsWith('Fetch error:')) {
+          const errorObj = parseSmartTransactionsError(errorMessage);
+          dispatch({
+            type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+            payload: errorObj,
+          });
+        }
       }
       throw err;
     }
@@ -4854,12 +4863,15 @@ export function cancelSmartTransaction(
       await submitRequestToBackground('cancelSmartTransaction', [uuid]);
     } catch (err) {
       logErrorWithMessage(err);
-      if (isErrorWithMessage(err) && err.message.startsWith('Fetch error:')) {
-        const errorObj = parseSmartTransactionsError(err.message);
-        dispatch({
-          type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
-          payload: errorObj,
-        });
+      if (isErrorWithMessage(err)) {
+        const errorMessage = getErrorMessage(err);
+        if (errorMessage.startsWith('Fetch error:')) {
+          const errorObj = parseSmartTransactionsError(errorMessage);
+          dispatch({
+            type: actionConstants.SET_SMART_TRANSACTIONS_ERROR,
+            payload: errorObj,
+          });
+        }
       }
       throw err;
     }

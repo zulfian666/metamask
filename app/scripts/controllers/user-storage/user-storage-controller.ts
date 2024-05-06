@@ -4,6 +4,7 @@ import {
   StateMetadata,
 } from '@metamask/base-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
+import { getErrorMessage } from '../../../../shared/modules/error';
 import {
   AuthenticationControllerGetBearerToken,
   AuthenticationControllerGetSessionProfile,
@@ -216,7 +217,7 @@ export default class UserStorageController extends BaseController<
       this.#setIsProfileSyncingUpdateLoading(false);
     } catch (e) {
       this.#setIsProfileSyncingUpdateLoading(false);
-      const errorMessage = e instanceof Error ? e.message : e;
+      const errorMessage = getErrorMessage(e);
       throw new Error(
         `${controllerName} - failed to enable profile syncing - ${errorMessage}`,
       );
