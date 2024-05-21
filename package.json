@@ -262,7 +262,10 @@
     "ts-mixer@npm:^6.0.3": "patch:ts-mixer@npm%3A6.0.4#~/.yarn/patches/ts-mixer-npm-6.0.4-5d9747bdf5.patch",
     "sucrase@npm:3.34.0": "^3.35.0",
     "@expo/config/glob": "^10.3.10",
-    "@expo/config-plugins/glob": "^10.3.10"
+    "@expo/config-plugins/glob": "^10.3.10",
+    "@metamask/snaps-controllers@npm:^4.1.0": "patch:@metamask/snaps-controllers@npm%3A8.1.1#~/.yarn/patches/@metamask-snaps-controllers-npm-8.1.1-e0349d4735.patch",
+    "@metamask/snaps-controllers@npm:^3.4.1": "patch:@metamask/snaps-controllers@npm%3A8.1.1#~/.yarn/patches/@metamask-snaps-controllers-npm-8.1.1-e0349d4735.patch",
+    "@metamask/snaps-controllers@npm:^7.0.1": "patch:@metamask/snaps-controllers@npm%3A8.1.1#~/.yarn/patches/@metamask-snaps-controllers-npm-8.1.1-e0349d4735.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.24.0#~/.yarn/patches/@babel-runtime-npm-7.24.0-7eb1dd11a2.patch",
@@ -341,7 +344,7 @@
     "@metamask/selected-network-controller": "^13.0.0",
     "@metamask/signature-controller": "^14.0.1",
     "@metamask/smart-transactions-controller": "^10.0.1",
-    "@metamask/snaps-controllers": "^8.1.1",
+    "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@npm%3A8.1.1#~/.yarn/patches/@metamask-snaps-controllers-npm-8.1.1-e0349d4735.patch",
     "@metamask/snaps-execution-environments": "^6.1.0",
     "@metamask/snaps-rpc-methods": "^9.0.0",
     "@metamask/snaps-sdk": "^4.2.0",
