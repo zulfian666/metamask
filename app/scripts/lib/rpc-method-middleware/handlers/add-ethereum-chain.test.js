@@ -1,4 +1,4 @@
-import { ethErrors } from 'eth-rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -245,7 +245,7 @@ describe('addEthereumChainHandler', () => {
         );
 
         expect(mockEnd).toHaveBeenCalledWith(
-          ethErrors.rpc.invalidParams({
+          rpcErrors.invalidParams({
             message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\ninvalid_chain_id`,
           }),
         );
@@ -536,7 +536,7 @@ describe('addEthereumChainHandler', () => {
     );
 
     expect(mockEnd).toHaveBeenCalledWith(
-      ethErrors.rpc.invalidParams({
+      rpcErrors.invalidParams({
         message: `nativeCurrency.symbol does not match currency symbol for a network the user already has added with the same chainId. Received:\nWRONG`,
       }),
     );
