@@ -72,10 +72,8 @@ describe('lockdown', function () {
       },
       async ({ driver }) => {
         await driver.navigate(PAGES.HOME);
-        const r = await driver.executeScript(lockdownTestScript);
-        console.log("result", r);
         assert.equal(
-          r,
+          await driver.executeScript(lockdownTestScript),
           true,
           'The UI environment should be locked down.',
         );
