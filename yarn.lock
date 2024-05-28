@@ -7565,7 +7565,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/browser@npm:^7.53.0":
+"@sentry/browser@npm:7.53.0":
   version: 7.53.0
   resolution: "@sentry/browser@npm:7.53.0"
   dependencies:
@@ -7576,6 +7576,20 @@ __metadata:
     "@sentry/utils": "npm:7.53.0"
     tslib: "npm:^1.9.3"
   checksum: 4902ddbaab5281e0f1de121bc6120e812cd86ae62139980c62316235f9f685c5f377ccbabdc7160062bb496dc4e7f2e6799fb1a762a89692a177a4457225c55f
+  languageName: node
+  linkType: hard
+
+"@sentry/browser@patch:@sentry/browser@npm%3A7.53.0#~/.yarn/patches/@sentry-browser-npm-7.53.0-71e3ec7fb5.patch":
+  version: 7.53.0
+  resolution: "@sentry/browser@patch:@sentry/browser@npm%3A7.53.0#~/.yarn/patches/@sentry-browser-npm-7.53.0-71e3ec7fb5.patch::version=7.53.0&hash=8bf090"
+  dependencies:
+    "@sentry-internal/tracing": "npm:7.53.0"
+    "@sentry/core": "npm:7.53.0"
+    "@sentry/replay": "npm:7.53.0"
+    "@sentry/types": "npm:7.53.0"
+    "@sentry/utils": "npm:7.53.0"
+    tslib: "npm:^1.9.3"
+  checksum: 61d2d9e0d5c49cec81386bef05532bfbf5350a935c2764aba58167de79f4451471687a02da4e264e662329ef0ddff812bd5c8ffbce26d1cddd2c72a3654dc421
   languageName: node
   linkType: hard
 
@@ -25638,7 +25652,7 @@ __metadata:
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "npm:^1.6.2"
     "@segment/loosely-validate-event": "npm:^2.0.0"
-    "@sentry/browser": "npm:^7.53.0"
+    "@sentry/browser": "patch:@sentry/browser@npm%3A7.53.0#~/.yarn/patches/@sentry-browser-npm-7.53.0-71e3ec7fb5.patch"
     "@sentry/cli": "npm:^2.19.4"
     "@sentry/integrations": "npm:^7.53.0"
     "@sentry/types": "npm:^7.53.0"
