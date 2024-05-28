@@ -358,7 +358,7 @@
     "@popperjs/core": "^2.4.0",
     "@reduxjs/toolkit": "^1.6.2",
     "@segment/loosely-validate-event": "^2.0.0",
-    "@sentry/browser": "^7.53.0",
+    "@sentry/browser": "patch:@sentry/browser@npm%3A7.53.0#~/.yarn/patches/@sentry-browser-npm-7.53.0-71e3ec7fb5.patch",
     "@sentry/integrations": "^7.53.0",
     "@sentry/types": "^7.53.0",
     "@sentry/utils": "^7.53.0",

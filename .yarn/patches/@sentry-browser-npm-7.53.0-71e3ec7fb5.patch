@@ -1,0 +1,30 @@
+diff --git a/cjs/transports/fetch.js b/cjs/transports/fetch.js
+index 5930b159930def458977f1648ef3b27763382f83..b0eea68d5e24755125166f90f6e33651e2738a17 100644
+--- a/cjs/transports/fetch.js
++++ b/cjs/transports/fetch.js
+@@ -52,6 +52,10 @@ function makeFetchTransport(
+         };
+       });
+     } catch (e) {
++      console.log(e);
++      console.log(options.url);
++      console.log(options);
++      throw e;
+       utils.clearCachedFetchImplementation();
+       pendingBodySize -= requestSize;
+       pendingCount--;
+diff --git a/esm/transports/fetch.js b/esm/transports/fetch.js
+index bb836e37f6321adba0bb53e23f8e923ac375ddb1..55528feed0738ca21b36b163713c2483eee6eaaf 100644
+--- a/esm/transports/fetch.js
++++ b/esm/transports/fetch.js
+@@ -50,6 +50,10 @@ function makeFetchTransport(
+         };
+       });
+     } catch (e) {
++      console.log(e);
++      console.log(options.url);
++      console.log(options);
++      throw e;
+       clearCachedFetchImplementation();
+       pendingBodySize -= requestSize;
+       pendingCount--;
