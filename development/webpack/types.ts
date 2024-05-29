@@ -1,7 +1,7 @@
 import type { ChildProcess } from 'node:child_process';
 import { type Readable } from 'node:stream';
 import { type Socket } from 'node:net';
-import { type IPty } from 'node-pty';
+import { type IPty } from '@lydell/node-pty';
 
 /**
  * A more complete type for the `node-pty` module's `IPty` interface

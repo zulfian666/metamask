@@ -9,7 +9,7 @@
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "rimraf node_modules/.cache/webpack",
-    "postinstall": "npm rebuild node-pty && yarn webpack:clearcache",
+    "postinstall": "npm rebuild @lydell/node-pty && yarn webpack:clearcache",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:skip-onboarding": "SKIP_ONBOARDING=true yarn start",
     "start:mv3": "ENABLE_MV3=true yarn build:dev dev --apply-lavamoat=false --snow=false",
@@ -455,6 +455,7 @@
     "@lavamoat/lavadome-core": "0.0.10",
     "@lavamoat/lavapack": "^6.1.0",
     "@lgbot/madge": "^6.2.0",
+    "@lydell/node-pty": "^1.0.1",
     "@metamask/auto-changelog": "^2.1.0",
     "@metamask/build-utils": "^1.0.0",
     "@metamask/eslint-config": "^9.0.0",
@@ -611,7 +612,6 @@
     "mockttp": "^3.10.1",
     "nock": "patch:nock@npm%3A13.5.4#~/.yarn/patches/nock-npm-13.5.4-2c4f77b249.patch",
     "node-fetch": "^2.6.1",
-    "node-pty": "^1.1.0-beta14",
     "nyc": "^15.1.0",
     "path-browserify": "^1.0.1",
     "postcss": "^8.4.32",
@@ -741,7 +741,7 @@
       "tsx>esbuild": true,
       "@pmmmwh/react-refresh-webpack-plugin>core-js-pure": true,
       "@swc/core": true,
-      "node-pty": true,
+      "@lydell/node-pty": true,
       "$root$": true
     }
   },

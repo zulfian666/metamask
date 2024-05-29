@@ -143,7 +143,7 @@ function createNonTTYStream(stream: NodeJS.WriteStream, name: StdName): Stdio {
 function createTTYStream(stream: NodeJS.WriteStream): Stdio {
   // create a PTY (Pseudo TTY) so the child stream behaves like a TTY
   const options = { cols: stream.columns, encoding: null, rows: stream.rows };
-  const pty: PTY = require('node-pty').open(options);
+  const pty: PTY = require('@lydell/node-pty').open(options);
 
   return {
     destroy: () => {
