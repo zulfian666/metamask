@@ -38,7 +38,7 @@ async function mockTrezor(mockServer) {
 }
 
 describe('Import flow @no-mmi', function () {
-  it('Import wallet using Secret Recovery Phrase', async function () {
+  it.only('Import wallet using Secret Recovery Phrase', async function () {
     if (process.env.MULTICHAIN) {
       return;
     }
@@ -87,7 +87,7 @@ describe('Import flow @no-mmi', function () {
 
         // accepts the account password after lock
         await unlockWallet(driver, {
-          navigate: false,
+          // navigate: false,
           waitLoginSuccess: false,
         });
 

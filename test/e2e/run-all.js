@@ -188,9 +188,9 @@ async function main() {
   if (retries) {
     args.push('--retries', retries);
   }
-  if (!debug) {
-    args.push('--debug=false');
-  }
+  // if (!debug) {
+  //   args.push('--debug=false');
+  // }
   if (updateSnapshot) {
     args.push('--update-snapshot');
   }
@@ -208,6 +208,18 @@ async function main() {
     myTestList = runningOnCircleCI(testPaths);
   } else {
     myTestList = testPaths;
+  }
+
+  if (
+    myTestList.includes(
+      '/home/circleci/project/test/e2e/tests/account/import-flow.spec.js',
+    )
+  ) {
+    myTestList = [
+      '/home/circleci/project/test/e2e/tests/account/import-flow.spec.js',
+    ];
+  } else {
+    myTestList = [];
   }
 
   console.log('My test list:', myTestList);

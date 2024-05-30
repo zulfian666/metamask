@@ -107,9 +107,7 @@ async function main() {
       throw error;
     }
 
-    if (debug) {
-      process.env.E2E_DEBUG = 'true';
-    }
+    process.env.E2E_DEBUG = 'true';
 
     let testTimeoutInMilliseconds = 80 * 1000;
     let exit = '--exit';
