@@ -11,13 +11,19 @@ import log from 'loglevel';
  */
 export function isErrorWithMessage(
   error: unknown,
-): error is { message: string } {
-  return typeof error === 'object' && error !== null && 'message' in error;
+): error is { message: string } & { data: { cause: { message: string } } } {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    ('message' in error ||
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      typeof (error as any)?.data?.cause?.message === 'string')
+  );
 }
 
 export function logErrorWithMessage(error: unknown) {
   if (isErrorWithMessage(error)) {
-    log.error(error.message);
+    log.error(error.data?.cause?.message || error.message);
   } else {
     log.error(error);
   }
