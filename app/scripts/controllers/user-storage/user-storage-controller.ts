@@ -213,14 +213,13 @@ export default class UserStorageController extends BaseController<
       this.update((state) => {
         state.isProfileSyncingEnabled = true;
       });
-
-      this.#setIsProfileSyncingUpdateLoading(false);
     } catch (e) {
-      this.#setIsProfileSyncingUpdateLoading(false);
       const errorMessage = getErrorMessage(e);
       throw new Error(
         `${controllerName} - failed to enable profile syncing - ${errorMessage}`,
       );
+    } finally {
+      this.#setIsProfileSyncingUpdateLoading(false);
     }
   }
 
