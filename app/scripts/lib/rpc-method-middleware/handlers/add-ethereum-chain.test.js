@@ -460,7 +460,7 @@ describe('addEthereumChainHandler', () => {
     );
 
     expect(mockEnd).toHaveBeenCalledWith(
-      ethErrors.rpc.invalidParams({
+      rpcErrors.invalidParams({
         message: `Received unexpected keys on object parameter. Unsupported keys:\n${unexpectedParam}`,
       }),
     );
