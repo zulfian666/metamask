@@ -6297,7 +6297,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rpc-errors@npm:6.3.0, @metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.2.1":
+"@metamask/rpc-errors@npm:^6.0.0, @metamask/rpc-errors@npm:^6.2.1, @metamask/rpc-errors@npm:^6.3.0":
   version: 6.3.0
   resolution: "@metamask/rpc-errors@npm:6.3.0"
   dependencies:
@@ -25539,7 +25539,7 @@ __metadata:
     "@metamask/providers": "npm:^14.0.2"
     "@metamask/queued-request-controller": "npm:^1.0.0"
     "@metamask/rate-limit-controller": "npm:^5.0.1"
-    "@metamask/rpc-errors": "npm:6.3.0"
+    "@metamask/rpc-errors": "npm:^6.3.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/selected-network-controller": "npm:^15.0.2"
