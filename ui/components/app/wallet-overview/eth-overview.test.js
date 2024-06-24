@@ -12,6 +12,8 @@ import {
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import EthOverview from './eth-overview';
 
 // Mock BUYABLE_CHAINS_MAP
@@ -37,10 +39,17 @@ jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   };
 });
 
+jest.mock('../../../ducks/locale/locale', () => ({
+  getIntlLocale: jest.fn(),
+}));
+
+const mockGetIntlLocale = getIntlLocale;
+
 let openTabSpy;
 
 describe('EthOverview', () => {
   useIsOriginalNativeTokenSymbol.mockReturnValue(true);
+  mockGetIntlLocale.mockReturnValue('en-US');
 
   const mockStore = {
     metamask: {
@@ -73,16 +82,12 @@ describe('EthOverview', () => {
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
+      useExternalServices: true,
       useCurrencyRateCheck: true,
       currentCurrency: 'usd',
       currencyRates: {
         ETH: {
           conversionRate: 2,
-        },
-      },
-      identities: {
-        '0x1': {
-          address: '0x1',
         },
       },
       accounts: {
@@ -91,7 +96,6 @@ describe('EthOverview', () => {
           balance: '0x1F4',
         },
       },
-      selectedAddress: '0x1',
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -104,7 +108,7 @@ describe('EthOverview', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
           'e9b992f9-e151-4317-b8b7-c771bb73dd02': {
@@ -117,7 +121,7 @@ describe('EthOverview', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
           },
         },
@@ -133,7 +137,6 @@ describe('EthOverview', () => {
           accounts: [],
         },
       ],
-      contractExchangeRates: {},
     },
   };
 
@@ -172,7 +175,7 @@ describe('EthOverview', () => {
 
       const primaryBalance = queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY);
       expect(primaryBalance).toBeInTheDocument();
-      expect(primaryBalance).toHaveTextContent('$0.00USD');
+      expect(primaryBalance).toHaveTextContent('<0.000001ETH');
       expect(queryByText('*')).not.toBeInTheDocument();
     });
 
@@ -203,7 +206,7 @@ describe('EthOverview', () => {
 
       const primaryBalance = queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY);
       expect(primaryBalance).toBeInTheDocument();
-      expect(primaryBalance).toHaveTextContent('$0.02USD');
+      expect(primaryBalance).toHaveTextContent('0.0104ETH');
       expect(queryByText('*')).toBeInTheDocument();
     });
 

@@ -1,26 +1,32 @@
-import React from 'react';
-
-import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
-import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-  TextColor,
-} from '../../../../../helpers/constants/design-system';
-
-import Identicon from '../../../../../components/ui/identicon';
+import React, { Dispatch, SetStateAction } from 'react';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
   Text,
 } from '../../../../../components/component-library';
+import Identicon from '../../../../../components/ui/identicon';
+import {
+  AlignItems,
+  Display,
+  JustifyContent,
+  TextColor,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
+import { getAvatarNetworkColor } from '../../../../../helpers/utils/accounts';
+import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
+import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
 import HeaderInfo from './header-info';
 
-const Header = () => {
+const Header = ({
+  showAdvancedDetails,
+  setShowAdvancedDetails,
+}: {
+  showAdvancedDetails: boolean;
+  setShowAdvancedDetails: Dispatch<SetStateAction<boolean>>;
+}) => {
   const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
-  const { recipientAddress: fromAddress, recipientName: fromName } =
+  const { senderAddress: fromAddress, senderName: fromName } =
     useConfirmationRecipientInfo();
 
   return (
@@ -37,16 +43,25 @@ const Header = () => {
             src={networkImageUrl}
             name={networkDisplayName}
             size={AvatarNetworkSize.Xs}
+            backgroundColor={getAvatarNetworkColor(networkDisplayName)}
             className="confirm_header__avatar-network"
           />
         </Box>
         <Box marginInlineStart={4}>
-          <Text>{fromName}</Text>
+          <Text
+            color={TextColor.textDefault}
+            variant={TextVariant.bodyMdMedium}
+          >
+            {fromName}
+          </Text>
           <Text color={TextColor.textAlternative}>{networkDisplayName}</Text>
         </Box>
       </Box>
       <Box alignItems={AlignItems.flexEnd} display={Display.Flex} padding={4}>
-        <HeaderInfo />
+        <HeaderInfo
+          showAdvancedDetails={showAdvancedDetails}
+          setShowAdvancedDetails={setShowAdvancedDetails}
+        />
       </Box>
     </Box>
   );

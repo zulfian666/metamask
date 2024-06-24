@@ -50,13 +50,27 @@ async function getExtensionStorageFilePath(driver) {
  */
 async function closePopoverIfPresent(driver) {
   const popoverButtonSelector = '[data-testid="popover-close"]';
-  try {
-    if (await driver.isElementPresent(popoverButtonSelector)) {
-      await driver.clickElement(popoverButtonSelector);
-    }
-  } catch (_err) {
-    // No popover
-  }
+  // It shows in the Smart Transactions Opt-In Modal.
+  const enableButtonSelector = {
+    text: 'Enable',
+    tag: 'button',
+  };
+  await driver.clickElementSafe(popoverButtonSelector);
+  await driver.clickElementSafe(enableButtonSelector);
+
+  // NFT Autodetection Independent Announcement
+  const nftAutodetection = {
+    css: '[data-testid="auto-detect-nft-modal"] button',
+    text: 'Not right now',
+  };
+  await driver.clickElementSafe(nftAutodetection);
+
+  // Token Autodetection Independent Announcement
+  const tokenAutodetection = {
+    css: '[data-testid="auto-detect-token-modal"] button',
+    text: 'Not right now',
+  };
+  await driver.clickElementSafe(tokenAutodetection);
 }
 
 /**
@@ -77,9 +91,9 @@ async function getSRP(driver) {
 describe('Vault Decryptor Page', function () {
   it('is able to decrypt the vault using the vault-decryptor webapp', async function () {
     await withFixtures({}, async ({ driver }) => {
-      await driver.navigate();
-      // the first app launch opens a new tab, we need to switch the focus
-      // to the first one.
+      // we don't need to use navigate
+      // since MM will automatically open a new window in prod build
+      await driver.waitUntilXWindowHandles(2);
       await driver.switchToWindowWithTitle('MetaMask');
       // create a new vault through onboarding flow
       await completeCreateNewWalletOnboardingFlowWithOptOut(

@@ -6,16 +6,23 @@ import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { TokenListItem } from '../../multichain';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { useIsOriginalTokenSymbol } from '../../../hooks/useIsOriginalTokenSymbol';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 
 export default function TokenCell({ address, image, symbol, string, onClick }) {
   const tokenList = useSelector(getTokenList);
   const tokenData = Object.values(tokenList).find(
     (token) =>
-      token.symbol === symbol && isEqualCaseInsensitive(token.address, address),
+      isEqualCaseInsensitive(token.symbol, symbol) &&
+      isEqualCaseInsensitive(token.address, address),
   );
   const title = tokenData?.name || symbol;
   const tokenImage = tokenData?.iconUrl || image;
   const formattedFiat = useTokenFiatAmount(address, string, symbol);
+  const locale = useSelector(getIntlLocale);
+  const primary = new Intl.NumberFormat(locale, {
+    minimumSignificantDigits: 1,
+  }).format(string.toString());
+
   const isOriginalTokenSymbol = useIsOriginalTokenSymbol(address, symbol);
 
   return (
@@ -23,10 +30,11 @@ export default function TokenCell({ address, image, symbol, string, onClick }) {
       onClick={onClick ? () => onClick(address) : undefined}
       tokenSymbol={symbol}
       tokenImage={tokenImage}
-      primary={`${string || 0}`}
+      primary={`${primary || 0}`}
       secondary={isOriginalTokenSymbol ? formattedFiat : null}
       title={title}
       isOriginalTokenSymbol={isOriginalTokenSymbol}
+      address={address}
     />
   );
 }

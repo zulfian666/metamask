@@ -8,6 +8,7 @@ import {
   CURRENCY_SYMBOLS,
   NETWORK_TYPES,
 } from '../../../../shared/constants/network';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import { TokenListItem } from '.';
 
 const state = {
@@ -20,15 +21,41 @@ const state = {
     },
     useTokenDetection: false,
     currencyRates: {},
+    preferences: {
+      useNativeCurrencyAsPrimaryCurrency: false,
+    },
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Test Account',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
   },
 };
 
 let openTabSpy;
 
+jest.mock('../../../ducks/locale/locale', () => ({
+  getIntlLocale: jest.fn(),
+}));
+
+const mockGetIntlLocale = getIntlLocale;
+
 describe('TokenListItem', () => {
   beforeAll(() => {
     global.platform = { openTab: jest.fn() };
     openTabSpy = jest.spyOn(global.platform, 'openTab');
+    mockGetIntlLocale.mockReturnValue('en-US');
   });
   const props = {
     onClick: jest.fn(),
@@ -36,7 +63,8 @@ describe('TokenListItem', () => {
   it('should render correctly', () => {
     const store = configureMockStore()(state);
     const { getByTestId, container } = renderWithProvider(
-      <TokenListItem />,
+      // eslint-disable-next-line no-empty-function
+      <TokenListItem onClick={() => {}} />,
       store,
     );
     expect(getByTestId('multichain-token-list-item')).toBeDefined();
@@ -52,6 +80,58 @@ describe('TokenListItem', () => {
     expect(getByTestId('multichain-token-list-item')).toHaveClass(
       'multichain-token-list-item-test',
     );
+  });
+
+  it('should render crypto balance with warning scam', () => {
+    const store = configureMockStore()(state);
+    const propsToUse = {
+      primary: '11.9751 ETH',
+      isNativeCurrency: true,
+      isOriginalTokenSymbol: false,
+    };
+    const { getByText } = renderWithProvider(
+      <TokenListItem {...propsToUse} />,
+      store,
+    );
+    expect(getByText('11.9751 ETH')).toBeInTheDocument();
+  });
+
+  it('should display warning scam modal', () => {
+    const store = configureMockStore()(state);
+    const propsToUse = {
+      primary: '11.9751 ETH',
+      isNativeCurrency: true,
+      isOriginalTokenSymbol: false,
+    };
+    const { getByTestId, getByText } = renderWithProvider(
+      <TokenListItem {...propsToUse} />,
+      store,
+    );
+
+    const warningScamModal = getByTestId('scam-warning');
+    fireEvent.click(warningScamModal);
+
+    expect(getByText('This is a potential scam')).toBeInTheDocument();
+  });
+
+  it('should render crypto balance if useNativeCurrencyAsPrimaryCurrency is false', () => {
+    const store = configureMockStore()({
+      ...state,
+      preferences: {
+        useNativeCurrencyAsPrimaryCurrency: false,
+      },
+    });
+    const propsToUse = {
+      primary: '11.9751 ETH',
+      isNativeCurrency: true,
+      isOriginalTokenSymbol: false,
+    };
+
+    const { getByText } = renderWithProvider(
+      <TokenListItem {...propsToUse} />,
+      store,
+    );
+    expect(getByText('11.9751 ETH')).toBeInTheDocument();
   });
 
   it('handles click action and fires onClick', () => {

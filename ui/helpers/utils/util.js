@@ -11,8 +11,8 @@ import {
 import * as lodash from 'lodash';
 import bowser from 'bowser';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 // eslint-disable-next-line import/no-duplicates
 import { isObject } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
@@ -31,9 +31,6 @@ import {
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { SNAPS_METADATA } from '../../../shared/constants/snaps';
-///: END:ONLY_INCLUDE_IF
 // formatData :: ( date: <Unix Timestamp> ) -> String
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
@@ -73,6 +70,7 @@ export function isDefaultMetaMaskChain(chainId) {
     chainId === CHAIN_IDS.GOERLI ||
     chainId === CHAIN_IDS.SEPOLIA ||
     chainId === CHAIN_IDS.LINEA_GOERLI ||
+    chainId === CHAIN_IDS.LINEA_SEPOLIA ||
     chainId === CHAIN_IDS.LOCALHOST
   ) {
     return true;
@@ -211,6 +209,35 @@ export function getRandomFileName() {
 }
 
 /**
+ * Shortens the given string, preserving the beginning and end.
+ * Returns the string it is no longer than truncatedCharLimit.
+ *
+ * @param {string} stringToShorten - The string to shorten.
+ * @param {object} options - The options to use when shortening the string.
+ * @param {number} options.truncatedCharLimit - The maximum length of the string.
+ * @param {number} options.truncatedStartChars - The number of characters to preserve at the beginning.
+ * @param {number} options.truncatedEndChars - The number of characters to preserve at the end.
+ * @returns {string} The shortened string.
+ */
+export function shortenString(
+  stringToShorten = '',
+  { truncatedCharLimit, truncatedStartChars, truncatedEndChars } = {
+    truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
+    truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
+    truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
+  },
+) {
+  if (stringToShorten.length < truncatedCharLimit) {
+    return stringToShorten;
+  }
+
+  return `${stringToShorten.slice(
+    0,
+    truncatedStartChars,
+  )}...${stringToShorten.slice(-truncatedEndChars)}`;
+}
+
+/**
  * Shortens an Ethereum address for display, preserving the beginning and end.
  * Returns the given address if it is no longer than 10 characters.
  * Shortened addresses are 13 characters long.
@@ -222,13 +249,11 @@ export function getRandomFileName() {
  * than 10 characters.
  */
 export function shortenAddress(address = '') {
-  if (address.length < TRUNCATED_NAME_CHAR_LIMIT) {
-    return address;
-  }
-
-  return `${address.slice(0, TRUNCATED_ADDRESS_START_CHARS)}...${address.slice(
-    -TRUNCATED_ADDRESS_END_CHARS,
-  )}`;
+  return shortenString(address, {
+    truncatedCharLimit: TRUNCATED_NAME_CHAR_LIMIT,
+    truncatedStartChars: TRUNCATED_ADDRESS_START_CHARS,
+    truncatedEndChars: TRUNCATED_ADDRESS_END_CHARS,
+  });
 }
 
 export function getAccountByAddress(accounts = [], targetAddress) {
@@ -446,8 +471,8 @@ const SOLIDITY_TYPES = solidityTypes();
 const stripArrayType = (potentialArrayType) =>
   potentialArrayType.replace(/\[[[0-9]*\]*/gu, '');
 
-const stripOneLayerofNesting = (potentialArrayType) =>
-  potentialArrayType.replace(/\[[[0-9]*\]/u, '');
+export const stripOneLayerofNesting = (potentialArrayType) =>
+  potentialArrayType.replace(/\[(\d*)\]/u, '');
 
 const isArrayType = (potentialArrayType) =>
   potentialArrayType.match(/\[[[0-9]*\]*/u) !== null;
@@ -565,21 +590,10 @@ export function isNullish(value) {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-export const getSnapName = (snapId, subjectMetadata) => {
-  if (SNAPS_METADATA[snapId]?.name) {
-    return SNAPS_METADATA[snapId].name;
-  }
-
-  if (subjectMetadata) {
-    return subjectMetadata.name;
-  }
-
-  // Mirrors a legacy behaviour of stripSnapPrefix
-  if (!snapId) {
-    return null;
-  }
-
-  return stripSnapPrefix(snapId);
+export const getSnapName = (snapsMetadata) => {
+  return (snapId) => {
+    return snapsMetadata[snapId]?.name ?? stripSnapPrefix(snapId);
+  };
 };
 
 export const getSnapRoute = (snapId) => {
@@ -719,4 +733,17 @@ export const hexToText = (hex) => {
   } catch (e) {
     return hex;
   }
+};
+
+/**
+ * Extract and return first character (letter or number) of a provided string.
+ * If not possible, return question mark.
+ * Note: This function is used for generating fallback avatars for different entities (websites, Snaps, etc.)
+ * Note: Only letters and numbers will be returned if possible (special characters are ignored).
+ *
+ * @param {string} subjectName - Name of a subject.
+ * @returns Single character, chosen from the first character or number, question mark otherwise.
+ */
+export const getAvatarFallbackLetter = (subjectName) => {
+  return subjectName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
 };
