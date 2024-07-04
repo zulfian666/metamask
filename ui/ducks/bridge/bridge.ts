@@ -1,19 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { Hex } from '@metamask/utils';
 import { swapsSlice } from '../swaps/swaps';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { SwapsEthToken } from '../../selectors';
-import { MultichainProviderConfig } from '../../../shared/constants/multichain/networks';
 
 export type BridgeState = {
-  toChain: MultichainProviderConfig | null;
+  toChainId: Hex | null;
   fromToken: SwapsTokenObject | SwapsEthToken | undefined;
   toToken: SwapsTokenObject | SwapsEthToken | undefined;
   fromTokenInputValue: string | undefined;
 };
 
 const initialState: BridgeState = {
-  toChain: null,
+  toChainId: null,
   fromToken: undefined,
   toToken: undefined,
   fromTokenInputValue: undefined,
@@ -25,7 +25,7 @@ const bridgeSlice = createSlice({
   reducers: {
     ...swapsSlice.reducer,
     setToChain: (state, action) => {
-      state.toChain = action.payload;
+      state.toChainId = action.payload;
     },
     setFromToken: (state, action) => {
       state.fromToken = action.payload;
