@@ -267,7 +267,9 @@
         }
       },
       "destTokens": {},
-      "destTopAssets": {}
+      "destTopAssets": {},
+      "srcTokens": {},
+      "srcTopAssets": {}
     },
     "ensEntries": "object",
     "ensResolutionsByAddress": "object",
