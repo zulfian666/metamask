@@ -158,6 +158,7 @@ export default class Home extends PureComponent {
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
+    isFullScreen: PropTypes.bool.isRequired,
     firstPermissionsRequestId: PropTypes.string,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
@@ -208,7 +209,6 @@ export default class Home extends PureComponent {
     setShowTokenAutodetectModalOnUpgrade: PropTypes.func,
     // eslint-disable-next-line react/no-unused-prop-types
     setNftAutodetectModal: PropTypes.func,
-    hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -378,9 +378,9 @@ export default class Home extends PureComponent {
   componentDidUpdate(_prevProps, prevState) {
     const {
       closeNotificationPopup,
-      isNotification,
-      hasAllowedPopupRedirectApprovals,
+      isFullScreen,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      isNotification,
       custodianDeepLink,
       showCustodianDeepLink,
       cleanCustodianDeepLink,
@@ -392,7 +392,7 @@ export default class Home extends PureComponent {
 
     if (notificationClosing && !prevState.notificationClosing) {
       closeNotificationPopup();
-    } else if (isNotification || hasAllowedPopupRedirectApprovals) {
+    } else if (!isFullScreen) {
       this.checkStatusAndNavigate();
     }
 
