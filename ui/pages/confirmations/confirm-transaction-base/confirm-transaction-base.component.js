@@ -1136,7 +1136,12 @@ export default class ConfirmTransactionBase extends Component {
 
     if (!functionType) {
       if (type) {
-        functionType = getTransactionTypeTitle(t, type, nativeCurrency);
+        functionType = getTransactionTypeTitle(
+          t,
+          type,
+          nativeCurrency,
+          txData.sourceTokenSymbol,
+        );
       } else {
         functionType = t('contractInteraction');
       }
