@@ -1,11 +1,7 @@
 import assert from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  defaultGanacheOptions,
-  unlockWallet,
-  withFixtures,
-} from '../../helpers';
+import { defaultGanacheOptions, unlockWallet, withSetUp } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import packageJson from '../../../../package.json';
 
@@ -35,7 +31,7 @@ async function switchToAboutView(driver: Driver) {
 // Test case to validate the view in the "About" - MetaMask.
 describe('Setting - About MetaMask : @no-mmi', function (this: Suite) {
   it('validate the view', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,

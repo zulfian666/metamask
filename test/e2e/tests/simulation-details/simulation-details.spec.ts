@@ -3,7 +3,7 @@ import { hexToNumber } from '@metamask/utils';
 import FixtureBuilder from '../../fixture-builder';
 import {
   unlockWallet,
-  withFixtures,
+  withSetUp,
   createDappTransaction,
   switchToNotificationWindow,
 } from '../../helpers';
@@ -72,7 +72,7 @@ async function withFixturesForSimulationDetails(
     await mockNetworkRequest(mockServer);
     await mockRequests(mockServer);
   };
-  await withFixtures(
+  await withSetUp(
     {
       fixtures: new FixtureBuilder({ inputChainId })
         .withPermissionControllerConnectedToTestDapp()

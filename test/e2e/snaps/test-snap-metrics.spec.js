@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  withFixtures,
+  withSetUp,
   switchToNotificationWindow,
   unlockWallet,
   getEventPayloads,
@@ -168,7 +168,7 @@ describe('Test Snap Metrics', function () {
       ];
     }
 
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -261,7 +261,7 @@ describe('Test Snap Metrics', function () {
       ];
     }
 
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -347,7 +347,7 @@ describe('Test Snap Metrics', function () {
       ];
     }
 
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -424,7 +424,7 @@ describe('Test Snap Metrics', function () {
       return [await mockedSnapUninstall(mockServer)];
     }
 
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -550,7 +550,7 @@ describe('Test Snap Metrics', function () {
         await mockedSnapUpdated(mockServer),
       ];
     }
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -700,7 +700,7 @@ describe('Test Snap Metrics', function () {
         await mockedSnapUpdateRejected(mockServer),
       ];
     }
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
@@ -835,7 +835,7 @@ describe('Test Snap Metrics', function () {
         await mockedNpmUpdate(mockServer),
       ];
     }
-    await withFixtures(
+    await withSetUp(
       {
         dapp: true,
         fixtures: new FixtureBuilder()

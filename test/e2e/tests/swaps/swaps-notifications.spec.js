@@ -1,4 +1,4 @@
-const { withFixtures, unlockWallet } = require('../../helpers');
+const { withSetUp, unlockWallet } = require('../../helpers');
 const {
   withFixturesOptions,
   buildQuote,
@@ -55,7 +55,7 @@ describe('Swaps - notifications @no-mmi', function () {
   }
 
   it('tests notifications for verified token on 1 source and price difference', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         ...withFixturesOptions,
         testSpecificMock: mockTradesApiPriceSlippageError,
@@ -95,7 +95,7 @@ describe('Swaps - notifications @no-mmi', function () {
     );
   });
   it('tests a notification for not enough balance', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         ...withFixturesOptions,
         title: this.test.fullTitle(),
@@ -125,7 +125,7 @@ describe('Swaps - notifications @no-mmi', function () {
     );
   });
   it('tests notifications for token import', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         ...withFixturesOptions,
         title: this.test.fullTitle(),
@@ -147,7 +147,7 @@ describe('Swaps - notifications @no-mmi', function () {
     );
   });
   it('tests notifications for slippage', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         ...withFixturesOptions,
         title: this.test.fullTitle(),

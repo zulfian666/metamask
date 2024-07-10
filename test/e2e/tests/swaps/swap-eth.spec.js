@@ -1,4 +1,4 @@
-const { withFixtures, unlockWallet } = require('../../helpers');
+const { withSetUp, unlockWallet } = require('../../helpers');
 const {
   withFixturesOptions,
   buildQuote,
@@ -12,7 +12,7 @@ describe('Swap Eth for another Token @no-mmi', function () {
   it('Completes second Swaps while first swap is processing', async function () {
     withFixturesOptions.ganacheOptions.blockTime = 10;
 
-    await withFixtures(
+    await withSetUp(
       {
         ...withFixturesOptions,
         title: this.test.fullTitle(),
@@ -57,7 +57,7 @@ describe('Swap Eth for another Token @no-mmi', function () {
     );
   });
   it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
-    await withFixtures(
+    await withSetUp(
       {
         ...withFixturesOptions,
         title: this.test.fullTitle(),

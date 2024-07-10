@@ -1,12 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-
 import { Driver } from '../../webdriver/driver';
-import {
-  defaultGanacheOptions,
-  withFixtures,
-  unlockWallet,
-} from '../../helpers';
+import { defaultGanacheOptions, withSetUp, unlockWallet } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 
 const selectors = {
@@ -44,7 +39,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
   it('validate the change language functionality', async function () {
     let languageIndex = 10;
 
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -83,7 +78,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
   it('validate "Dansk" language on page navigation', async function () {
     const languageIndex = 6;
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -133,7 +128,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
   it('validate "Deutsch" language on error messages', async function () {
     const languageIndex = 7;
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -162,7 +157,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
   it('validate "मानक हिन्दी" language on tooltips', async function () {
     const languageIndex = 19;
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -199,7 +194,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
   it('validate "Magyar" language change on hypertext', async function () {
     const languageIndex = 23;
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
@@ -228,7 +223,7 @@ describe('Settings - general tab @no-mmi', function (this: Suite) {
 
   it('validate "العربية" language change on page indent', async function () {
     const languageIndex = 1;
-    await withFixtures(
+    await withSetUp(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
