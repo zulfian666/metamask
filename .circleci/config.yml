@@ -437,8 +437,8 @@ jobs:
           name: Check if branch has a linked PR
           command: |
             #!/bin/bash
-
-            if [[ "$CIRCLE_BRANCH" =~ ^(develop|master|Version-v[0-9]+\.[0-9]+\.[0-9]+|feat/test-circle-ci)$ || -n "$CIRCLE_PULL_REQUESTS" ]]; then
+            # Validate if branch is master, develop or release branch
+            if [[ "$CIRCLE_BRANCH" =~ ^(develop|master|Version-v[0-9]+\.[0-9]+\.[0-9]+|trigger-ci.*)$ || -n "$CIRCLE_PULL_REQUESTS" ]]; then
                 echo "Branch matches filters. Proceeding with pipeline."
             else
                 if [ -z "$CIRCLE_PULL_REQUESTS" ]; then
