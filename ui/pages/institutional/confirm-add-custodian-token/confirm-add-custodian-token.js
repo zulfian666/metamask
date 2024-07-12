@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import classnames from 'classnames';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { CUSTODY_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -11,6 +10,7 @@ import {
   FontWeight,
   TextVariant,
   BorderColor,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
 import { I18nContext } from '../../../contexts/i18n';
@@ -141,16 +141,11 @@ const ConfirmAddCustodianToken = () => {
           label={connectRequest.origin}
           startIconName={custodian?.name}
           startIconProps={custodian}
-          className={classnames(
-            'chip',
-            `chip--border-color-${BorderColor.borderMuted}`,
-          )}
           labelProps={{
-            variant: TextVariant.bodyMd,
-            className: classnames('box--margin-bottom-1', 'box--margin-top-1'),
-            color: TextColor.textAlternative,
+            marginTop: 1,
+            marginBottom: 1,
           }}
-          style={{ width: 'auto' }}
+          width={BlockSize.Full}
         />
       </Box>
       <Box padding={4} className="page-container__content">
