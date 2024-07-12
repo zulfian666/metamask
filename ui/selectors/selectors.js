@@ -2600,7 +2600,7 @@ export function isMetaMetricsDataDeletionMarked(state) {
   return state.appState.metaMetricsDataDeletionMarked;
 }
 
-export function hasRecordedMetricsSinceDeletion(state) {
+export function getParticipateInDuringDeletion(state) {
   return state.metamask.participateInDuringDeletion;
 }
 
