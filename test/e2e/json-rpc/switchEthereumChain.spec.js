@@ -50,16 +50,13 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement(experimentalTabRawLocator);
 
         // Toggle off request queue setting (on by default now)
-        await driver.clickElement('.request-queue-toggle');
+        await driver.clickElement(
+          '[data-testid="experimental-setting-toggle-request-queue"]',
+        );
 
         // open two dapps
-        await openDapp(driver, undefined, DAPP_URL);
-        await openDapp(driver, undefined, DAPP_ONE_URL);
-
-        // Window Handling
-        const windowHandles = await driver.getAllWindowHandles();
-        const dappOne = windowHandles[1];
-        const dappTwo = windowHandles[2];
+        const dappOne = await openDapp(driver, undefined, DAPP_URL);
+        const dappTwo = await openDapp(driver, undefined, DAPP_ONE_URL);
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({
@@ -104,7 +101,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  it('should queue switchEthereumChain request from second dapp after send tx request', async function () {
+  it('queues switchEthereumChain request from second dapp after send tx request', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -142,15 +139,13 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement(experimentalTabRawLocator);
 
         // Toggle off request queue setting (on by default now)
-        await driver.clickElement('.request-queue-toggle');
+        await driver.clickElement(
+          '[data-testid="experimental-setting-toggle-request-queue"]',
+        );
 
         // open two dapps
-        await openDapp(driver, undefined, DAPP_URL);
+        const dappOne = await openDapp(driver, undefined, DAPP_URL);
         await openDapp(driver, undefined, DAPP_ONE_URL);
-
-        // Window Handling
-        const windowHandles = await driver.getAllWindowHandles();
-        const dappOne = windowHandles[1];
 
         // Initiate send transaction on Dapp two
         await driver.clickElement('#sendButton');
@@ -198,7 +193,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
     );
   });
 
-  it('should queue send tx after switchEthereum request with a warning, confirming removes pending tx', async function () {
+  it('queues send tx after switchEthereum request with a warning, confirming removes pending tx', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -236,15 +231,13 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement(experimentalTabRawLocator);
 
         // Toggle off request queue setting (on by default now)
-        await driver.clickElement('.request-queue-toggle');
+        await driver.clickElement(
+          '[data-testid="experimental-setting-toggle-request-queue"]',
+        );
 
         // open two dapps
-        await openDapp(driver, undefined, DAPP_URL);
+        const dappOne = await openDapp(driver, undefined, DAPP_URL);
         await openDapp(driver, undefined, DAPP_ONE_URL);
-
-        // Window Handling
-        let windowHandles = await driver.getAllWindowHandles();
-        const dappOne = windowHandles[1];
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({
@@ -284,16 +277,22 @@ describe('Switch Ethereum Chain for two dapps', function () {
         // Confirm switchEthereumChain with queued pending tx
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
 
-        // Window handles should only be expanded mm, dapp one, dapp 2 (3 total)
+        // Window handles should only be expanded mm, dapp one, dapp 2, and the offscreen document
+        // if this is an MV3 build(3 or 4 total)
         await driver.wait(async () => {
-          windowHandles = await driver.getAllWindowHandles();
-          return windowHandles.length === 3;
+          const windowHandles = await driver.getAllWindowHandles();
+          const numberOfWindowHandlesToExpect =
+            process.env.ENABLE_MV3 === 'true' ||
+            process.env.ENABLE_MV3 === undefined
+              ? 4
+              : 3;
+          return windowHandles.length === numberOfWindowHandlesToExpect;
         });
       },
     );
   });
 
-  it('should queue send tx after switchEthereum request with a warning, if switchEthereum request is cancelled should show pending tx', async function () {
+  it('queues send tx after switchEthereum request with a warning, if switchEthereum request is cancelled should show pending tx', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -331,15 +330,13 @@ describe('Switch Ethereum Chain for two dapps', function () {
         await driver.clickElement(experimentalTabRawLocator);
 
         // Toggle off request queue setting (on by default now)
-        await driver.clickElement('.request-queue-toggle');
+        await driver.clickElement(
+          '[data-testid="experimental-setting-toggle-request-queue"]',
+        );
 
         // open two dapps
-        await openDapp(driver, undefined, DAPP_URL);
+        const dappOne = await openDapp(driver, undefined, DAPP_URL);
         await openDapp(driver, undefined, DAPP_ONE_URL);
-
-        // Window Handling
-        const windowHandles = await driver.getAllWindowHandles();
-        const dappOne = windowHandles[1];
 
         // switchEthereumChain request
         const switchEthereumChainRequest = JSON.stringify({
