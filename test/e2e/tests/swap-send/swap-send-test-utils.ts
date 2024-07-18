@@ -234,7 +234,24 @@ export class SwapSendPage {
     // TODO verify expanded activity details
   };
 
-  submitSwap = async () => {
+  submitSwap = async (isApproval = false) => {
+    await this.driver.clickElement({
+      text: 'Continue',
+      tag: 'button',
+    });
+
+    if (isApproval) {
+      await (
+        await this.driver.findClickableElement({
+          text: 'Confirm',
+          tag: 'button',
+        })
+      ).click();
+
+      // wait for confirmations page to progress
+      await this.driver.findElement({ text: 'Swap & Send', tag: 'span' });
+    }
+
     await (
       await this.driver.findClickableElement({
         text: 'Confirm',

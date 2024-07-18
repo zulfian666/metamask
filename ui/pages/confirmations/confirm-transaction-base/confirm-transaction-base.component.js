@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
+  SimulationErrorCode,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -522,9 +523,14 @@ export default class ConfirmTransactionBase extends Component {
         </div>
       ) : null;
 
-    const { simulationData } = txData;
+    const { simulationData, approvalTxId } = txData;
 
-    const simulationDetails = (
+    // if transaction reverts in simulation and there's an approval transaction, we don't want to show the simulation details
+    const isUnsimulable =
+      approvalTxId &&
+      simulationData?.error.code === SimulationErrorCode.Reverted;
+
+    const simulationDetails = isUnsimulable ? undefined : (
       <SimulationDetails
         simulationData={simulationData}
         transactionId={txData.id}
@@ -1129,6 +1135,14 @@ export default class ConfirmTransactionBase extends Component {
     const isContractInteractionFromDapp =
       (isTokenApproval || isContractInteraction) &&
       txData.origin !== 'metamask';
+
+    // TODO: swapApproval is exclusively used for swap+send currently,
+    // but we should replace this with a specific swap+send approval type in a follow up
+    const isSwapAndSendTransaction = [
+      TransactionType.swapAndSend,
+      TransactionType.swapApproval,
+    ].includes(txData.type);
+
     let functionType;
     if (isContractInteractionFromDapp) {
       functionType = getMethodName(name);
@@ -1136,7 +1150,12 @@ export default class ConfirmTransactionBase extends Component {
 
     if (!functionType) {
       if (type) {
-        functionType = getTransactionTypeTitle(t, type, nativeCurrency);
+        functionType = getTransactionTypeTitle(
+          t,
+          type,
+          nativeCurrency,
+          txData.sourceTokenSymbol,
+        );
       } else {
         functionType = t('contractInteraction');
       }
@@ -1152,7 +1171,11 @@ export default class ConfirmTransactionBase extends Component {
           toAddress={toAddress}
           toEns={toEns}
           toNickname={toNickname}
-          showEdit={!isContractInteractionFromDapp && Boolean(onEdit)}
+          showEdit={
+            !isContractInteractionFromDapp &&
+            !isSwapAndSendTransaction &&
+            Boolean(onEdit)
+          }
           action={functionType}
           image={image}
           title={title}
