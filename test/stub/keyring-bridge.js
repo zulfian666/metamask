@@ -1,4 +1,7 @@
-import { ecsign } from '@ethereumjs/util';
+import { Transaction } from '@ethereumjs/tx';
+import { Common } from './keyring-utils';
+// import { bufferToHex } from 'ethereumjs-util';
+// import { addHexPrefix, Common } from './keyring-utils';
 
 // BIP32 Public Key: xpub6ELgkkwgfoky9h9fFu4Auvx6oHvJ6XfwiS1NE616fe9Uf4H3JHtLGjCePVkb6RFcyDCqVvjXhNXbDNDqs6Kjoxw7pTAeP1GSEiLHmA5wYa9
 // BIP32 Private Key: xprvA1MLMFQnqSCfwD5C9sXAYo1NFG5oh4x6MD5mRhbV7JcVnFwtkka5ivtAYDYJsr9GS242p3QZMbsMZC1GZ2uskNeTj9VhYxrCqRG6U5UPXp5
@@ -98,13 +101,31 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
     return true;
   }
 
+  // async deviceSignTransaction({ tx }) {
+  //   return ecsign(tx, Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+  // }
+
   async deviceSignTransaction({ tx }) {
-    return ecsign(tx, Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+    // chainId hardcoded for now
+    const chainId = 1337;
+    const common = Common.custom({
+      chain: {
+        name: 'localhost',
+        chainId,
+        networkId: chainId,
+      },
+      chainId,
+      hardfork: 'istanbul',
+    });
+
+    return Transaction.fromTxData(tx, {
+      common,
+    }).sign(Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
   }
 
-  async deviceSignTypedData(params) {
-    console.log('=============> params', params);
-    const { tx } = params;
-    return ecsign(tx, Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
-  }
+  // async deviceSignTypedData(params) {
+  //   console.log('=============> params', params);
+  //   const { tx } = params;
+  //   return ecsign(tx, Buffer.from(KNOWN_PRIVATE_KEYS[0], 'hex'));
+  // }
 }
