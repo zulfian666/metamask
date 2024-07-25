@@ -10,8 +10,8 @@ import {
   FontWeight,
   TextVariant,
   BorderColor,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
-import Chip from '../../../components/ui/chip';
 import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -25,6 +25,7 @@ import {
   ButtonVariant,
   Box,
   Text,
+  Tag,
 } from '../../../components/component-library';
 import {
   MetaMetricsEventCategory,
@@ -135,14 +136,16 @@ const ConfirmAddCustodianToken = () => {
   return (
     <Box className="page-container">
       <Box paddingTop={6} paddingLeft={4} paddingRight={4}>
-        <Chip
+        <Tag
           borderColor={BorderColor.borderMuted}
           label={connectRequest.origin}
-          maxContent={false}
-          leftIconUrl={custodian?.iconUrl}
+          startIconName={custodian?.name}
+          startIconProps={custodian}
           labelProps={{
-            textAlign: TextAlign.Center,
+            marginTop: 1,
+            marginBottom: 1,
           }}
+          width={BlockSize.Full}
         />
       </Box>
       <Box padding={4} className="page-container__content">
