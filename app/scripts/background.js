@@ -73,7 +73,7 @@ import {
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
-import { generateSkipOnboardingState } from './skip-onboarding';
+import { generateWalletState } from './inject-wallet-state';
 import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */
@@ -547,7 +547,7 @@ export async function loadStateFromPersistence() {
   migrator.on('error', console.warn);
 
   if (process.env.SKIP_ONBOARDING) {
-    const skipOnboardingStateOverrides = await generateSkipOnboardingState();
+    const skipOnboardingStateOverrides = await generateWalletState();
     firstTimeState = { ...firstTimeState, ...skipOnboardingStateOverrides };
   }
 
