@@ -80,6 +80,7 @@ import { createOffscreen } from './offscreen';
 /* eslint-enable import/first */
 
 import { TRIGGER_TYPES } from './controllers/metamask-notifications/constants/notification-schema';
+import { assertObjectMaxSize } from '../../shared/modules/sizeof';
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
@@ -685,18 +686,17 @@ function trackDappView(remotePort) {
 function filterStreamMessageSize(portStream, maxSize = MAX_MESSAGE_LENGTH) {
   const filterStream = createFilterStream(portStream, {
     inputFilter: (msg, _encoding) => {
-      const start = new Date()
-      const stringifiedMsg = JSON.stringify(msg);
-      console.log('time', (new Date()) - start)
-      if (stringifiedMsg.length < maxSize) {
-        return true;
+      const start = new Date();
+      try {
+        assertObjectMaxSize(msg, maxSize)
+        console.log('time', start, (new Date()) - start)
+        return true
+      } catch (err) {
+        console.log('time', start, (new Date()) - start)
+        console.warn(
+          'message exceeded size limit and will be dropped', err
+        );
       }
-      console.warn(
-        `message exceeded size limit and will be dropped: ${stringifiedMsg.slice(
-          0,
-          1000,
-        )}...`,
-      );
       return false;
     },
   });
