@@ -58,7 +58,7 @@ export async function installSnapSimpleKeyring(
 
   await driver.delay(500);
 
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.switchToWindowWithTitle('Nonexistent window');
 
   await driver.delay(500);
 

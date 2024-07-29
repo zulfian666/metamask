@@ -21,6 +21,14 @@ export class Ganache {
 
     this.#server = server(options);
     await this.#server.listen(options.port);
+
+    console.log('Opening Ganache server', this.#server.status);
+
+    //in 3 seconds, do this
+    setInterval(
+      () => console.log('Ganache server status', this.#server?.status),
+      1000,
+    );
   }
 
   getProvider() {
@@ -68,6 +76,7 @@ export class Ganache {
       throw new Error('Server not running yet');
     }
     try {
+      console.log('Closing Ganache server', this.#server.status);
       await this.#server.close();
       // TODO: Replace `any` with type
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -75,6 +84,8 @@ export class Ganache {
       // We can safely ignore the EBUSY error
       if (e.code !== 'EBUSY') {
         console.log('Caught error while Ganache closing:', e);
+        // wait 5 seconds
+        await new Promise((resolve) => setTimeout(resolve, 5000));
       }
     }
   }
