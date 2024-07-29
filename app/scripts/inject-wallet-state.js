@@ -4,42 +4,67 @@ import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { E2E_SRP, defaultFixture } from '../../test/e2e/default-fixture';
 import { encryptorFactory } from './lib/encryptor-factory';
-
+import FIXTURES_CONFIG from './fixtures/fixtures-config';
 import { FIXTURES_NETWORKS } from './fixtures/with-networks';
 import { FIXTURES_PREFERENCES } from './fixtures/with-preferences';
 import { FIXTURES_ADDRESS_BOOK } from './fixtures/with-address-book';
 import { FIXTURES_TRANSACTIONS } from './fixtures/with-transactions';
-import { FIXTURES_ERC20_TOKENS } from './fixtures/with-tokens';
-import { FIXTURES_METAMASK_NOTIFICATIONS } from './fixtures/with-notifications';
+import { FIXTURES_TOKENS } from './fixtures/with-tokens';
+import { FIXTURES_NOTIFICATIONS } from './fixtures/with-notifications';
 
-const stateGenerators = {
-  networks: generateNetworkControllerState,
-  addressBook: generateAddressBookControllerState,
-  preferences: generatePreferencesControllerState,
-  keyrings: generateKeyringControllerState,
-  accounts: generateAccountsControllerState,
-}
+const controllerGenerators = {
+  withAddressBook: {
+    name: 'AddressBookController',
+    generator: generateAddressBookControllerState,
+  },
+  withNetworks: {
+    name: 'NetworkController',
+    generator: generateNetworkControllerState,
+  },
+  withNotifications: {
+    name: 'NotificationsController',
+    generator: generateNotificationsControllerState,
+  },
+  withPreferences: {
+    name: 'PreferencesController',
+    generator: generatePreferencesControllerState,
+  },
+  withTransactions: {
+    name: 'TransactionController',
+    generator: generateTransactionControllerState,
+  },
+  withTokens: {
+    name: 'TokensController',
+    generator: generateTokensControllerState,
+  },
+};
 
-export async function generateWalletState() {
+export async function generateWalletState(config = FIXTURES_CONFIG) {
   const state = defaultFixture('0xaa36a7').data;
 
   state.AppStateController = generateAppStateControllerState();
   state.AnnouncementController = generateAnnouncementControllerState();
-  state.NetworkController = generateNetworkControllerState();
-  state.AddressBookController = generateAddressBookControllerState();
-  state.PreferencesController = generatePreferencesControllerState();
-  state.TransactionController = generateTransactionControllerState();
-  state.TokensController = generateTokensControllerState();
-  state.MetamaskNotificationsController = generateMetamaskNotificationsControllerState();
 
-  if (process.env.PASSWORD) {
-    const { vault, account } = await generateVaultAndAccount(
-      process.env.TEST_SRP || E2E_SRP,
-      process.env.PASSWORD,
-    );
+  const { vault, account } = await generateVaultAndAccount(
+    process.env.TEST_SRP || E2E_SRP,
+    process.env.PASSWORD,
+  );
 
-    state.KeyringController = generateKeyringControllerState(vault);
-    state.AccountsController = generateAccountsControllerState(account);
+  // Controllers state to apply always
+  state.KeyringController = generateKeyringControllerState(vault);
+  state.AccountsController = generateAccountsControllerState(account);
+
+  for (const [key, { name, generator }] of Object.entries(
+    controllerGenerators,
+  )) {
+    if (config[key]) {
+      console.log(`Generating state for: ${name}`); // Debugging statement
+      if (name === 'TransactionController') {
+        state[name] = await generator(account);
+      } else {
+        state[name] = await generator();
+      }
+    }
   }
 
   return state;
@@ -166,27 +191,6 @@ function generateAccountsControllerState(account) {
           ],
           type: 'eip155:eoa',
         },
-        'account-id': {
-          id: 'account-id',
-          address: account,
-          metadata: {
-            name: 'Account 2',
-            lastSelected: 1665507600000,
-            keyring: {
-              type: 'HD Key Tree',
-            },
-          },
-          options: {},
-          methods: [
-            'personal_sign',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
-        },
       },
     },
   };
@@ -195,9 +199,7 @@ function generateAccountsControllerState(account) {
 function generatePreferencesControllerState() {
   return {
     ...defaultFixture().data.PreferencesController,
-    preferences: {
-      ...FIXTURES_PREFERENCES,
-    },
+    ...FIXTURES_PREFERENCES,
   };
 }
 
@@ -210,30 +212,48 @@ function generateAddressBookControllerState() {
   };
 }
 
+// update from key
+function updateFromKey(obj, account) {
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      if (key === 'from') {
+        obj[key] = account;
+      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+        updateFromKey(obj[key], account);
+      }
+    }
+  }
+  return obj;
+}
 
-function generateTransactionControllerState() {
+function generateTransactionControllerState(account) {
+  const transactions = {
+    ...FIXTURES_TRANSACTIONS,
+  };
+
+  // Update the `from` key in all transactions
+  for (const txId in transactions) {
+    if (Object.prototype.hasOwnProperty.call(transactions, txId)) {
+      transactions[txId] = updateFromKey(transactions[txId], account);
+    }
+  }
+
   return {
     ...defaultFixture().data.TransactionController,
-    transactions: {
-      ...FIXTURES_TRANSACTIONS,
-    },
+    transactions,
   };
 }
 
 function generateTokensControllerState() {
   return {
     ...defaultFixture().data.TokensController,
-    transactions: {
-      ...FIXTURES_ERC20_TOKENS,
-    },
+    ...FIXTURES_TOKENS,
   };
 }
 
-function generateMetamaskNotificationsControllerState() {
+function generateNotificationsControllerState() {
   return {
     ...defaultFixture().data.MetamaskNotificationsController,
-    notifications: {
-      ...FIXTURES_METAMASK_NOTIFICATIONS,
-    },
+    ...FIXTURES_NOTIFICATIONS,
   };
 }
