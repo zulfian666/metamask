@@ -43,5 +43,5 @@ export const FIXTURES_PREFERENCES = {
       lastSelected: 1665507800000,
       name: 'Account 2',
     },
-  }
+  },
 };

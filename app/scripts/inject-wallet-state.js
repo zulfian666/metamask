@@ -3,47 +3,19 @@ import { KeyringController } from '@metamask/keyring-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { E2E_SRP, defaultFixture } from '../../test/e2e/default-fixture';
+import FixtureBuilder from '../../test/e2e/fixture-builder';
 import { encryptorFactory } from './lib/encryptor-factory';
 import FIXTURES_CONFIG from './fixtures/fixtures-config';
-import { FIXTURES_NETWORKS } from './fixtures/with-networks';
-import { FIXTURES_PREFERENCES } from './fixtures/with-preferences';
 import { FIXTURES_ADDRESS_BOOK } from './fixtures/with-address-book';
-import { FIXTURES_TRANSACTIONS } from './fixtures/with-transactions';
-import { FIXTURES_TOKENS } from './fixtures/with-tokens';
+import { FIXTURES_APP_STATE } from './fixtures/with-app-state';
+import { FIXTURES_NETWORKS } from './fixtures/with-networks';
 import { FIXTURES_NOTIFICATIONS } from './fixtures/with-notifications';
-
-const controllerGenerators = {
-  withAddressBook: {
-    name: 'AddressBookController',
-    generator: generateAddressBookControllerState,
-  },
-  withNetworks: {
-    name: 'NetworkController',
-    generator: generateNetworkControllerState,
-  },
-  withNotifications: {
-    name: 'NotificationsController',
-    generator: generateNotificationsControllerState,
-  },
-  withPreferences: {
-    name: 'PreferencesController',
-    generator: generatePreferencesControllerState,
-  },
-  withTransactions: {
-    name: 'TransactionController',
-    generator: generateTransactionControllerState,
-  },
-  withTokens: {
-    name: 'TokensController',
-    generator: generateTokensControllerState,
-  },
-};
+import { FIXTURES_PREFERENCES } from './fixtures/with-preferences';
+import { FIXTURES_TOKENS } from './fixtures/with-tokens';
+import { FIXTURES_TRANSACTIONS } from './fixtures/with-transactions';
 
 export async function generateWalletState(config = FIXTURES_CONFIG) {
-  const state = defaultFixture('0xaa36a7').data;
-
-  state.AppStateController = generateAppStateControllerState();
-  state.AnnouncementController = generateAnnouncementControllerState();
+  const fixtureBuilder = new FixtureBuilder({ inputChainId: '0xaa36a7' });
 
   const { vault, account } = await generateVaultAndAccount(
     process.env.TEST_SRP || E2E_SRP,
@@ -51,31 +23,40 @@ export async function generateWalletState(config = FIXTURES_CONFIG) {
   );
 
   // Controllers state to apply always
-  state.KeyringController = generateKeyringControllerState(vault);
-  state.AccountsController = generateAccountsControllerState(account);
+  fixtureBuilder
+    .withAppStateController(FIXTURES_APP_STATE)
+    .withAnnouncementController(generateAnnouncementControllerState())
+    .withKeyringController(generateKeyringControllerState(vault))
+    .withAccountsController(generateAccountsControllerState(account));
 
-  for (const [key, { name, generator }] of Object.entries(
-    controllerGenerators,
-  )) {
-    if (config[key]) {
-      console.log(`Generating state for: ${name}`); // Debugging statement
-      if (name === 'TransactionController') {
-        state[name] = await generator(account);
-      } else {
-        state[name] = await generator();
-      }
-    }
-  }
-
-  return state;
-}
-
-// dismiss product tour
-function generateAppStateControllerState() {
-  return {
-    ...defaultFixture().data.AppStateController,
-    showProductTour: false,
+  // Mapping of config keys to their corresponding methods
+  const controllerMethods = {
+    withAddressBookController: () =>
+      fixtureBuilder.withAddressBookController(FIXTURES_ADDRESS_BOOK),
+    withMetamaskNotificationsController: () =>
+      fixtureBuilder.withMetamaskNotificationsController(
+        FIXTURES_NOTIFICATIONS,
+      ),
+    withNetworkController: () =>
+      fixtureBuilder.withNetworkController(FIXTURES_NETWORKS),
+    withTokensController: () =>
+      fixtureBuilder.withTokensController(FIXTURES_TOKENS),
+    withPreferencesController: () =>
+      fixtureBuilder.withPreferencesController(FIXTURES_PREFERENCES),
+    withTransactionController: () =>
+      fixtureBuilder.withTransactionController(
+        generateTransactionControllerState(account),
+      ),
   };
+
+  // Apply controllers states based on config file
+  Object.keys(controllerMethods).forEach((key) => {
+    if (config[key]) {
+      controllerMethods[key]();
+    }
+  });
+
+  return fixtureBuilder.fixture.data;
 }
 
 // dismiss 'what's new' modals
@@ -91,40 +72,7 @@ function generateAnnouncementControllerState() {
     {},
   );
 
-  return {
-    ...defaultFixture().data.AnnouncementController,
-    announcements: {
-      ...defaultFixture().data.AnnouncementController.announcements,
-      ...allAnnouncementsAlreadyShown,
-    },
-  };
-}
-
-// configure 'Sepolia' network
-// TODO: Support for local node
-function generateNetworkControllerState() {
-  return {
-    ...defaultFixture().data.NetworkController,
-    providerConfig: {
-      chainId: '0xaa36a7',
-      rpcPrefs: {
-        blockExplorerUrl: 'https://sepolia.etherscan.io',
-      },
-      ticker: 'SepoliaETH',
-      type: 'sepolia',
-    },
-    networkConfigurations: {
-      ...FIXTURES_NETWORKS,
-      networkConfigurationId: {
-        chainId: '0xaa36a7',
-        nickname: 'Sepolia',
-        rpcPrefs: {},
-        rpcUrl: 'https://sepolia.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
-        ticker: 'SepoliaETH',
-        networkConfigurationId: 'networkConfigurationId',
-      },
-    },
-  };
+  return allAnnouncementsAlreadyShown;
 }
 
 async function generateVaultAndAccount(encodedSeedPhrase, password) {
@@ -166,7 +114,6 @@ function generateKeyringControllerState(vault) {
 
 function generateAccountsControllerState(account) {
   return {
-    ...defaultFixture().data.AccountsController,
     internalAccounts: {
       selectedAccount: 'account-id',
       accounts: {
@@ -196,22 +143,6 @@ function generateAccountsControllerState(account) {
   };
 }
 
-function generatePreferencesControllerState() {
-  return {
-    ...defaultFixture().data.PreferencesController,
-    ...FIXTURES_PREFERENCES,
-  };
-}
-
-function generateAddressBookControllerState() {
-  return {
-    ...defaultFixture().data.AddressBookController,
-    addressBook: {
-      ...FIXTURES_ADDRESS_BOOK,
-    },
-  };
-}
-
 // update from key
 function updateFromKey(obj, account) {
   for (const key in obj) {
@@ -227,9 +158,7 @@ function updateFromKey(obj, account) {
 }
 
 function generateTransactionControllerState(account) {
-  const transactions = {
-    ...FIXTURES_TRANSACTIONS,
-  };
+  const transactions = FIXTURES_TRANSACTIONS;
 
   // Update the `from` key in all transactions
   for (const txId in transactions) {
@@ -238,22 +167,5 @@ function generateTransactionControllerState(account) {
     }
   }
 
-  return {
-    ...defaultFixture().data.TransactionController,
-    transactions,
-  };
-}
-
-function generateTokensControllerState() {
-  return {
-    ...defaultFixture().data.TokensController,
-    ...FIXTURES_TOKENS,
-  };
-}
-
-function generateNotificationsControllerState() {
-  return {
-    ...defaultFixture().data.MetamaskNotificationsController,
-    ...FIXTURES_NOTIFICATIONS,
-  };
+  return transactions;
 }

@@ -327,4 +327,6 @@ export const FIXTURES_TOKENS = {
   ],
   ignoredTokens: [],
   detectedTokens: [],
+  allIgnoredTokens: {},
+  allDetectedTokens: {},
 };
