@@ -8,11 +8,13 @@ import { encryptorFactory } from './lib/encryptor-factory';
 import FIXTURES_CONFIG from './fixtures/fixtures-config';
 import { FIXTURES_ADDRESS_BOOK } from './fixtures/with-address-book';
 import { FIXTURES_APP_STATE } from './fixtures/with-app-state';
+import { FIXTURES_CONFIRMED_TRANSACTIONS } from './fixtures/with-confirmed-transactions';
 import { FIXTURES_NETWORKS } from './fixtures/with-networks';
-import { FIXTURES_NOTIFICATIONS } from './fixtures/with-notifications';
 import { FIXTURES_PREFERENCES } from './fixtures/with-preferences';
+import { FIXTURES_READ_NOTIFICATIONS } from './fixtures/with-read-notifications';
 import { FIXTURES_TOKENS } from './fixtures/with-tokens';
-import { FIXTURES_TRANSACTIONS } from './fixtures/with-transactions';
+import { FIXTURES_UNAPPROVED_TRANSACTIONS } from './fixtures/with-unapproved-transactions';
+import { FIXTURES_UNREAD_NOTIFICATIONS } from './fixtures/with-unread-notifications';
 
 export async function generateWalletState(config = FIXTURES_CONFIG) {
   const fixtureBuilder = new FixtureBuilder({ inputChainId: '0xaa36a7' });
@@ -31,21 +33,33 @@ export async function generateWalletState(config = FIXTURES_CONFIG) {
 
   // Mapping of config keys to their corresponding methods
   const controllerMethods = {
-    withAddressBookController: () =>
+    withAddressBook: () =>
       fixtureBuilder.withAddressBookController(FIXTURES_ADDRESS_BOOK),
-    withMetamaskNotificationsController: () =>
-      fixtureBuilder.withMetamaskNotificationsController(
-        FIXTURES_NOTIFICATIONS,
-      ),
-    withNetworkController: () =>
-      fixtureBuilder.withNetworkController(FIXTURES_NETWORKS),
-    withTokensController: () =>
-      fixtureBuilder.withTokensController(FIXTURES_TOKENS),
-    withPreferencesController: () =>
-      fixtureBuilder.withPreferencesController(FIXTURES_PREFERENCES),
-    withTransactionController: () =>
+    withConfirmedTransactions: () =>
       fixtureBuilder.withTransactionController(
-        generateTransactionControllerState(account),
+        generateTransactionControllerState(
+          account,
+          FIXTURES_CONFIRMED_TRANSACTIONS,
+        ),
+      ),
+    withNetworks: () => fixtureBuilder.withNetworkController(FIXTURES_NETWORKS),
+    withReadNotifications: () =>
+      fixtureBuilder.withMetamaskNotificationsController(
+        FIXTURES_READ_NOTIFICATIONS,
+      ),
+    withPreferences: () =>
+      fixtureBuilder.withPreferencesController(FIXTURES_PREFERENCES),
+    withTokens: () => fixtureBuilder.withTokensController(FIXTURES_TOKENS),
+    withUnapprovedTransactions: () =>
+      fixtureBuilder.withTransactionController(
+        generateTransactionControllerState(
+          account,
+          FIXTURES_UNAPPROVED_TRANSACTIONS,
+        ),
+      ),
+    withUnreadNotifications: () =>
+      fixtureBuilder.withMetamaskNotificationsController(
+        FIXTURES_UNREAD_NOTIFICATIONS,
       ),
   };
 
@@ -157,9 +171,7 @@ function updateFromKey(obj, account) {
   return obj;
 }
 
-function generateTransactionControllerState(account) {
-  const transactions = FIXTURES_TRANSACTIONS;
-
+function generateTransactionControllerState(account, transactions) {
   // Update the `from` key in all transactions
   for (const txId in transactions) {
     if (Object.prototype.hasOwnProperty.call(transactions, txId)) {

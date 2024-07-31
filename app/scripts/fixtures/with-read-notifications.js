@@ -1,4 +1,4 @@
-export const FIXTURES_NOTIFICATIONS = {
+export const FIXTURES_READ_NOTIFICATIONS = {
   metamaskNotificationsReadList: [
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -371,10 +371,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -399,10 +399,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -427,10 +427,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -455,10 +455,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -483,10 +483,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -511,10 +511,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -539,10 +539,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -567,10 +567,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -595,10 +595,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -623,10 +623,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -651,10 +651,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -679,10 +679,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -707,10 +707,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -735,10 +735,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -763,10 +763,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -791,10 +791,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -819,10 +819,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: 'eb0dae55-39f3-4177-8a18-6c536ad8bfb0',
       tx_hash:
         '0x2c7d1049298a2b7d877abc5b667b1ccff1b33a1e03c8a0ff45115d934e58a39f',
-      unread: true,
+      unread: false,
       type: 'eth_received',
       createdAt: '2024-07-25T15:48:24.640Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -847,10 +847,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
-      unread: true,
+      unread: false,
       type: 'eth_sent',
       createdAt: '2024-07-25T15:47:14.642Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -875,10 +875,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
-      unread: true,
+      unread: false,
       type: 'eth_sent',
       createdAt: '2024-07-25T15:47:14.642Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
@@ -903,10 +903,10 @@ export const FIXTURES_NOTIFICATIONS = {
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
-      unread: true,
+      unread: false,
       type: 'eth_sent',
       createdAt: '2024-07-25T15:47:14.642Z',
-      isRead: false,
+      isRead: true,
     },
     {
       address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',

@@ -1,10 +1,12 @@
 const FIXTURES_CONFIG = {
-  withAddressBookController: true,
-  withMetamaskNotificationsController: true,
-  withNetworkController: true,
-  withPreferencesController: true,
-  withTransactionController: true,
-  withTokensController: true,
+  withAddressBook: true,
+  withConfirmedTransactions: true,
+  withNetworks: true,
+  withPreferences: true,
+  withReadNotifications: true,
+  withTokens: true,
+  withUnapprovedTransactions: true,
+  withUnreadNotifications: true,
 };
 
 export default FIXTURES_CONFIG;

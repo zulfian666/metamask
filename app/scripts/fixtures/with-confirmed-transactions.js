@@ -1,4 +1,4 @@
-export const FIXTURES_TRANSACTIONS = {
+export const FIXTURES_CONFIRMED_TRANSACTIONS = {
   transactions: {
     '6eab4240-3762-4581-abc5-cd71eab69611': {
       chainId: '0x1',
