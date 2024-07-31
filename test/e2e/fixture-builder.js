@@ -2,7 +2,7 @@ const {
   WALLET_SNAP_PERMISSION_KEY,
   SnapCaveatType,
 } = require('@metamask/snaps-utils');
-const { merge } = require('lodash');
+const { merge, mergeWith } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
 const { NetworkStatus } = require('@metamask/network-controller');
 
@@ -223,7 +223,16 @@ class FixtureBuilder {
   }
 
   withMetamaskNotificationsController(data) {
-    merge(this.fixture.data.MetamaskNotificationsController, data);
+    mergeWith(
+      this.fixture.data.MetamaskNotificationsController,
+      data,
+      (objValue, srcValue) => {
+        if (Array.isArray(objValue)) {
+          objValue.concat(srcValue);
+        }
+        return undefined; // Explicitly return undefined for non-array values
+      },
+    );
     return this;
   }
 

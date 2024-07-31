@@ -12,7 +12,7 @@ import { FIXTURES_CONFIRMED_TRANSACTIONS } from './fixtures/with-confirmed-trans
 import { FIXTURES_NETWORKS } from './fixtures/with-networks';
 import { FIXTURES_PREFERENCES } from './fixtures/with-preferences';
 import { FIXTURES_READ_NOTIFICATIONS } from './fixtures/with-read-notifications';
-import { FIXTURES_TOKENS } from './fixtures/with-tokens';
+import { FIXTURES_ERC20_TOKENS } from './fixtures/with-erc20-tokens';
 import { FIXTURES_UNAPPROVED_TRANSACTIONS } from './fixtures/with-unapproved-transactions';
 import { FIXTURES_UNREAD_NOTIFICATIONS } from './fixtures/with-unread-notifications';
 
@@ -42,6 +42,10 @@ export async function generateWalletState(config = FIXTURES_CONFIG) {
           FIXTURES_CONFIRMED_TRANSACTIONS,
         ),
       ),
+    withErc20Tokens: () =>
+      fixtureBuilder.withTokensController(
+        generateTokensControllerState(account, FIXTURES_ERC20_TOKENS),
+      ),
     withNetworks: () => fixtureBuilder.withNetworkController(FIXTURES_NETWORKS),
     withReadNotifications: () =>
       fixtureBuilder.withMetamaskNotificationsController(
@@ -49,7 +53,6 @@ export async function generateWalletState(config = FIXTURES_CONFIG) {
       ),
     withPreferences: () =>
       fixtureBuilder.withPreferencesController(FIXTURES_PREFERENCES),
-    withTokens: () => fixtureBuilder.withTokensController(FIXTURES_TOKENS),
     withUnapprovedTransactions: () =>
       fixtureBuilder.withTransactionController(
         generateTransactionControllerState(
@@ -157,18 +160,34 @@ function generateAccountsControllerState(account) {
   };
 }
 
-// update from key
-function updateFromKey(obj, account) {
+// Helper function to update fixtures data dynamically
+function updateKey(obj, targetKey, newValue) {
   for (const key in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      if (key === 'from') {
-        obj[key] = account;
+      if (key === targetKey) {
+        obj[key] = newValue;
       } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-        updateFromKey(obj[key], account);
+        updateKey(obj[key], targetKey, newValue);
       }
     }
   }
   return obj;
+}
+
+function updateAddressKey(obj, newAddress) {
+  return updateKey(obj, 'address', newAddress);
+}
+
+function updateFromKey(obj, account) {
+  return updateKey(obj, 'from', account);
+}
+
+function generateTokensControllerState(account, tokens) {
+  // Update the `address` key in all tokens
+  for (const token of tokens.tokens) {
+    updateAddressKey(token, account);
+  }
+  return tokens;
 }
 
 function generateTransactionControllerState(account, transactions) {
