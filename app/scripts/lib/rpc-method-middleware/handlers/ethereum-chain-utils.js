@@ -1,5 +1,6 @@
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { ApprovalType } from '@metamask/controller-utils';
+import { isSnapId } from '@metamask/snaps-utils';
 
 import {
   BUILT_IN_INFURA_NETWORKS,
@@ -200,6 +201,7 @@ export async function switchChain(
     requestUserApproval,
     getCaveat,
     requestPermittedChainsPermission,
+    grantPermittedChainsPermission,
   },
 ) {
   try {
@@ -214,7 +216,16 @@ export async function switchChain(
         permissionedChainIds === undefined ||
         !permissionedChainIds.includes(chainId)
       ) {
-        await requestPermittedChainsPermission([chainId]);
+        if (isSnapId(origin)) {
+          console.log(
+            'Granting permission to switch to permitted chain',
+            origin,
+            chainId,
+          );
+          await grantPermittedChainsPermission([chainId]);
+        } else {
+          await requestPermittedChainsPermission([chainId]);
+        }
       }
     } else {
       await requestUserApproval({
