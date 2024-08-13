@@ -217,11 +217,6 @@ export async function switchChain(
         !permissionedChainIds.includes(chainId)
       ) {
         if (isSnapId(origin)) {
-          console.log(
-            'Granting permission to switch to permitted chain',
-            origin,
-            chainId,
-          );
           await grantPermittedChainsPermission([chainId]);
         } else {
           await requestPermittedChainsPermission([chainId]);
