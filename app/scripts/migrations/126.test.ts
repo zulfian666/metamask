@@ -134,6 +134,48 @@ describe('migration #126', () => {
     });
   });
 
+  it('uses the network from network configurations if set', async () => {
+    const oldStorage = getMockState(NETWORK_TYPES.SEPOLIA, {
+      [NETWORK_TYPES.SEPOLIA]: {
+        chainId: CHAIN_IDS.LINEA_SEPOLIA,
+      },
+    });
+
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data.PermissionController).toStrictEqual({
+      subjects: {
+        [MOCK_SNAP_ID]: {
+          permissions: {
+            [SnapEndowments.EthereumProvider]: {
+              caveats: [],
+              date: 1664187844588,
+              id: 'izn0WGUO8cvq_jqvLQuQP',
+              invoker: MOCK_ORIGIN,
+              parentCapability: SnapEndowments.EthereumProvider,
+            },
+            [PermissionNames.permittedChains]: {
+              caveats: [
+                CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+                  [CHAIN_IDS.LINEA_SEPOLIA],
+                )
+              ],
+              date: 1723635247705,
+              id: expect.any(String),
+              invoker: MOCK_SNAP_ID,
+              parentCapability: PermissionNames.permittedChains,
+            }
+          },
+        },
+      }
+    });
+
+    expect(newStorage.data.SelectedNetworkController).toStrictEqual({
+      domains: {
+        [MOCK_SNAP_ID]: NETWORK_TYPES.SEPOLIA
+      }
+    });
+  });
+
   // @ts-expect-error - Property `each` does not exist on type `TestFunction`.
   it.each([
     {},
