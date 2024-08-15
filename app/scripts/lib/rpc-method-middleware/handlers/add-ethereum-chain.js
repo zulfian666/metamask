@@ -22,6 +22,7 @@ const addEthereumChain = {
     getCurrentChainIdForDomain: true,
     getCaveat: true,
     requestPermittedChainsPermission: true,
+    grantPermittedChainsPermission: true,
     getChainPermissionsFeatureFlag: true,
   },
 };
@@ -44,6 +45,7 @@ async function addEthereumChainHandler(
     getCurrentChainIdForDomain,
     getCaveat,
     requestPermittedChainsPermission,
+    grantPermittedChainsPermission,
     getChainPermissionsFeatureFlag,
   },
 ) {
@@ -162,6 +164,7 @@ async function addEthereumChainHandler(
       requestUserApproval,
       getCaveat,
       requestPermittedChainsPermission,
+      grantPermittedChainsPermission,
       endApprovalFlow,
     },
   );

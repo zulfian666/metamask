@@ -528,6 +528,7 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: (...args) =>
         this.metaMetricsController.trackEvent(...args),
     });
+
     this.networkController.initializeProvider();
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
@@ -5502,6 +5503,25 @@ export default class MetamaskController extends EventEmitter {
               },
             },
           ),
+        grantPermittedChainsPermission: (chainIds) => {
+          this.permissionController.grantPermissionsIncremental({
+            subject: {
+              origin,
+            },
+            requestData: {
+              approvedChainIds: chainIds,
+            },
+            approvedPermissions: {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+                    chainIds,
+                  ),
+                ],
+              },
+            },
+          });
+        },
         requestPermissionsForOrigin:
           this.permissionController.requestPermissions.bind(
             this.permissionController,
@@ -5550,9 +5570,11 @@ export default class MetamaskController extends EventEmitter {
           ),
         setActiveNetwork: async (networkClientId) => {
           await this.networkController.setActiveNetwork(networkClientId);
-          // if the origin has the eth_accounts permission
-          // we set per dapp network selection state
+
+          // If the origin has the `eth_accounts` permission, or if it's a Snap,
+          // we set per origin network selection state.
           if (
+            subjectType === SubjectType.Snap ||
             this.permissionController.hasPermission(
               origin,
               PermissionNames.eth_accounts,
