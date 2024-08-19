@@ -83,8 +83,12 @@ If you are using VS Code and are unable to make commits from the source control 
 
 To start a development build (e.g. with logging and file watching) run `yarn start`.
 
-Alternatively, one can skip wallet onboarding and preload the vault state with a specific SRP by adding `TEST_SRP='<insert SRP here>'` and `PASSWORD='<insert wallet password here>'` to the `.metamaskrc` file and running `yarn start:skip-onboarding`.
+#### Development build with wallet state
+You can start a development build with a preloaded wallet state, by adding `TEST_SRP='<insert SRP here>'` and `PASSWORD='<insert wallet password here>'` to the `.metamaskrc` file. You have two options:
+1. Use the default config with the pre-loaded fixtures data, according to the `app::scripts::fixtures::fixtures-config.js` file. For doing so, just run `yarn start:with-state`. If you want to enable/disable specific controllers, just enable/disable the flags in that file.
+2. If you want to load your own json config file, you can paste your fixtures data into the `app::scripts::fixtures::fixtures-state.json` and then run `yarn start:with-state`.
 
+#### Development build with Webpack
 You can also start a development build using the `yarn webpack` command, or `yarn webpack --watch`. This uses an alternative build system that is much faster, but not yet production ready. See the [Webpack README](./development/webpack/README.md) for more information.
 
 #### React and Redux DevTools
