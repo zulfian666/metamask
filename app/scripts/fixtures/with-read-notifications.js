@@ -103,7 +103,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: 'e7b8a8c4-3f4b-4d8a-9b8e-1b2a3c4d5e6f',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -283,7 +283,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -843,7 +843,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: 'f1e2d3c4-b5a6-7c8d-9e0f-1a2b3c4d5e6f',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -871,7 +871,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '9c0d1e2f-4a5b-4c8d-9e0f-5a6b7c8d9e0f',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -899,7 +899,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '2a3c4d5e-5b6c-4d9a-9f0e-6b7c8d9e0f1a',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -927,7 +927,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '4f6a7b8c-6c7d-4e9a-9g0e-7c8d9e0f1a2b',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -955,7 +955,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '6b7c8d9e-7d8e-4f9a-9h0e-8d9e0f1a2b3c',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -983,7 +983,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '8d9e0f1a-8e9f-4g9a-9i0e-9e0f1a2b3c4d',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -1011,7 +1011,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '0e1f2a3b-9f0g-4h9a-9j0e-0f1a2b3c4d5e',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -1039,7 +1039,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '2f3a4b5c-0g1h-4i9a-9k0e-1a2b3c4d5e6f',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -1067,7 +1067,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '4g5a6b7c-1h2i-4j9a-9l0e-2b3c4d5e6f7a',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -1095,7 +1095,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '6h7a8b9c-2i3j-4k9a-9m0e-3c4d5e6f7a8b',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -1123,7 +1123,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '8i9a0b1c-3j4k-4l9a-9n0e-4d5e6f7a8b9c',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -1151,7 +1151,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '0j1a2b3c-4k5l-4m9a-9o0e-5e6f7a8b9c0d',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -1179,7 +1179,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '2k3a4b5c-5l6m-4n9a-9p0e-6f7a8b9c0d1e',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -1207,7 +1207,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '6m7a8b9c-7n8o-4p9a-9r0e-8b9c0d1e2f3a',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -1235,7 +1235,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '8n9a0b1c-8o9p-4q9a-9s0e-9c0d1e2f3a4b',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -1263,7 +1263,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '0o1a2b3c-9p0q-4r9a-9t0e-0d1e2f3a4b5c',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',
@@ -1291,7 +1291,7 @@ export const FIXTURES_READ_NOTIFICATIONS = {
           native_token_price_in_usd: '0.499566',
         },
       },
-      id: '99b77f63-4af9-5168-9b63-689961ea84c3',
+      id: '99b77f63-4af9-5168-9b63-686961ea84c3',
       trigger_id: '09d2927c-e327-4f49-b85b-0dea690a7068',
       tx_hash:
         '0xfd6e85e31c4d9833c10ed91fc96a2a8ec2ff57d4cd4557c00defc2b37333098b',

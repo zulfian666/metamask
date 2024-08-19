@@ -73,7 +73,7 @@ import {
   getPlatform,
   shouldEmitDappViewedEvent,
 } from './lib/util';
-import { generateWalletState } from './inject-wallet-state';
+import { generateWalletState } from './fixtures/generate-wallet-state';
 import { createOffscreen } from './offscreen';
 
 /* eslint-enable import/first */

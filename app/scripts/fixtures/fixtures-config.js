@@ -5,7 +5,6 @@ const FIXTURES_CONFIG = {
   withNetworks: true,
   withPreferences: true,
   withReadNotifications: true,
-  withUnapprovedTransactions: false,
   withUnreadNotifications: true,
 };
 
