@@ -1,8 +1,8 @@
-import { migrate, version } from './126';
 import { SnapEndowments } from '@metamask/snaps-rpc-methods';
 import { CaveatFactories, PermissionNames } from '../controllers/permissions';
-import { CaveatTypes } from '../../../shared/constants/permissions.ts';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network.ts';
+import { CaveatTypes } from '../../../shared/constants/permissions';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+import { migrate, version } from './126';
 
 const oldVersion = 125;
 const newVersion = 126;
@@ -13,7 +13,10 @@ const MOCK_SNAP_ID = 'npm:foo-snap';
 jest.useFakeTimers();
 jest.setSystemTime(1723635247705);
 
-function getMockState(selectedNetworkClientId: string = NETWORK_TYPES.MAINNET, networkConfigurations = {}) {
+function getMockState(
+  selectedNetworkClientId: string = NETWORK_TYPES.MAINNET,
+  networkConfigurations = {},
+) {
   return {
     meta: { version: oldVersion },
     data: {
@@ -35,12 +38,12 @@ function getMockState(selectedNetworkClientId: string = NETWORK_TYPES.MAINNET, n
               },
             },
           },
-        }
+        },
       },
 
       SelectedNetworkController: {
-        domains: {}
-      }
+        domains: {},
+      },
     },
   };
 }
@@ -75,24 +78,24 @@ describe('migration #126', () => {
             },
             [PermissionNames.permittedChains]: {
               caveats: [
-                CaveatFactories[CaveatTypes.restrictNetworkSwitching](
-                  [CHAIN_IDS.MAINNET],
-                )
+                CaveatFactories[CaveatTypes.restrictNetworkSwitching]([
+                  CHAIN_IDS.MAINNET,
+                ]),
               ],
               date: 1723635247705,
               id: expect.any(String),
               invoker: MOCK_SNAP_ID,
               parentCapability: PermissionNames.permittedChains,
-            }
+            },
           },
         },
-      }
+      },
     });
 
     expect(newStorage.data.SelectedNetworkController).toStrictEqual({
       domains: {
-        [MOCK_SNAP_ID]: NETWORK_TYPES.MAINNET
-      }
+        [MOCK_SNAP_ID]: NETWORK_TYPES.MAINNET,
+      },
     });
   });
 
@@ -113,24 +116,24 @@ describe('migration #126', () => {
             },
             [PermissionNames.permittedChains]: {
               caveats: [
-                CaveatFactories[CaveatTypes.restrictNetworkSwitching](
-                  [CHAIN_IDS.SEPOLIA],
-                )
+                CaveatFactories[CaveatTypes.restrictNetworkSwitching]([
+                  CHAIN_IDS.SEPOLIA,
+                ]),
               ],
               date: 1723635247705,
               id: expect.any(String),
               invoker: MOCK_SNAP_ID,
               parentCapability: PermissionNames.permittedChains,
-            }
+            },
           },
         },
-      }
+      },
     });
 
     expect(newStorage.data.SelectedNetworkController).toStrictEqual({
       domains: {
-        [MOCK_SNAP_ID]: NETWORK_TYPES.SEPOLIA
-      }
+        [MOCK_SNAP_ID]: NETWORK_TYPES.SEPOLIA,
+      },
     });
   });
 
@@ -142,6 +145,8 @@ describe('migration #126', () => {
     });
 
     const newStorage = await migrate(oldStorage);
+    console.log(JSON.stringify(newStorage.data.PermissionController, null, 2));
+
     expect(newStorage.data.PermissionController).toStrictEqual({
       subjects: {
         [MOCK_SNAP_ID]: {
@@ -155,24 +160,24 @@ describe('migration #126', () => {
             },
             [PermissionNames.permittedChains]: {
               caveats: [
-                CaveatFactories[CaveatTypes.restrictNetworkSwitching](
-                  [CHAIN_IDS.LINEA_SEPOLIA],
-                )
+                CaveatFactories[CaveatTypes.restrictNetworkSwitching]([
+                  CHAIN_IDS.LINEA_SEPOLIA,
+                ]),
               ],
               date: 1723635247705,
               id: expect.any(String),
               invoker: MOCK_SNAP_ID,
               parentCapability: PermissionNames.permittedChains,
-            }
+            },
           },
         },
-      }
+      },
     });
 
     expect(newStorage.data.SelectedNetworkController).toStrictEqual({
       domains: {
-        [MOCK_SNAP_ID]: NETWORK_TYPES.SEPOLIA
-      }
+        [MOCK_SNAP_ID]: NETWORK_TYPES.SEPOLIA,
+      },
     });
   });
 
@@ -194,21 +199,21 @@ describe('migration #126', () => {
               },
               [PermissionNames.permittedChains]: {
                 caveats: [
-                  CaveatFactories[CaveatTypes.restrictNetworkSwitching](
-                    [CHAIN_IDS.SEPOLIA],
-                  )
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching]([
+                    CHAIN_IDS.SEPOLIA,
+                  ]),
                 ],
                 date: 1723635247705,
                 id: expect.any(String),
                 invoker: MOCK_SNAP_ID,
                 parentCapability: PermissionNames.permittedChains,
-              }
+              },
             },
           },
-        }
+        },
       },
       selectedNetworkControllerState: {
-        domains: {}
+        domains: {},
       },
     },
     {
@@ -217,7 +222,7 @@ describe('migration #126', () => {
       },
       permissionControllerState: [],
       selectedNetworkControllerState: {
-        domains: {}
+        domains: {},
       },
     },
     {
@@ -237,18 +242,18 @@ describe('migration #126', () => {
               },
               [PermissionNames.permittedChains]: {
                 caveats: [
-                  CaveatFactories[CaveatTypes.restrictNetworkSwitching](
-                    [CHAIN_IDS.SEPOLIA],
-                  )
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching]([
+                    CHAIN_IDS.SEPOLIA,
+                  ]),
                 ],
                 date: 1723635247705,
                 id: expect.any(String),
                 invoker: MOCK_SNAP_ID,
                 parentCapability: PermissionNames.permittedChains,
-              }
+              },
             },
           },
-        }
+        },
       },
       selectedNetworkControllerState: [],
     },
@@ -269,33 +274,36 @@ describe('migration #126', () => {
               },
               [PermissionNames.permittedChains]: {
                 caveats: [
-                  CaveatFactories[CaveatTypes.restrictNetworkSwitching](
-                    [CHAIN_IDS.SEPOLIA],
-                  )
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching]([
+                    CHAIN_IDS.SEPOLIA,
+                  ]),
                 ],
                 date: 1723635247705,
                 id: expect.any(String),
                 invoker: MOCK_SNAP_ID,
                 parentCapability: PermissionNames.permittedChains,
-              }
+              },
             },
           },
-        }
+        },
       },
       selectedNetworkControllerState: {
-        domains: {}
+        domains: {},
       },
     },
-  ])('does not update the state if the state is invalid (#%#)', async (data: Record<string, unknown>) => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data,
-    };
+  ])(
+    'does not update the state if the state is invalid (#%#)',
+    async (data: Record<string, unknown>) => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data,
+      };
 
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage).toStrictEqual({
-      meta: { version: newVersion },
-      data
-    });
-  })
+      const newStorage = await migrate(oldStorage);
+      expect(newStorage).toStrictEqual({
+        meta: { version: newVersion },
+        data,
+      });
+    },
+  );
 });

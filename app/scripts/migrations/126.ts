@@ -1,9 +1,5 @@
 import { cloneDeep } from 'lodash';
-import {
-  hasProperty,
-  isObject,
-  RuntimeObject,
-} from '@metamask/utils';
+import { hasProperty, isObject, RuntimeObject } from '@metamask/utils';
 import nanoid from 'nanoid';
 import log from 'loglevel';
 import type {
@@ -15,7 +11,8 @@ import { CaveatFactories, PermissionNames } from '../controllers/permissions';
 import { CaveatTypes } from '../../../shared/constants/permissions';
 import { BUILT_IN_NETWORKS } from '../../../shared/constants/network';
 
-type GenericPermissionControllerSubject = PermissionControllerSubjects<PermissionConstraint>[string];
+type GenericPermissionControllerSubject =
+  PermissionControllerSubjects<PermissionConstraint>[string];
 
 export const version = 126;
 
@@ -59,20 +56,30 @@ export async function migrate(originalVersionedData: {
  * @returns The chain ID.
  */
 function getChainId(networkControllerState: RuntimeObject) {
-  const { selectedNetworkClientId, networkConfigurations } = networkControllerState;
+  const { selectedNetworkClientId, networkConfigurations } =
+    networkControllerState;
 
-  if (typeof selectedNetworkClientId !== 'string' || !isObject(networkConfigurations)) {
+  if (
+    typeof selectedNetworkClientId !== 'string' ||
+    !isObject(networkConfigurations)
+  ) {
     return '0x1';
   }
 
   if (hasProperty(networkConfigurations, selectedNetworkClientId)) {
     const networkConfiguration = networkConfigurations[selectedNetworkClientId];
-    if (isObject(networkConfiguration) && typeof networkConfiguration.chainId === 'string') {
+    if (
+      isObject(networkConfiguration) &&
+      typeof networkConfiguration.chainId === 'string'
+    ) {
       return networkConfiguration.chainId;
     }
   }
 
-  return BUILT_IN_NETWORKS[selectedNetworkClientId as keyof typeof BUILT_IN_NETWORKS]?.chainId ?? '0x1';
+  return (
+    BUILT_IN_NETWORKS[selectedNetworkClientId as keyof typeof BUILT_IN_NETWORKS]
+      ?.chainId ?? '0x1'
+  );
 }
 
 /**
@@ -88,36 +95,55 @@ function getChainId(networkControllerState: RuntimeObject) {
  * @returns The updated MetaMask extension state.
  */
 function transformState(state: Record<string, unknown>) {
-  const { NetworkController: networkControllerState, PermissionController: permissionControllerState, SelectedNetworkController: selectedNetworkControllerState } = state;
+  const {
+    NetworkController: networkControllerState,
+    PermissionController: permissionControllerState,
+    SelectedNetworkController: selectedNetworkControllerState,
+  } = state;
 
   if (!networkControllerState || !isObject(networkControllerState)) {
-    log.warn('Skipping migration: `NetworkController` state not found or is not an object.');
+    log.warn(
+      'Skipping migration: `NetworkController` state not found or is not an object.',
+    );
     return state;
   }
 
   if (!permissionControllerState || !isObject(permissionControllerState)) {
-    log.warn('Skipping migration: `PermissionController` state not found or is not an object.');
+    log.warn(
+      'Skipping migration: `PermissionController` state not found or is not an object.',
+    );
     return state;
   }
 
   if (!isObject(permissionControllerState.subjects)) {
-    log.warn('Skipping migration: `PermissionController.subjects` state is not an object.');
+    log.warn(
+      'Skipping migration: `PermissionController.subjects` state is not an object.',
+    );
     return state;
   }
 
-  if (!selectedNetworkControllerState || !isObject(selectedNetworkControllerState)) {
-    log.warn('Skipping migration: `SelectedNetworkController` state not found or is not an object.');
+  if (
+    !selectedNetworkControllerState ||
+    !isObject(selectedNetworkControllerState)
+  ) {
+    log.warn(
+      'Skipping migration: `SelectedNetworkController` state not found or is not an object.',
+    );
     return state;
   }
 
   if (!isObject(selectedNetworkControllerState.domains)) {
-    log.warn('Skipping migration: `SelectedNetworkController.domains` state is not an object.');
+    log.warn(
+      'Skipping migration: `SelectedNetworkController.domains` state is not an object.',
+    );
     return state;
   }
 
   const { selectedNetworkClientId } = networkControllerState;
   if (typeof selectedNetworkClientId !== 'string') {
-    log.warn('Skipping migration: `NetworkController.selectedNetworkClientId` is not a string.');
+    log.warn(
+      'Skipping migration: `NetworkController.selectedNetworkClientId` is not a string.',
+    );
     return state;
   }
 
@@ -126,10 +152,17 @@ function transformState(state: Record<string, unknown>) {
 
   // Add permission to use the current globally selected network to all Snaps
   // that have the `endowment:ethereum-provider` permission.
-  const entries = Object.entries(permissionControllerState.subjects) as [string, GenericPermissionControllerSubject][];
-  permissionControllerState.subjects = entries.reduce<PermissionControllerSubjects<PermissionConstraint>>((accumulator, [key, subject]) => {
+  const entries = Object.entries(permissionControllerState.subjects) as [
+    string,
+    GenericPermissionControllerSubject,
+  ][];
+  permissionControllerState.subjects = entries.reduce<
+    PermissionControllerSubjects<PermissionConstraint>
+  >((accumulator, [key, subject]) => {
     const permissionKeys = Object.keys(subject.permissions);
-    const needsMigration = permissionKeys.includes(SnapEndowments.EthereumProvider) && !permissionKeys.includes(PermissionNames.permittedChains);
+    const needsMigration =
+      permissionKeys.includes(SnapEndowments.EthereumProvider) &&
+      !permissionKeys.includes(PermissionNames.permittedChains);
     if (!needsMigration) {
       return accumulator;
     }
@@ -142,28 +175,30 @@ function transformState(state: Record<string, unknown>) {
         ...subject.permissions,
         [PermissionNames.permittedChains]: {
           caveats: [
-            CaveatFactories[CaveatTypes.restrictNetworkSwitching](
-              [currentChainId],
-            )
+            CaveatFactories[CaveatTypes.restrictNetworkSwitching]([
+              currentChainId,
+            ]),
           ],
           date: Date.now(),
           id: nanoid(),
           invoker: key,
           parentCapability: PermissionNames.permittedChains,
         },
-      }
-    }
+      },
+    };
 
     return {
       ...accumulator,
-      [key]: newSubject
-    }
+      [key]: newSubject,
+    };
   }, {});
 
   // Update the selected network controller state to include the current chain
   // ID for each Snap.
   const currentDomains = selectedNetworkControllerState.domains;
-  const domains = Object.fromEntries(updatedSubjects.map((subject) => [subject, selectedNetworkClientId]));
+  const domains = Object.fromEntries(
+    updatedSubjects.map((subject) => [subject, selectedNetworkClientId]),
+  );
   selectedNetworkControllerState.domains = {
     ...currentDomains,
     ...domains,
