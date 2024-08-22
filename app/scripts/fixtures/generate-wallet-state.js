@@ -7,14 +7,13 @@ import FixtureBuilder from '../../../test/e2e/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import FIXTURES_CONFIG from './fixtures-config';
 import FIXTURES_FILE from './fixtures-state.json';
-import { FIXTURES_ADDRESS_BOOK } from './with-address-book';
 import { FIXTURES_APP_STATE } from './with-app-state';
-import { FIXTURES_CONFIRMED_TRANSACTIONS } from './with-confirmed-transactions';
 import { FIXTURES_NETWORKS } from './with-networks';
 import { FIXTURES_PREFERENCES } from './with-preferences';
-import { FIXTURES_READ_NOTIFICATIONS } from './with-read-notifications';
 import { FIXTURES_ERC20_TOKENS } from './with-erc20-tokens';
-import { FIXTURES_UNREAD_NOTIFICATIONS } from './with-unread-notifications';
+import { withAddressBook } from './with-address-book';
+import { withConfirmedTransactions } from './with-confirmed-transactions';
+import { withUnreadNotifications } from './with-unread-notifications';
 
 /**
  * Generates the wallet state based on the fixtures configuration or the fixtures file.
@@ -44,7 +43,7 @@ export async function generateWalletState() {
     .withAppStateController(FIXTURES_APP_STATE)
     .withKeyringController(generateKeyringControllerState(vault))
     .withMetamaskNotificationsController(
-      generateMetamaskNotificationsControllerState(config),
+      generateMetamaskNotificationsControllerState(account, config),
     )
     .withNetworkController(generateNetworkControllerState(config))
     .withPreferencesController(generatePreferencesControllerState(config))
@@ -100,6 +99,8 @@ async function generateVaultAndAccount(encodedSeedPhrase, password) {
  * @returns {object} The generated KeyringController state.
  */
 function generateKeyringControllerState(vault) {
+  console.log('Generating KeyringController state');
+
   return {
     ...defaultFixture().data.KeyringController,
     vault,
@@ -113,6 +114,8 @@ function generateKeyringControllerState(vault) {
  * @returns {object} The generated AccountsController state.
  */
 function generateAccountsControllerState(account) {
+  console.log('Generating AccountsController state');
+
   return {
     internalAccounts: {
       selectedAccount: 'account-id',
@@ -149,9 +152,13 @@ function generateAccountsControllerState(account) {
  * @returns {object} The generated AddressBookController state.
  */
 function generateAddressBookControllerState(config) {
-  if (config.withAddressBook) {
-    return FIXTURES_ADDRESS_BOOK;
+  console.log('Generating AddressBookController state');
+
+  const numEntries = config.withAddressBook;
+  if (numEntries > 0) {
+    return withAddressBook(numEntries);
   }
+
   return {};
 }
 
@@ -162,6 +169,8 @@ function generateAddressBookControllerState(config) {
  * @returns {object} The generated AnnouncementController state.
  */
 function generateAnnouncementControllerState() {
+  console.log('Generating AnnouncementController state');
+
   const allAnnouncementsAlreadyShown = Object.keys(UI_NOTIFICATIONS).reduce(
     (acc, val) => {
       acc[val] = {
@@ -172,27 +181,27 @@ function generateAnnouncementControllerState() {
     },
     {},
   );
-
   return allAnnouncementsAlreadyShown;
 }
 
 /**
  * Generates the state for the MetamaskNotificationsController.
  *
+ * @param {string} account - The account address to add the notifications to.
  * @param {object} config - The configuration object.
  * @returns {object} The generated MetamaskNotificationsController state.
  */
-function generateMetamaskNotificationsControllerState(config) {
-  const notifications = {};
+function generateMetamaskNotificationsControllerState(account, config) {
+  console.log('Generating MetamaskNotificationsController state');
 
-  if (config.withReadNotifications) {
-    Object.assign(notifications, FIXTURES_READ_NOTIFICATIONS);
+  let notifications = {};
+
+  if (config.withUnreadNotifications > 0) {
+    notifications = withUnreadNotifications(
+      account,
+      config.withUnreadNotifications,
+    );
   }
-
-  if (config.withUnreadNotifications) {
-    Object.assign(notifications, FIXTURES_UNREAD_NOTIFICATIONS);
-  }
-
   return notifications;
 }
 
@@ -204,6 +213,8 @@ function generateMetamaskNotificationsControllerState(config) {
  * @returns {object} The generated NetworkController state.
  */
 function generateNetworkControllerState(config) {
+  console.log('Generating NetworkController state');
+
   const defaultNetworkState = {
     ...defaultFixture().data.NetworkController,
     providerConfig: {
@@ -242,6 +253,7 @@ function generateNetworkControllerState(config) {
  * @returns {object} The generated PreferencesController state.
  */
 function generatePreferencesControllerState(config) {
+  console.log('Generating PreferencesController state');
   if (config.withPreferences) {
     return FIXTURES_PREFERENCES;
   }
@@ -256,6 +268,8 @@ function generatePreferencesControllerState(config) {
  * @returns {object} The generated TokensController state.
  */
 function generateTokensControllerState(account, config) {
+  console.log('Generating TokensController state');
+
   const tokens = FIXTURES_ERC20_TOKENS;
   if (config.withErc20Tokens) {
     // Update the `address` key in all tokens
@@ -275,24 +289,15 @@ function generateTokensControllerState(account, config) {
  * @returns {object} The generated TransactionController state.
  */
 function generateTransactionControllerState(account, config) {
-  const transactions = {};
+  console.log('Generating TransactionController state');
 
-  if (config.withConfirmedTransactions) {
-    // Update the `from` key in all confirmed transactions
-    for (const txId in FIXTURES_CONFIRMED_TRANSACTIONS) {
-      if (
-        Object.prototype.hasOwnProperty.call(
-          FIXTURES_CONFIRMED_TRANSACTIONS,
-          txId,
-        )
-      ) {
-        transactions[txId] = updateKey(
-          FIXTURES_CONFIRMED_TRANSACTIONS[txId],
-          'from',
-          account,
-        );
-      }
-    }
+  let transactions = {};
+
+  if (config.withConfirmedTransactions > 0) {
+    transactions = withConfirmedTransactions(
+      account,
+      config.withConfirmedTransactions,
+    );
   }
 
   return transactions;

@@ -1,11 +1,10 @@
 const FIXTURES_CONFIG = {
-  withAddressBook: true,
-  withConfirmedTransactions: true,
+  withAddressBook: 2,
+  withConfirmedTransactions: 10,
   withErc20Tokens: true,
   withNetworks: true,
   withPreferences: true,
-  withReadNotifications: true,
-  withUnreadNotifications: true,
+  withUnreadNotifications: 10,
 };
 
 export default FIXTURES_CONFIG;
