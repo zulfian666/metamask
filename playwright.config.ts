@@ -71,6 +71,7 @@ const config: PlaywrightTestConfig = {
         ...devices['Desktop Chrome'],
         headless: true,
       },
+      fullyParallel: false,
     },
   ],
 
