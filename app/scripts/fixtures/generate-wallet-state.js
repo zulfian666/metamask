@@ -217,24 +217,16 @@ function generateNetworkControllerState(config) {
 
   const defaultNetworkState = {
     ...defaultFixture().data.NetworkController,
-    providerConfig: {
-      chainId: '0xaa36a7',
-      rpcPrefs: {
-        blockExplorerUrl: 'https://sepolia.etherscan.io',
-      },
-      ticker: 'SepoliaETH',
-      type: 'sepolia',
-    },
-    networkConfigurations: {
-      networkConfigurationId: {
-        chainId: '0xaa36a7',
-        nickname: 'Sepolia',
-        rpcPrefs: {},
-        rpcUrl: 'https://sepolia.infura.io/v3/6c21df2a8dcb4a77b9bbcc1b65ee9ded',
-        ticker: 'SepoliaETH',
-        networkConfigurationId: 'networkConfigurationId',
+    networkConfigurations: {},
+    networksMetadata: {
+      sepolia: {
+        EIPS: {
+          1559: true,
+        },
+        status: 'available',
       },
     },
+    selectedNetworkClientId: 'sepolia',
   };
 
   if (config.withNetworks) {

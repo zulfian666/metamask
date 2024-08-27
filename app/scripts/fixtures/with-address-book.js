@@ -1,5 +1,20 @@
-import { Wallet } from '@ethersproject/wallet';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+
+/**
+ * Generates a random Ethereum address.
+ *
+ * @returns {string} A randomly generated Ethereum address.
+ */
+const generateRandomAddress = () => {
+  const hexChars = '0123456789abcdef';
+  let address = '0x';
+  for (let i = 0; i < 40; i++) {
+    address += hexChars[Math.floor(Math.random() * 16)];
+  }
+
+  return address;
+};
+
 /**
  * Generates an address book with a specified number of entries, for the supported networks.
  *
@@ -15,7 +30,7 @@ export const withAddressBook = (numEntries) => {
     addressBook[network] = {};
 
     for (let i = 1; i <= numEntries; i++) {
-      const { address } = Wallet.createRandom();
+      const address = generateRandomAddress();
       addressBook[network][address] = {
         address,
         chainId: network,

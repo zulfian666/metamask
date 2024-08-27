@@ -1,5 +1,5 @@
 const FIXTURES_CONFIG = {
-  withAddressBook: 2,
+  withAddressBook: 10,
   withConfirmedTransactions: 10,
   withErc20Tokens: true,
   withNetworks: true,
