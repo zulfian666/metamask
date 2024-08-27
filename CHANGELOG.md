@@ -6,6 +6,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.0.6]
+### Changed
+- Improve error diagnostics ([#26482](https://github.com/MetaMask/metamask-extension/pull/26482))
+
+### Fixed
+- Fix errors in error diagnistics on Firefox ([#26467](https://github.com/MetaMask/metamask-extension/pull/26467))
+- Prevent pending transactions from causing excessive disk space usage ([#26485](https://github.com/MetaMask/metamask-extension/pull/26485))
+  - This is a repeat of the fix included in v12.0.1; it wasn't working for all users, but it should now.
+- Prevent UI crash while signature confirmation is closing ([#26248](https://github.com/MetaMask/metamask-extension/pull/26248))
+
+## [12.0.5]
+### Fixed
+- Prevent network selection per dapp from breaking if the rpc url of the currently selected network is edited ([#26453](https://github.com/MetaMask/metamask-extension/pull/26453))
+- Fix the display of prices and balances of some tokens on networks other than ethereum mainnet ([#26450](https://github.com/MetaMask/metamask-extension/pull/26450))
+
+## [12.0.4]
+### Fixed
+- Further prevented data persistence errors related to networks ([#26432](https://github.com/MetaMask/metamask-extension/pull/26432))
+
+## [12.0.3]
+
+## [12.0.2]
+### Fixed
+- Prevented data persistence errors related to networks, and phishing protection ([#26383](https://github.com/MetaMask/metamask-extension/pull/26383), [#26396](https://github.com/MetaMask/metamask-extension/pull/26396))
+- Fix token state migration errors ([#26397](https://github.com/MetaMask/metamask-extension/pull/26397))
+
 ## [12.0.1]
 ### Removed
 - Disabled the "Restore Backup" feature ([#26325](https://github.com/MetaMask/metamask-extension/pull/26325))
@@ -4902,7 +4928,12 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v12.0.6...HEAD
+[12.0.6]: https://github.com/MetaMask/metamask-extension/compare/v12.0.5...v12.0.6
+[12.0.5]: https://github.com/MetaMask/metamask-extension/compare/v12.0.4...v12.0.5
+[12.0.4]: https://github.com/MetaMask/metamask-extension/compare/v12.0.3...v12.0.4
+[12.0.3]: https://github.com/MetaMask/metamask-extension/compare/v12.0.2...v12.0.3
+[12.0.2]: https://github.com/MetaMask/metamask-extension/compare/v12.0.1...v12.0.2
 [12.0.1]: https://github.com/MetaMask/metamask-extension/compare/v12.0.0...v12.0.1
 [12.0.0]: https://github.com/MetaMask/metamask-extension/compare/v11.16.16...v12.0.0
 [11.16.16]: https://github.com/MetaMask/metamask-extension/compare/v11.16.15...v11.16.16
