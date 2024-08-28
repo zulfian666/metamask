@@ -111,6 +111,7 @@ export const getToToken = (
 
 export const getFromAmount = (state: BridgeAppState): string | undefined =>
   state.bridge.fromTokenInputValue;
+
 export const getToAmount = (_state: BridgeAppState) => {
   return '0';
 };
