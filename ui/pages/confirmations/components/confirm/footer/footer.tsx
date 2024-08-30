@@ -177,8 +177,6 @@ const Footer = () => {
           ? {
               ...transactionData,
               customNonceValue,
-              customTokenAmount: '100',
-              finalApprovalAmount: '100',
             }
           : transactionData;
 
