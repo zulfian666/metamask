@@ -133,6 +133,11 @@ class FixtureBuilder {
       onboarding === true ? onboardingFixture() : defaultFixture(inputChainId);
   }
 
+  withAccountTracker(data) {
+    merge(this.fixture.data.AccountTracker, data);
+    return this;
+  }
+
   withAddressBookController(data) {
     merge(
       this.fixture.data.AddressBookController
@@ -202,20 +207,6 @@ class FixtureBuilder {
       vault:
         '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}',
     });
-  }
-
-  withMetamaskNotificationsController(data) {
-    mergeWith(
-      this.fixture.data.MetamaskNotificationsController,
-      data,
-      (objValue, srcValue) => {
-        if (Array.isArray(objValue)) {
-          objValue.concat(srcValue);
-        }
-        return undefined; // Explicitly return undefined for non-array values
-      },
-    );
-    return this;
   }
 
   withMetaMetricsController(data) {
@@ -344,6 +335,20 @@ class FixtureBuilder {
       },
       ignoredNfts: [],
     });
+  }
+
+  withNotificationServicesController(data) {
+    mergeWith(
+      this.fixture.data.NotificationServicesController,
+      data,
+      (objValue, srcValue) => {
+        if (Array.isArray(objValue)) {
+          objValue.concat(srcValue);
+        }
+        return undefined;
+      },
+    );
+    return this;
   }
 
   withOnboardingController(data) {

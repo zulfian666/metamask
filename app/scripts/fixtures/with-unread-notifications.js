@@ -27,7 +27,7 @@ export const withUnreadNotifications = (account, numNotifications) => {
         kind: 'eth_received',
         amount: {
           eth: '0.000100000000000000',
-          usd: '0.00',
+          usd: '0.27',
         },
         network_fee: {
           gas_price: '30000000078',
@@ -46,5 +46,12 @@ export const withUnreadNotifications = (account, numNotifications) => {
     notifications.push(notification);
   }
 
-  return { metamaskNotificationsReadList: notifications };
+  const notificationServicesController = {
+    isFeatureAnnouncementsEnabled: true,
+    isMetamaskNotificationsFeatureSeen: true,
+    isNotificationServicesEnabled: true,
+    metamaskNotificationsReadList: [],
+    metamaskNotificationsList: notifications,
+  };
+  return notificationServicesController;
 };

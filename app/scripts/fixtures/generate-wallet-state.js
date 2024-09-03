@@ -5,8 +5,7 @@ import { UI_NOTIFICATIONS } from '../../../shared/notifications';
 import { E2E_SRP, defaultFixture } from '../../../test/e2e/default-fixture';
 import FixtureBuilder from '../../../test/e2e/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
-import FIXTURES_CONFIG from './fixtures-config';
-import FIXTURES_FILE from './fixtures-state.json';
+import FIXTURES_CONFIG from './fixtures-flags';
 import { FIXTURES_APP_STATE } from './with-app-state';
 import { FIXTURES_NETWORKS } from './with-networks';
 import { FIXTURES_PREFERENCES } from './with-preferences';
@@ -21,35 +20,29 @@ import { withUnreadNotifications } from './with-unread-notifications';
  * @returns {Promise<object>} The generated wallet state.
  */
 export async function generateWalletState() {
-  const fixturesFileData = FIXTURES_FILE.data;
-  if (Object.keys(fixturesFileData).length !== 0) {
-    console.log('Wallet state coming from fixtures-state.json file');
-    return fixturesFileData;
-  }
-  console.log('Wallet state generated according to the fixtures-config file');
-
   const config = FIXTURES_CONFIG;
   const fixtureBuilder = new FixtureBuilder({ inputChainId: '0xaa36a7' });
 
-  const { vault, account } = await generateVaultAndAccount(
+  const { vault, accounts } = await generateVaultAndAccount(
     process.env.TEST_SRP || E2E_SRP,
     process.env.PASSWORD,
+    config,
   );
 
   fixtureBuilder
-    .withAccountsController(generateAccountsControllerState(account))
+    .withAccountsController(generateAccountsControllerState(accounts))
     .withAddressBookController(generateAddressBookControllerState(config))
     .withAnnouncementController(generateAnnouncementControllerState())
     .withAppStateController(FIXTURES_APP_STATE)
     .withKeyringController(generateKeyringControllerState(vault))
-    .withMetamaskNotificationsController(
-      generateMetamaskNotificationsControllerState(account, config),
-    )
     .withNetworkController(generateNetworkControllerState(config))
+    .withNotificationServicesController(
+      generateNotificationControllerState(accounts[0], config),
+    )
     .withPreferencesController(generatePreferencesControllerState(config))
-    .withTokensController(generateTokensControllerState(account, config))
+    .withTokensController(generateTokensControllerState(accounts[0], config))
     .withTransactionController(
-      generateTransactionControllerState(account, config),
+      generateTransactionControllerState(accounts[0], config),
     );
 
   return fixtureBuilder.fixture.data;
@@ -60,9 +53,10 @@ export async function generateWalletState() {
  *
  * @param {string} encodedSeedPhrase - The encoded seed phrase.
  * @param {string} password - The password for the vault.
+ * @param {object} config - The configuration object.
  * @returns {Promise<{vault: object, account: string}>} The generated vault and account.
  */
-async function generateVaultAndAccount(encodedSeedPhrase, password) {
+async function generateVaultAndAccount(encodedSeedPhrase, password, config) {
   const controllerMessenger = new ControllerMessenger();
   const keyringControllerMessenger = controllerMessenger.getRestricted({
     name: 'KeyringController',
@@ -87,9 +81,18 @@ async function generateVaultAndAccount(encodedSeedPhrase, password) {
   );
 
   const { vault } = krCtrl.state;
+  const accounts = [];
   const account = krCtrl.state.keyrings[0].accounts[0];
+  accounts.push(account);
 
-  return { vault, account };
+  for (let i = 1; i < config.withAccounts; i++) {
+    const newAccount = await krCtrl.addNewAccount(i);
+    accounts.push(newAccount);
+  }
+  console.log('Accounts', accounts);
+  console.log('Vault', vault);
+
+  return { vault, accounts };
 }
 
 /**
@@ -110,38 +113,41 @@ function generateKeyringControllerState(vault) {
 /**
  * Generates the state for the AccountsController.
  *
- * @param {string} account - The account address.
+ * @param {string} accounts - The account addresses.
  * @returns {object} The generated AccountsController state.
  */
-function generateAccountsControllerState(account) {
+function generateAccountsControllerState(accounts) {
   console.log('Generating AccountsController state');
+  const internalAccounts = {
+    selectedAccount: 'account-id',
+    accounts: {},
+  };
 
-  return {
-    internalAccounts: {
+  accounts.forEach((account, index) => {
+    internalAccounts.accounts[`acount-id-${index}`] = {
       selectedAccount: 'account-id',
-      accounts: {
-        'account-id': {
-          id: 'account-id',
-          address: account,
-          metadata: {
-            name: 'Account 1',
-            lastSelected: 1665507600000,
-            keyring: {
-              type: 'HD Key Tree',
-            },
-          },
-          options: {},
-          methods: [
-            'personal_sign',
-            'eth_signTransaction',
-            'eth_signTypedData_v1',
-            'eth_signTypedData_v3',
-            'eth_signTypedData_v4',
-          ],
-          type: 'eip155:eoa',
+      id: 'account-id',
+      address: account,
+      metadata: {
+        name: `Account ${index + 1}`,
+        lastSelected: 1665507600000,
+        keyring: {
+          type: 'HD Key Tree',
         },
       },
-    },
+      options: {},
+      methods: [
+        'personal_sign',
+        'eth_signTransaction',
+        'eth_signTypedData_v1',
+        'eth_signTypedData_v3',
+        'eth_signTypedData_v4',
+      ],
+      type: 'eip155:eoa',
+    };
+  });
+  return {
+    internalAccounts,
   };
 }
 
@@ -154,7 +160,7 @@ function generateAccountsControllerState(account) {
 function generateAddressBookControllerState(config) {
   console.log('Generating AddressBookController state');
 
-  const numEntries = config.withAddressBook;
+  const numEntries = config.withContacts;
   if (numEntries > 0) {
     return withAddressBook(numEntries);
   }
@@ -185,14 +191,14 @@ function generateAnnouncementControllerState() {
 }
 
 /**
- * Generates the state for the MetamaskNotificationsController.
+ * Generates the state for the NotificationController.
  *
  * @param {string} account - The account address to add the notifications to.
  * @param {object} config - The configuration object.
- * @returns {object} The generated MetamaskNotificationsController state.
+ * @returns {object} The generated NotificationController state.
  */
-function generateMetamaskNotificationsControllerState(account, config) {
-  console.log('Generating MetamaskNotificationsController state');
+function generateNotificationControllerState(account, config) {
+  console.log('Generating NotificationController state');
 
   let notifications = {};
 
