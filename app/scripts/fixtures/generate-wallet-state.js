@@ -39,7 +39,9 @@ export async function generateWalletState() {
     .withNotificationServicesController(
       generateNotificationControllerState(accounts[0], config),
     )
-    .withPreferencesController(generatePreferencesControllerState(config))
+    .withPreferencesController(
+      generatePreferencesControllerState(config, accounts),
+    )
     .withTokensController(generateTokensControllerState(accounts[0], config))
     .withTransactionController(
       generateTransactionControllerState(accounts[0], config),
@@ -80,7 +82,6 @@ async function generateVaultAndAccount(encodedSeedPhrase, password, config) {
     _convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
   );
 
-  const { vault } = krCtrl.state;
   const accounts = [];
   const account = krCtrl.state.keyrings[0].accounts[0];
   accounts.push(account);
@@ -89,8 +90,7 @@ async function generateVaultAndAccount(encodedSeedPhrase, password, config) {
     const newAccount = await krCtrl.addNewAccount(i);
     accounts.push(newAccount);
   }
-  console.log('Accounts', accounts);
-  console.log('Vault', vault);
+  const { vault } = krCtrl.state;
 
   return { vault, accounts };
 }
@@ -248,14 +248,39 @@ function generateNetworkControllerState(config) {
  * Generates the state for the PreferencesController.
  *
  * @param {object} config - The configuration object.
+ * @param {string} accounts - The account addresses.
  * @returns {object} The generated PreferencesController state.
  */
-function generatePreferencesControllerState(config) {
+function generatePreferencesControllerState(config, accounts) {
   console.log('Generating PreferencesController state');
+  let preferencesControllerState = {};
+
   if (config.withPreferences) {
-    return FIXTURES_PREFERENCES;
+    preferencesControllerState = FIXTURES_PREFERENCES;
   }
-  return {};
+
+  // Add account identities
+  preferencesControllerState.identities = Object.assign(
+    ...accounts.map((address, index) => ({
+      [address]: {
+        address,
+        lastSelected: 1725363500048,
+        name: `Account ${index + 1}`,
+      },
+    })),
+  );
+
+  preferencesControllerState.lostIdentities = Object.assign(
+    ...accounts.map((address, index) => ({
+      [address]: {
+        address,
+        lastSelected: 1725363500048,
+        name: `Account ${index + 1}`,
+      },
+    })),
+  );
+
+  return preferencesControllerState;
 }
 
 /**
