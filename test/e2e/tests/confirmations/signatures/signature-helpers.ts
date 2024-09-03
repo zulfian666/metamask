@@ -32,7 +32,7 @@ type AssertSignatureMetricsOptions = {
 type SignatureEventProperty = {
   account_type: 'MetaMask';
   category: 'inpage_provider';
-  chain_id: '0x539';
+  chain_id: '1337';
   environment_type: 'background';
   locale: 'en';
   security_alert_response: 'NotApplicable';
