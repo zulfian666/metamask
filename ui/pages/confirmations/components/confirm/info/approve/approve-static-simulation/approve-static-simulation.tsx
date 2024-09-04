@@ -1,6 +1,7 @@
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
+import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 import Name from '../../../../../../../components/app/name';
 import { Box, Text } from '../../../../../../../components/component-library';
 import Tooltip from '../../../../../../../components/ui/tooltip';
@@ -63,23 +64,31 @@ export const ApproveStaticSimulation = () => {
   );
 
   const simulationElements = (
-    <Box display={Display.Flex}>
-      <Box
-        display={Display.Inline}
-        marginInlineEnd={1}
-        minWidth={BlockSize.Zero}
-      >
-        {spendingCap === UNLIMITED_MSG ? (
-          <Tooltip title={formattedSpendingCap}>{formattedTokenText}</Tooltip>
-        ) : (
-          formattedTokenText
-        )}
+    <ConfirmInfoRow
+      label={isNFT ? t('simulationApproveHeading') : t('spendingCap')}
+    >
+      <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
+        <Box display={Display.Flex}>
+          <Box
+            display={Display.Inline}
+            marginInlineEnd={1}
+            minWidth={BlockSize.Zero}
+          >
+            {spendingCap === UNLIMITED_MSG ? (
+              <Tooltip title={formattedSpendingCap}>
+                {formattedTokenText}
+              </Tooltip>
+            ) : (
+              formattedTokenText
+            )}
+          </Box>
+          <Name
+            value={transactionMeta.txParams.to as string}
+            type={NameType.ETHEREUM_ADDRESS}
+          />
+        </Box>
       </Box>
-      <Name
-        value={transactionMeta.txParams.to as string}
-        type={NameType.ETHEREUM_ADDRESS}
-      />
-    </Box>
+    </ConfirmInfoRow>
   );
 
   return (
@@ -87,9 +96,6 @@ export const ApproveStaticSimulation = () => {
       title={t('simulationDetailsTitle')}
       titleTooltip={t('simulationDetailsTitleTooltip')}
       description={t('simulationDetailsApproveDesc')}
-      simulationHeading={
-        isNFT ? t('simulationApproveHeading') : t('spendingCap')
-      }
       simulationElements={simulationElements}
     />
   );

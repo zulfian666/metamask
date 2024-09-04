@@ -1075,6 +1075,9 @@
   "confirmTitlePermitSignature": {
     "message": "Spending cap request"
   },
+  "confirmTitleRevokeApproveTransaction": {
+    "message": "Remove permission"
+  },
   "confirmTitleSIWESignature": {
     "message": "Sign-in request"
   },
@@ -4529,6 +4532,9 @@
   },
   "revokePermission": {
     "message": "Revoke permission"
+  },
+  "revokeSimulationDetailsDesc": {
+    "message": "You're removing someone's permission to spend tokens from your account."
   },
   "revokeSpendingCap": {
     "message": "Revoke spending cap for your $1",
