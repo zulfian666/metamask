@@ -13,7 +13,9 @@ import { withAddressBook } from './with-address-book';
 import { withConfirmedTransactions } from './with-confirmed-transactions';
 import { withUnreadNotifications } from './with-unread-notifications';
 
-const FIXTURES_CONFIG = JSON.parse(process.env.WITH_STATE);
+const FIXTURES_CONFIG = process.env.WITH_STATE
+  ? JSON.parse(process.env.WITH_STATE)
+  : {};
 
 /**
  * Generates the wallet state based on the fixtures set in the environment variable.
