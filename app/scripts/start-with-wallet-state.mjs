@@ -1,4 +1,3 @@
-import fs from 'fs';
 import childProcess from 'child_process';
 
 // Default fixtures and flags
@@ -100,18 +99,10 @@ function startWithWalletState() {
     throw new Error('Invalid arguments');
   }
 
-  // Write fixtures into fixtures config file
-  let configContent = `const FIXTURES_CONFIG = {\n`;
-  Object.keys(FIXTURES_CONFIG).forEach((key) => {
-    configContent += `  ${key}: ${FIXTURES_CONFIG[key]},\n`;
-  });
-  configContent += `};\n\nexport default FIXTURES_CONFIG;\n`;
-
-  const fixturesConfigPath = './app/scripts/fixtures/fixtures-flags.js';
-  fs.writeFileSync(fixturesConfigPath, configContent);
+  const fixturesConfig = JSON.stringify(FIXTURES_CONFIG);
 
   // Start the wallet with state
-  process.env.WITH_STATE = 'true';
+  process.env.WITH_STATE = fixturesConfig;
   childProcess.spawn('yarn', ['start'], {
     stdio: 'inherit',
     shell: true,

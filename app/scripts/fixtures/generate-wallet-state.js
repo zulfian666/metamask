@@ -5,7 +5,6 @@ import { UI_NOTIFICATIONS } from '../../../shared/notifications';
 import { E2E_SRP, defaultFixture } from '../../../test/e2e/default-fixture';
 import FixtureBuilder from '../../../test/e2e/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
-import FIXTURES_CONFIG from './fixtures-flags';
 import { FIXTURES_APP_STATE } from './with-app-state';
 import { FIXTURES_NETWORKS } from './with-networks';
 import { FIXTURES_PREFERENCES } from './with-preferences';
@@ -20,7 +19,8 @@ import { withUnreadNotifications } from './with-unread-notifications';
  * @returns {Promise<object>} The generated wallet state.
  */
 export async function generateWalletState() {
-  const config = FIXTURES_CONFIG;
+  // Parse the fixtures configuration from the environment variable
+  const config = JSON.parse(process.env.WITH_STATE);
   const fixtureBuilder = new FixtureBuilder({ inputChainId: '0xaa36a7' });
 
   const { vault, accounts } = await generateVaultAndAccount(
