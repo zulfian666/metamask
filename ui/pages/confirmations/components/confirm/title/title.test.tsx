@@ -8,21 +8,24 @@ import {
   getMockTypedSignConfirmState,
   getMockTypedSignConfirmStateForRequest,
 } from '../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
 import { unapprovedPersonalSignMsg } from '../../../../../../test/data/confirmations/personal_sign';
-import { Severity } from '../../../../../helpers/constants/design-system';
+import { permitSignatureMsg } from '../../../../../../test/data/confirmations/typed_sign';
+import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import {
   Alert,
   ConfirmAlertsState,
 } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { SpendingCapProvider } from '../info/approve/spending-cap-context';
 import ConfirmTitle from './title';
 
 describe('ConfirmTitle', () => {
   it('should render the title and description for a personal signature', () => {
     const mockStore = configureMockStore([])(getMockPersonalSignConfirmState);
     const { getByText } = renderWithConfirmContextProvider(
-      <ConfirmTitle />,
+      <SpendingCapProvider>
+        <ConfirmTitle />
+      </SpendingCapProvider>,
       mockStore,
     );
 
@@ -39,7 +42,9 @@ describe('ConfirmTitle', () => {
       getMockTypedSignConfirmStateForRequest(permitSignatureMsg),
     );
     const { getByText } = renderWithConfirmContextProvider(
-      <ConfirmTitle />,
+      <SpendingCapProvider>
+        <ConfirmTitle />
+      </SpendingCapProvider>,
       mockStore,
     );
 
@@ -52,7 +57,9 @@ describe('ConfirmTitle', () => {
   it('should render the title and description for typed signature', () => {
     const mockStore = configureMockStore([])(getMockTypedSignConfirmState());
     const { getByText } = renderWithConfirmContextProvider(
-      <ConfirmTitle />,
+      <SpendingCapProvider>
+        <ConfirmTitle />
+      </SpendingCapProvider>,
       mockStore,
     );
 
@@ -69,7 +76,9 @@ describe('ConfirmTitle', () => {
       getMockContractInteractionConfirmState(),
     );
     const { getByText } = renderWithConfirmContextProvider(
-      <ConfirmTitle />,
+      <SpendingCapProvider>
+        <ConfirmTitle />
+      </SpendingCapProvider>,
       mockStore,
     );
 
@@ -107,7 +116,9 @@ describe('ConfirmTitle', () => {
         }),
       );
       const { queryByText } = renderWithConfirmContextProvider(
-        <ConfirmTitle />,
+        <SpendingCapProvider>
+          <ConfirmTitle />
+        </SpendingCapProvider>,
         mockStore,
       );
 
@@ -119,7 +130,9 @@ describe('ConfirmTitle', () => {
       const mockStore = configureMockStore([])(mockAlertState());
 
       const { getByText } = renderWithConfirmContextProvider(
-        <ConfirmTitle />,
+        <SpendingCapProvider>
+          <ConfirmTitle />
+        </SpendingCapProvider>,
         mockStore,
       );
 
