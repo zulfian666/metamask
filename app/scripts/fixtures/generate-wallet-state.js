@@ -13,39 +13,34 @@ import { withAddressBook } from './with-address-book';
 import { withConfirmedTransactions } from './with-confirmed-transactions';
 import { withUnreadNotifications } from './with-unread-notifications';
 
+const FIXTURES_CONFIG = JSON.parse(process.env.WITH_STATE);
+
 /**
- * Generates the wallet state based on the fixtures configuration or the fixtures file.
+ * Generates the wallet state based on the fixtures set in the environment variable.
  *
  * @returns {Promise<object>} The generated wallet state.
  */
 export async function generateWalletState() {
-  // Parse the fixtures configuration from the environment variable
-  const config = JSON.parse(process.env.WITH_STATE);
   const fixtureBuilder = new FixtureBuilder({ inputChainId: '0xaa36a7' });
 
   const { vault, accounts } = await generateVaultAndAccount(
     process.env.TEST_SRP || E2E_SRP,
     process.env.PASSWORD,
-    config,
   );
 
   fixtureBuilder
     .withAccountsController(generateAccountsControllerState(accounts))
-    .withAddressBookController(generateAddressBookControllerState(config))
+    .withAddressBookController(generateAddressBookControllerState())
     .withAnnouncementController(generateAnnouncementControllerState())
     .withAppStateController(FIXTURES_APP_STATE)
     .withKeyringController(generateKeyringControllerState(vault))
-    .withNetworkController(generateNetworkControllerState(config))
+    .withNetworkController(generateNetworkControllerState())
     .withNotificationServicesController(
-      generateNotificationControllerState(accounts[0], config),
+      generateNotificationControllerState(accounts[0]),
     )
-    .withPreferencesController(
-      generatePreferencesControllerState(config, accounts),
-    )
-    .withTokensController(generateTokensControllerState(accounts[0], config))
-    .withTransactionController(
-      generateTransactionControllerState(accounts[0], config),
-    );
+    .withPreferencesController(generatePreferencesControllerState(accounts))
+    .withTokensController(generateTokensControllerState(accounts[0]))
+    .withTransactionController(generateTransactionControllerState(accounts[0]));
 
   return fixtureBuilder.fixture.data;
 }
@@ -55,10 +50,9 @@ export async function generateWalletState() {
  *
  * @param {string} encodedSeedPhrase - The encoded seed phrase.
  * @param {string} password - The password for the vault.
- * @param {object} config - The configuration object.
  * @returns {Promise<{vault: object, account: string}>} The generated vault and account.
  */
-async function generateVaultAndAccount(encodedSeedPhrase, password, config) {
+async function generateVaultAndAccount(encodedSeedPhrase, password) {
   const controllerMessenger = new ControllerMessenger();
   const keyringControllerMessenger = controllerMessenger.getRestricted({
     name: 'KeyringController',
@@ -86,7 +80,7 @@ async function generateVaultAndAccount(encodedSeedPhrase, password, config) {
   const account = krCtrl.state.keyrings[0].accounts[0];
   accounts.push(account);
 
-  for (let i = 1; i < config.withAccounts; i++) {
+  for (let i = 1; i < FIXTURES_CONFIG.withAccounts; i++) {
     const newAccount = await krCtrl.addNewAccount(i);
     accounts.push(newAccount);
   }
@@ -154,13 +148,12 @@ function generateAccountsControllerState(accounts) {
 /**
  * Generates the state for the AddressBookController.
  *
- * @param {object} config - The configuration object.
  * @returns {object} The generated AddressBookController state.
  */
-function generateAddressBookControllerState(config) {
+function generateAddressBookControllerState() {
   console.log('Generating AddressBookController state');
 
-  const numEntries = config.withContacts;
+  const numEntries = FIXTURES_CONFIG.withContacts;
   if (numEntries > 0) {
     return withAddressBook(numEntries);
   }
@@ -194,18 +187,17 @@ function generateAnnouncementControllerState() {
  * Generates the state for the NotificationController.
  *
  * @param {string} account - The account address to add the notifications to.
- * @param {object} config - The configuration object.
  * @returns {object} The generated NotificationController state.
  */
-function generateNotificationControllerState(account, config) {
+function generateNotificationControllerState(account) {
   console.log('Generating NotificationController state');
 
   let notifications = {};
 
-  if (config.withUnreadNotifications > 0) {
+  if (FIXTURES_CONFIG.withUnreadNotifications > 0) {
     notifications = withUnreadNotifications(
       account,
-      config.withUnreadNotifications,
+      FIXTURES_CONFIG.withUnreadNotifications,
     );
   }
   return notifications;
@@ -215,10 +207,9 @@ function generateNotificationControllerState(account, config) {
  * Generates the state for the NetworkController.
  * Sepolia is always pre-loaded and set as the active provider.
  *
- * @param {object} config - The configuration object.
  * @returns {object} The generated NetworkController state.
  */
-function generateNetworkControllerState(config) {
+function generateNetworkControllerState() {
   console.log('Generating NetworkController state');
 
   const defaultNetworkState = {
@@ -235,7 +226,7 @@ function generateNetworkControllerState(config) {
     selectedNetworkClientId: 'sepolia',
   };
 
-  if (config.withNetworks) {
+  if (FIXTURES_CONFIG.withNetworks) {
     return {
       ...defaultNetworkState,
       ...FIXTURES_NETWORKS,
@@ -247,15 +238,14 @@ function generateNetworkControllerState(config) {
 /**
  * Generates the state for the PreferencesController.
  *
- * @param {object} config - The configuration object.
  * @param {string} accounts - The account addresses.
  * @returns {object} The generated PreferencesController state.
  */
-function generatePreferencesControllerState(config, accounts) {
+function generatePreferencesControllerState(accounts) {
   console.log('Generating PreferencesController state');
   let preferencesControllerState = {};
 
-  if (config.withPreferences) {
+  if (FIXTURES_CONFIG.withPreferences) {
     preferencesControllerState = FIXTURES_PREFERENCES;
   }
 
@@ -287,14 +277,13 @@ function generatePreferencesControllerState(config, accounts) {
  * Generates the state for the TokensController.
  *
  * @param {string} account - The account address to add the transactions to.
- * @param {object} config - The configuration object.
  * @returns {object} The generated TokensController state.
  */
-function generateTokensControllerState(account, config) {
+function generateTokensControllerState(account) {
   console.log('Generating TokensController state');
 
   const tokens = FIXTURES_ERC20_TOKENS;
-  if (config.withErc20Tokens) {
+  if (FIXTURES_CONFIG.withErc20Tokens) {
     // Update the `address` key in all tokens
     for (const token of tokens.tokens) {
       updateKey(token, 'address', account);
@@ -308,18 +297,17 @@ function generateTokensControllerState(account, config) {
  * Generates the state for the TransactionController.
  *
  * @param {string} account - The account address to add the transactions to.
- * @param {object} config - The configuration object.
  * @returns {object} The generated TransactionController state.
  */
-function generateTransactionControllerState(account, config) {
+function generateTransactionControllerState(account) {
   console.log('Generating TransactionController state');
 
   let transactions = {};
 
-  if (config.withConfirmedTransactions > 0) {
+  if (FIXTURES_CONFIG.withConfirmedTransactions > 0) {
     transactions = withConfirmedTransactions(
       account,
-      config.withConfirmedTransactions,
+      FIXTURES_CONFIG.withConfirmedTransactions,
     );
   }
 
