@@ -1077,7 +1077,7 @@ async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
   }
 
-  console.log({ mockedRequests });
+  console.log(JSON.stringify(mockedRequests));
 
   return (
     await Promise.all(
