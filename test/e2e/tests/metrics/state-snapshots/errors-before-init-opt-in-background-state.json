@@ -147,7 +147,9 @@
             "1": "string",
             "2": "string"
           }
-        }
+        },
+        "destTokens": {},
+        "destTopAssets": {}
       }
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },

@@ -1,7 +1,10 @@
 import { createBridgeMockStore } from '../../../test/jest/mock-store';
-import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
+import {
+  BUILT_IN_NETWORKS,
+  CHAIN_IDS,
+  FEATURED_RPCS,
+} from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
-import { getProviderConfig } from '../metamask/metamask';
 import { mockNetworkState } from '../../../test/stub/networks';
 import {
   getAllBridgeableNetworks,
@@ -14,36 +17,70 @@ import {
   getToChain,
   getToChains,
   getToToken,
+  getToTokens,
+  getToTopAssets,
 } from './selectors';
 
 describe('Bridge selectors', () => {
   describe('getFromChain', () => {
     it('returns the fromChain from the state', () => {
-      const state = {
-        metamask: { ...mockNetworkState({ chainId: '0x1' }) },
-      };
+      const state = createBridgeMockStore(
+        { srcNetworkAllowlist: [CHAIN_IDS.ARBITRUM] },
+        { toChainId: '0xe708' },
+        {},
+        { ...mockNetworkState(FEATURED_RPCS[0]) },
+      );
+
       const result = getFromChain(state as never);
-      expect(result).toStrictEqual(getProviderConfig(state));
+      expect(result).toStrictEqual({
+        blockExplorerUrl: 'https://localhost/blockExplorer/0xa4b1',
+        chainId: '0xa4b1',
+        id: expect.anything(),
+        nickname: 'Arbitrum One',
+        removable: true,
+        rpcPrefs: {
+          blockExplorerUrl: 'https://localhost/blockExplorer/0xa4b1',
+          imageUrl: './images/arbitrum.svg',
+        },
+        rpcUrl: 'https://arbitrum-mainnet.infura.io/v3/undefined',
+        ticker: 'ETH',
+      });
     });
   });
 
   describe('getToChain', () => {
     it('returns the toChain from the state', () => {
-      const state = {
-        bridge: {
-          toChain: { chainId: '0x1' } as unknown,
-        },
-      };
+      const state = createBridgeMockStore(
+        { destNetworkAllowlist: ['0xe708'] },
+        { toChainId: '0xe708' },
+      );
 
       const result = getToChain(state as never);
 
-      expect(result).toStrictEqual({ chainId: '0x1' });
+      expect(result).toStrictEqual({
+        blockExplorerUrl: 'https://lineascan.build',
+        chainId: '0xe708',
+        id: 'linea-mainnet',
+        nickname: 'Linea Mainnet',
+        providerType: 'linea-mainnet',
+        removable: false,
+        rpcPrefs: {
+          imageUrl: './images/linea-logo-mainnet.svg',
+        },
+        rpcUrl: 'https://linea-mainnet.infura.io/v3/undefined',
+        ticker: 'ETH',
+      });
     });
   });
 
   describe('getAllBridgeableNetworks', () => {
     it('returns list of ALLOWED_BRIDGE_CHAIN_IDS networks', () => {
-      const state = createBridgeMockStore();
+      const state = createBridgeMockStore(
+        {},
+        {},
+        {},
+        mockNetworkState(...FEATURED_RPCS),
+      );
       const result = getAllBridgeableNetworks(state as never);
 
       expect(result).toHaveLength(9);
@@ -53,7 +90,16 @@ describe('Bridge selectors', () => {
       expect(result[1]).toStrictEqual(
         expect.objectContaining({ chainId: CHAIN_IDS.LINEA_MAINNET }),
       );
-      expect(result.slice(2)).toStrictEqual(FEATURED_RPCS);
+      FEATURED_RPCS.forEach((rpcDefinition, idx) => {
+        expect(result[2 + idx]).toStrictEqual(
+          expect.objectContaining({
+            ...rpcDefinition,
+            removable: true,
+            blockExplorerUrl: expect.anything(),
+            rpcPrefs: expect.anything(),
+          }),
+        );
+      });
       result.forEach(({ chainId }) => {
         expect(ALLOWED_BRIDGE_CHAIN_IDS).toContain(chainId);
       });
@@ -69,15 +115,16 @@ describe('Bridge selectors', () => {
         ...FEATURED_RPCS[FEATURED_RPCS.length - 1],
         id: 'testid',
       };
-      const state = {
-        ...createBridgeMockStore(),
-        metamask: {
-          networkConfigurations: [addedFeaturedNetwork],
-        },
-      };
+      const state = createBridgeMockStore(
+        {},
+        {},
+        {},
+        mockNetworkState(addedFeaturedNetwork),
+      );
+
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(result).toHaveLength(9);
+      expect(result).toHaveLength(3);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({ chainId: CHAIN_IDS.MAINNET }),
       );
@@ -86,15 +133,18 @@ describe('Bridge selectors', () => {
       );
       expect(result[2]).toStrictEqual({
         ...addedFeaturedNetwork,
+        rpcPrefs: {
+          blockExplorerUrl: 'https://localhost/blockExplorer/0x2105',
+          imageUrl: './images/base.svg',
+        },
         removable: true,
-        blockExplorerUrl: 'https://basescan.org',
+        blockExplorerUrl: 'https://localhost/blockExplorer/0x2105',
       });
-      expect(result.slice(3)).toStrictEqual(FEATURED_RPCS.slice(0, -1));
     });
 
     it('returns network if included in ALLOWED_BRIDGE_CHAIN_IDS', () => {
       const addedFeaturedNetwork = {
-        chainId: '0x11212131241523151',
+        chainId: CHAIN_IDS.MOONBEAM,
         nickname: 'scroll',
         rpcUrl: 'https://a',
         ticker: 'ETH',
@@ -105,9 +155,7 @@ describe('Bridge selectors', () => {
       };
       const state = {
         ...createBridgeMockStore(),
-        metamask: {
-          networkConfigurations: [addedFeaturedNetwork],
-        },
+        metamask: mockNetworkState(...FEATURED_RPCS, addedFeaturedNetwork),
       };
       const result = getAllBridgeableNetworks(state as never);
 
@@ -118,33 +166,33 @@ describe('Bridge selectors', () => {
       expect(result[1]).toStrictEqual(
         expect.objectContaining({ chainId: CHAIN_IDS.LINEA_MAINNET }),
       );
-      expect(result.slice(2)).toStrictEqual(FEATURED_RPCS);
+      expect(
+        result.find(({ chainId }) => chainId === addedFeaturedNetwork.chainId),
+      ).toStrictEqual(undefined);
     });
   });
 
   describe('getFromChains', () => {
-    it('excludes selected toChain and disabled chains from options', () => {
+    it('excludes disabled chains from options', () => {
       const state = createBridgeMockStore(
         {
           srcNetworkAllowlist: [
             CHAIN_IDS.MAINNET,
+            CHAIN_IDS.LINEA_MAINNET,
             CHAIN_IDS.OPTIMISM,
             CHAIN_IDS.POLYGON,
           ],
         },
-        { toChain: { chainId: CHAIN_IDS.MAINNET } },
+        { toChainId: CHAIN_IDS.LINEA_MAINNET },
       );
       const result = getFromChains(state as never);
 
-      expect(result).toHaveLength(3);
+      expect(result).toHaveLength(2);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({ chainId: CHAIN_IDS.MAINNET }),
       );
       expect(result[1]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.OPTIMISM }),
-      );
-      expect(result[2]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.POLYGON }),
+        expect.objectContaining({ chainId: CHAIN_IDS.LINEA_MAINNET }),
       );
     });
 
@@ -158,24 +206,24 @@ describe('Bridge selectors', () => {
 
   describe('getToChains', () => {
     it('excludes selected providerConfig and disabled chains from options', () => {
-      const state = createBridgeMockStore({
-        destNetworkAllowlist: [
-          CHAIN_IDS.MAINNET,
-          CHAIN_IDS.OPTIMISM,
-          CHAIN_IDS.POLYGON,
-        ],
-      });
+      const state = createBridgeMockStore(
+        {
+          destNetworkAllowlist: [
+            CHAIN_IDS.ARBITRUM,
+            CHAIN_IDS.LINEA_MAINNET,
+            CHAIN_IDS.OPTIMISM,
+            CHAIN_IDS.POLYGON,
+          ],
+        },
+        {},
+        {},
+        mockNetworkState(...FEATURED_RPCS),
+      );
       const result = getToChains(state as never);
 
       expect(result).toHaveLength(3);
       expect(result[0]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.MAINNET }),
-      );
-      expect(result[1]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.OPTIMISM }),
-      );
-      expect(result[2]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.POLYGON }),
+        expect.objectContaining({ chainId: CHAIN_IDS.LINEA_MAINNET }),
       );
     });
 
@@ -189,44 +237,50 @@ describe('Bridge selectors', () => {
 
   describe('getIsBridgeTx', () => {
     it('returns false if bridge is not enabled', () => {
-      const state = {
-        metamask: {
-          ...mockNetworkState({ chainId: '0x1' }),
-          useExternalServices: true,
-          bridgeState: { bridgeFeatureFlags: { extensionSupport: false } },
+      const state = createBridgeMockStore(
+        {
+          extensionSupport: false,
+          srcNetworkAllowlist: ['0x1'],
+          destNetworkAllowlist: ['0x38'],
         },
-        bridge: { toChain: { chainId: '0x38' } as unknown },
-      };
+        { toChainId: '0x38' },
+        {},
+        { ...mockNetworkState({ chainId: '0x1' }), useExternalServices: true },
+      );
 
       const result = getIsBridgeTx(state as never);
 
       expect(result).toBe(false);
     });
 
-    it('returns false if toChain is null', () => {
-      const state = {
-        metamask: {
-          ...mockNetworkState({ chainId: '0x1' }),
-          useExternalServices: true,
-          bridgeState: { bridgeFeatureFlags: { extensionSupport: true } },
+    it('returns false if toChainId is null', () => {
+      const state = createBridgeMockStore(
+        {
+          extensionSupport: true,
+          srcNetworkAllowlist: ['0x1'],
+          destNetworkAllowlist: ['0x1'],
         },
-        bridge: { toChain: null },
-      };
+        { toChainId: null },
+        {},
+        { ...mockNetworkState({ chainId: '0x1' }), useExternalServices: true },
+      );
 
       const result = getIsBridgeTx(state as never);
 
       expect(result).toBe(false);
     });
 
-    it('returns false if fromChain and toChain have the same chainId', () => {
-      const state = {
-        metamask: {
-          ...mockNetworkState({ chainId: '0x1' }),
-          useExternalServices: true,
-          bridgeState: { bridgeFeatureFlags: { extensionSupport: true } },
+    it('returns false if fromChain and toChainId have the same chainId', () => {
+      const state = createBridgeMockStore(
+        {
+          extensionSupport: true,
+          srcNetworkAllowlist: ['0x1'],
+          destNetworkAllowlist: ['0x1'],
         },
-        bridge: { toChain: { chainId: '0x1' } },
-      };
+        { toChainId: '0x1' },
+        {},
+        { ...mockNetworkState({ chainId: '0x1' }), useExternalServices: true },
+      );
 
       const result = getIsBridgeTx(state as never);
 
@@ -234,29 +288,39 @@ describe('Bridge selectors', () => {
     });
 
     it('returns false if useExternalServices is not enabled', () => {
-      const state = {
-        metamask: {
-          ...mockNetworkState({ chainId: '0x1' }),
-          useExternalServices: false,
-          bridgeState: { bridgeFeatureFlags: { extensionSupport: true } },
+      const state = createBridgeMockStore(
+        {
+          extensionSupport: true,
+          srcNetworkAllowlist: ['0x1'],
+          destNetworkAllowlist: ['0x38'],
         },
-        bridge: { toChain: { chainId: '0x38' } },
-      };
+        { toChainId: '0x38' },
+        {},
+        { ...mockNetworkState({ chainId: '0x1' }), useExternalServices: false },
+      );
 
       const result = getIsBridgeTx(state as never);
 
       expect(result).toBe(false);
     });
 
-    it('returns true if bridge is enabled and fromChain and toChain have different chainIds', () => {
-      const state = {
-        metamask: {
-          ...mockNetworkState({ chainId: '0x1' }),
-          useExternalServices: true,
-          bridgeState: { bridgeFeatureFlags: { extensionSupport: true } },
+    it('returns true if bridge is enabled and fromChain and toChainId have different chainIds', () => {
+      const state = createBridgeMockStore(
+        {
+          extensionSupport: true,
+          srcNetworkAllowlist: ['0x1'],
+          destNetworkAllowlist: ['0x38'],
         },
-        bridge: { toChain: { chainId: '0x38' } },
-      };
+        { toChainId: '0x38' },
+        {},
+        {
+          ...mockNetworkState(
+            ...Object.values(BUILT_IN_NETWORKS),
+            ...FEATURED_RPCS,
+          ),
+          useExternalServices: true,
+        },
+      );
 
       const result = getIsBridgeTx(state as never);
 
@@ -351,6 +415,66 @@ describe('Bridge selectors', () => {
       const result = getToAmount(state as never);
 
       expect(result).toStrictEqual('0');
+    });
+  });
+
+  describe('getToTokens', () => {
+    it('returns dest tokens from controller state when toChainId is defined', () => {
+      const state = createBridgeMockStore(
+        {},
+        { toChainId: '0x1' },
+        {
+          destTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+        },
+      );
+      const result = getToTokens(state as never);
+
+      expect(result).toStrictEqual({
+        '0x00': { address: '0x00', symbol: 'TEST' },
+      });
+    });
+
+    it('returns empty dest tokens from controller state when toChainId is undefined', () => {
+      const state = createBridgeMockStore(
+        {},
+        {},
+        {
+          destTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+        },
+      );
+      const result = getToTokens(state as never);
+
+      expect(result).toStrictEqual({});
+    });
+  });
+
+  describe('getToTopAssets', () => {
+    it('returns dest top assets from controller state when toChainId is defined', () => {
+      const state = createBridgeMockStore(
+        {},
+        { toChainId: '0x1' },
+        {
+          destTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          destTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+        },
+      );
+      const result = getToTopAssets(state as never);
+
+      expect(result).toStrictEqual([{ address: '0x00', symbol: 'TEST' }]);
+    });
+
+    it('returns empty dest top assets from controller state when toChainId is undefined', () => {
+      const state = createBridgeMockStore(
+        {},
+        {},
+        {
+          destTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
+          destTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+        },
+      );
+      const result = getToTopAssets(state as never);
+
+      expect(result).toStrictEqual([]);
     });
   });
 });
