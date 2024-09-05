@@ -1077,6 +1077,12 @@ async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
   }
 
+  console.log({
+    mockedRequests,
+    body: mockedRequests[0].body,
+    getJson: mockedRequests[0].getJson,
+  });
+
   return (
     await Promise.all(
       mockedRequests.map(async (req) => {
