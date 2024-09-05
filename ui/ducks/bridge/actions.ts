@@ -9,7 +9,7 @@ import { MetaMaskReduxDispatch } from '../../store/store';
 import { bridgeSlice } from './bridge';
 
 const {
-  setToChain: setToChain_,
+  setToChain: setToChainId_,
   setFromToken,
   setToToken,
   setFromTokenInputValue,
@@ -37,9 +37,19 @@ export const setBridgeFeatureFlags = () => {
 };
 
 // User actions
+export const setFromChain = (chainId: Hex) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(
+      callBridgeControllerMethod<Hex>(BridgeUserAction.SELECT_SRC_NETWORK, [
+        chainId,
+      ]),
+    );
+  };
+};
+
 export const setToChain = (chainId: Hex) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(setToChain_(chainId));
+    dispatch(setToChainId_(chainId));
     dispatch(
       callBridgeControllerMethod<Hex>(BridgeUserAction.SELECT_DEST_NETWORK, [
         chainId,

@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-
 import { Hex } from '@metamask/utils';
 import { swapsSlice } from '../swaps/swaps';
 import { SwapsTokenObject } from '../../../shared/constants/swaps';
