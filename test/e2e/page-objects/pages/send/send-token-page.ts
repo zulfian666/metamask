@@ -348,6 +348,86 @@ class SendTokenPage {
       throw new Error(`Failed to select token: ${tokenSymbol}`);
     }
   }
+
+  /**
+   * Checks for insufficient funds error.
+   *
+   * @throws Will throw an error if the insufficient funds error is not displayed.
+   */
+  async check_insufficientFundsError(): Promise<void> {
+    console.log('Checking for insufficient funds error');
+    try {
+      await this.driver.waitForSelector('[data-testid="insufficient-funds-error"]');
+      console.log('Insufficient funds error displayed successfully');
+    } catch (error) {
+      console.error('Failed to find insufficient funds error', error);
+      throw new Error('Insufficient funds error not displayed');
+    }
+  }
+
+  /**
+   * Clears the amount input field.
+   *
+   * @throws Will throw an error if the amount field cannot be cleared.
+   */
+  async clearAmount(): Promise<void> {
+    console.log('Clearing amount input field');
+    try {
+      await this.driver.fill(this.inputAmountSelector, '');
+      console.log('Amount input field cleared successfully');
+    } catch (error) {
+      console.error('Failed to clear amount input field', error);
+      throw new Error('Unable to clear amount input field');
+    }
+  }
+
+  /**
+   * Checks that the insufficient funds error is not present.
+   *
+   * @throws Will throw an error if the insufficient funds error is still displayed.
+   */
+  async check_noInsufficientFundsError(): Promise<void> {
+    console.log('Checking that insufficient funds error is not present');
+    try {
+      await this.driver.assertElementNotPresent('[data-testid="insufficient-funds-error"]');
+      console.log('Insufficient funds error is not present');
+    } catch (error) {
+      console.error('Insufficient funds error is still present', error);
+      throw new Error('Insufficient funds error is still displayed');
+    }
+  }
+
+  /**
+   * Clicks the max button to set the maximum amount.
+   *
+   * @throws Will throw an error if the max button cannot be clicked.
+   */
+  async clickMaxButton(): Promise<void> {
+    console.log('Clicking max button');
+    try {
+      await this.driver.clickElement('[data-testid="send-max-button"]');
+      console.log('Max button clicked successfully');
+    } catch (error) {
+      console.error('Failed to click max button', error);
+      throw new Error('Unable to click max button');
+    }
+  }
+
+  /**
+   * Checks if the amount exceeds 24 hours of gas fees.
+   *
+   * @throws Will throw an error if the amount does not exceed 24 hours of gas fees.
+   */
+  async check_amountExceeds24(): Promise<void> {
+    console.log('Checking if amount exceeds 24 hours of gas fees');
+    try {
+      await this.driver.waitForSelector('[data-testid="amount-exceeds-24-warning"]');
+      console.log('Amount exceeds 24 hours of gas fees warning displayed');
+    } catch (error) {
+      console.error('Failed to find amount exceeds 24 hours warning', error);
+      throw new Error('Amount does not exceed 24 hours of gas fees');
+    }
+  }
 }
 
 export default SendTokenPage;
