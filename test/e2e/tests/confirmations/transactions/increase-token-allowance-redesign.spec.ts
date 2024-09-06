@@ -13,8 +13,6 @@ import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { openDAppWithContract, TestSuiteArguments } from './shared';
-import { mocked4BytesApprove } from './erc20-approve-redesign.spec';
-import { MockedEndpoint } from '../../../mock-e2e';
 
 describe('Confirmation Redesign ERC20 Increase Allowance', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -188,7 +186,7 @@ async function createERC20IncreaseAllowanceTransaction(driver: Driver) {
   await driver.clickElement('#increaseTokenAllowance');
 }
 
-async function editSpendingCap(driver: Driver, newSpendingCap: string) {
+export async function editSpendingCap(driver: Driver, newSpendingCap: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement('[data-testid="edit-spending-cap-icon"');
 
