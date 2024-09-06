@@ -176,6 +176,38 @@ export class ConfirmTransactionPage {
       throw new Error(`Expected gas fee ${expectedGasFee} not found on confirmation page`);
     }
   }
+
+  /**
+   * Navigates through multiple transactions on the confirmation page.
+   *
+   * @throws Will throw an error if navigation fails or if there are no transactions to navigate.
+   */
+  async navigateTransactions(): Promise<void> {
+    console.log('Navigating through transactions');
+    try {
+      const nextButton = await this.driver.findElement('[data-testid="next-page"]');
+      const prevButton = await this.driver.findElement('[data-testid="previous-page"]');
+
+      // Navigate forward through transactions
+      while (await nextButton.isEnabled()) {
+        await nextButton.click();
+        console.log('Moved to next transaction');
+        await this.driver.delay(1000); // Wait for transaction details to load
+      }
+
+      // Navigate backward through transactions
+      while (await prevButton.isEnabled()) {
+        await prevButton.click();
+        console.log('Moved to previous transaction');
+        await this.driver.delay(1000); // Wait for transaction details to load
+      }
+
+      console.log('Successfully navigated through all transactions');
+    } catch (error) {
+      console.error('Failed to navigate transactions', error);
+      throw new Error('Unable to navigate transactions on confirmation page');
+    }
+  }
 }
 
 export default ConfirmTransactionPage;
