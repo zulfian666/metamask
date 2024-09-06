@@ -1,7 +1,9 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { waitFor } from '@testing-library/react';
 import nock from 'nock';
+import { useApproveTokenSimulation } from '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-approve-token-simulation';
 import { useIsNFT } from '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-is-nft';
+import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
@@ -20,6 +22,23 @@ jest.mock(
       '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-is-nft',
     ),
     useIsNFT: jest.fn(),
+  }),
+);
+
+jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
+  ...jest.requireActual(
+    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
+  ),
+  useAssetDetails: jest.fn(),
+}));
+
+jest.mock(
+  '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-approve-token-simulation',
+  () => ({
+    ...jest.requireActual(
+      '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-approve-token-simulation',
+    ),
+    useApproveTokenSimulation: jest.fn(),
   }),
 );
 
@@ -112,7 +131,7 @@ const setupSubmitRequestToBackgroundMocks = (
 };
 
 describe('ERC721 Approve Confirmation', () => {
-  let useIsNFTMock;
+  let useIsNFTMock, useAssetDetailsMock, useApproveTokenSimulationMock;
   beforeEach(() => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks();
@@ -122,6 +141,20 @@ describe('ERC721 Approve Confirmation', () => {
       .fn()
       .mockImplementation(() => ({ isNFT: false, decimals: '18' }));
     (useIsNFT as jest.Mock).mockImplementation(useIsNFTMock);
+    useAssetDetailsMock = jest.fn().mockImplementation(() => ({
+      decimals: 18,
+      userBalance: '1000000',
+      tokenSymbol: 'TST',
+    }));
+    (useAssetDetails as jest.Mock).mockImplementation(useAssetDetailsMock);
+    useApproveTokenSimulationMock = jest.fn().mockImplementation(() => ({
+      spendingCap: '1000',
+      formattedSpendingCap: '1000',
+      value: '1000',
+    }));
+    (useApproveTokenSimulation as jest.Mock).mockImplementation(
+      useApproveTokenSimulationMock,
+    );
   });
 
   afterEach(() => {
