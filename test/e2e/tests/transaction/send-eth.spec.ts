@@ -1,17 +1,11 @@
 import { Suite } from 'mocha';
-import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import {
   withFixtures,
-  openDapp,
   logInWithBalanceValidation,
-  openActionMenuAndStartSendFlow,
-  unlockWallet,
-  WINDOW_TITLES,
   defaultGanacheOptions,
 } from '../../helpers';
 import FixtureBuilder = require('../../fixture-builder');
-import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import HomePage from '../../page-objects/pages/home-page';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import ConfirmTransactionPage from '../../page-objects/pages/confirm-transaction-page';
@@ -25,14 +19,22 @@ describe('Send ETH', function (this: Suite) {
           ganacheOptions: defaultGanacheOptions,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, ganacheServer }: { driver: Driver; ganacheServer: any }) => {
+        async ({
+          driver,
+          ganacheServer,
+        }: {
+          driver: Driver;
+          ganacheServer: unknown;
+        }) => {
           await logInWithBalanceValidation(driver, ganacheServer);
 
           const homePage = new HomePage(driver);
           await homePage.startSendFlow();
 
           const sendTokenPage = new SendTokenPage(driver);
-          await sendTokenPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
+          await sendTokenPage.fillRecipient(
+            '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+          );
           await sendTokenPage.inputAmount('1000');
 
           // Check for insufficient funds error
