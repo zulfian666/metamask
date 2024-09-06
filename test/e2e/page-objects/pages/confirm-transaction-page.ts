@@ -156,6 +156,26 @@ export class ConfirmTransactionPage {
       );
     }
   }
+
+  /**
+   * Validates the gas fee displayed on the confirmation page.
+   *
+   * @param expectedGasFee - The expected gas fee to be displayed.
+   * @throws Will throw an error if the expected gas fee is not found within the timeout period.
+   */
+  async validateGasFee(expectedGasFee: string): Promise<void> {
+    console.log(`Validating gas fee: ${expectedGasFee}`);
+    try {
+      await this.driver.waitForSelector({
+        css: '[data-testid="transaction-detail-gas-fee"]',
+        text: expectedGasFee,
+      });
+      console.log(`Gas fee validated: ${expectedGasFee}`);
+    } catch (error) {
+      console.error(`Failed to validate gas fee: ${expectedGasFee}`, error);
+      throw new Error(`Expected gas fee ${expectedGasFee} not found on confirmation page`);
+    }
+  }
 }
 
 export default ConfirmTransactionPage;
