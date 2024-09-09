@@ -286,9 +286,10 @@ function generateTokensControllerState(account) {
 
   const tokens = FIXTURES_ERC20_TOKENS;
   if (FIXTURES_CONFIG.withErc20Tokens) {
-    // Update the `address` key in all tokens
-    for (const token of tokens.tokens) {
-      updateKey(token, 'address', account);
+    // Update `myAccount` key for the account address
+    for (const network of Object.values(tokens.allTokens)) {
+      network[account] = network.myAccount;
+      delete network.myAccount;
     }
     return tokens;
   }
@@ -314,25 +315,4 @@ function generateTransactionControllerState(account) {
   }
 
   return transactions;
-}
-
-/**
- * Updates the specified key in the given object with a new value.
- *
- * @param {object} obj - The object to update.
- * @param {string} targetKey - The key to update.
- * @param {*} newValue - The new value to set.
- * @returns {object} The updated object.
- */
-function updateKey(obj, targetKey, newValue) {
-  for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      if (key === targetKey) {
-        obj[key] = newValue;
-      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-        updateKey(obj[key], targetKey, newValue);
-      }
-    }
-  }
-  return obj;
 }

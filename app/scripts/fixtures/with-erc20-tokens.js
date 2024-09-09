@@ -77,7 +77,7 @@ export const FIXTURES_ERC20_TOKENS = {
   detectedTokens: [],
   allTokens: {
     '0x1': {
-      '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+      myAccount: [
         {
           address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
           symbol: 'DAI',
