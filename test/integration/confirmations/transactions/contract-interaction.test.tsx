@@ -7,6 +7,8 @@ import {
   MetaMetricsEventLocation,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { useApproveTokenSimulation } from '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-approve-token-simulation';
+import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
@@ -15,8 +17,6 @@ import {
   getMaliciousUnapprovedTransaction,
   getUnapprovedTransaction,
 } from './transactionDataHelpers';
-import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
-import { useApproveTokenSimulation } from '../../../../ui/pages/confirmations/components/confirm/info/approve/hooks/use-approve-token-simulation';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
