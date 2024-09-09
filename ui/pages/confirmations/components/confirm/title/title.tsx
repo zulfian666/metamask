@@ -23,6 +23,9 @@ import {
 } from '../../../utils';
 import { useApproveTokenSimulation } from '../info/approve/hooks/use-approve-token-simulation';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
+import customSpendingCap from '../../custom-spending-cap';
+import { useDecodedTransactionData } from '../info/hooks/useDecodedTransactionData';
+import BigNumber from 'bignumber.js';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const t = useI18nContext();
@@ -148,7 +151,13 @@ const ConfirmTitle: React.FC = memo(() => {
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
   let customSpendingCap = '';
-  if (isTransactionMeta(currentConfirmation)) {
+  if (
+    isTransactionMeta(currentConfirmation) &&
+    [
+      TransactionType.tokenMethodApprove,
+      TransactionType.tokenMethodIncreaseAllowance,
+    ].includes(currentConfirmation.type as TransactionType)
+  ) {
     const { decimals } = useAssetDetails(
       currentConfirmation.txParams.to,
       currentConfirmation.txParams.from,
