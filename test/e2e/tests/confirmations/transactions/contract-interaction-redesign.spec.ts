@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Mockttp } from 'mockttp';
-import {
-  createDappTransaction,
-  switchToNotificationWindow,
-} from '../../../helpers';
+import { createDappTransaction } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import { MockedEndpoint } from '../../../mock-e2e';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
@@ -115,7 +112,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
           await createLayer2Transaction(driver);
-          await switchToNotificationWindow(driver);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await toggleAdvancedDetails(driver);
         },
       );
@@ -179,7 +176,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await confirmContractDeploymentTransaction(driver);
 
           await createDepositTransaction(driver);
-          await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           await toggleAdvancedDetails(driver);
@@ -217,7 +213,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await createDepositTransaction(driver);
 
-          await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           await toggleAdvancedDetails(driver);
@@ -253,7 +248,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
           await createLayer2Transaction(driver);
-          await switchToNotificationWindow(driver);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await toggleAdvancedDetails(driver);
           await assertAdvancedGasDetailsWithL2Breakdown(driver);
         },
