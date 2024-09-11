@@ -1,4 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+import { Mockttp } from 'mockttp';
+import { createDappTransaction } from '../../../helpers';
+import { Driver } from '../../../webdriver/driver';
+import { MockedEndpoint } from '../../../mock-e2e';
+import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 import {
   assertAdvancedGasDetails,
   assertAdvancedGasDetailsWithL2Breakdown,
@@ -86,13 +91,14 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           dapp: true,
           fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.OPTIMISM })
             .withPermissionControllerConnectedToTestDapp()
+            .withNetworkControllerOnOptimism()
             .withPreferencesController({
               preferences: {
                 redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
+              useTransactionSimulations: false,
             })
-            .withTransactionControllerOPLayer2Transaction()
             .build(),
           ganacheOptions: {
             ...defaultGanacheOptionsForType2Transactions,
@@ -101,14 +107,12 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           },
           smartContract,
           title: this.test?.fullTitle(),
+          testSpecificMock: mockOptimismOracle,
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
-
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
-
+          await createLayer2Transaction(driver);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await toggleAdvancedDetails(driver);
         },
       );
@@ -172,7 +176,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           await confirmContractDeploymentTransaction(driver);
 
           await createDepositTransaction(driver);
-          await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           await toggleAdvancedDetails(driver);
@@ -210,7 +213,6 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
 
           await createDepositTransaction(driver);
 
-          await driver.waitUntilXWindowHandles(3);
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
           await toggleAdvancedDetails(driver);
@@ -225,13 +227,14 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           dapp: true,
           fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.OPTIMISM })
             .withPermissionControllerConnectedToTestDapp()
+            .withNetworkControllerOnOptimism()
             .withPreferencesController({
               preferences: {
                 redesignedConfirmationsEnabled: true,
                 isRedesignedConfirmationsDeveloperEnabled: true,
               },
+              useTransactionSimulations: false,
             })
-            .withTransactionControllerOPLayer2Transaction()
             .build(),
           ganacheOptions: {
             ...defaultGanacheOptionsForType2Transactions,
@@ -240,19 +243,51 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           },
           smartContract,
           title: this.test?.fullTitle(),
+          testSpecificMock: mockOptimismOracle,
         },
         async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await openDAppWithContract(driver, contractRegistry, smartContract);
-
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
-
+          await createLayer2Transaction(driver);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           await toggleAdvancedDetails(driver);
-
           await assertAdvancedGasDetailsWithL2Breakdown(driver);
         },
       );
     });
   });
 });
+
+async function createLayer2Transaction(driver: Driver) {
+  await createDappTransaction(driver, {
+    data: '0x608060405234801561001057600080fd5b5033600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506000808190555061023b806100686000396000f300608060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff1680632e1a7d4d1461005c5780638da5cb5b1461009d578063d0e30db0146100f4575b600080fd5b34801561006857600080fd5b5061008760048036038101908080359060200190929190505050610112565b6040518082815260200191505060405180910390f35b3480156100a957600080fd5b506100b26101d0565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b6100fc6101f6565b6040518082815260200191505060405180910390f35b6000600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561017057600080fd5b8160008082825403925050819055503373ffffffffffffffffffffffffffffffffffffffff166108fc839081150290604051600060405180830381858888f193505050501580156101c5573d6000803e3d6000fd5b506000549050919050565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b60003460008082825401925050819055506000549050905600a165627a7a72305820f237db3ec816a52589d82512117bc85bc08d3537683ffeff9059108caf3e5d400029',
+    from: DEFAULT_FIXTURE_ACCOUNT,
+    to: '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+    gas: '0x31f10',
+    maxFeePerGas: '0x3b014b3',
+    maxPriorityFeePerGas: '0x3b014b3',
+  });
+}
+
+async function mockOptimismOracle(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
+  return [
+    await mockServer
+      .forPost(/infura/u)
+      .withJsonBodyIncluding({
+        method: 'eth_call',
+        params: [{ to: '0x420000000000000000000000000000000000000f' }],
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            jsonrpc: '2.0',
+            id: '1111111111111111',
+            result:
+              '0x0000000000000000000000000000000000000000000000000000000c895f9d79',
+          },
+        };
+      }),
+  ];
+}
