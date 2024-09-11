@@ -1,8 +1,9 @@
 name: Validate Conventional Commit Title
+
 on:
   pull_request:
     branches:
-      - develop
+      - merge-queue-test
     types: [opened, edited, reopened, synchronize]
 
 jobs:
