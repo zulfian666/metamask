@@ -3,7 +3,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
-
+import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
+import { getHighestSeverity } from '../../../../../components/app/alert-system/utils';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   TextAlign,
@@ -12,14 +13,14 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getHighestSeverity } from '../../../../../components/app/alert-system/utils';
-import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
+import { useConfirmContext } from '../../../context/confirm';
+import { useAssetDetails } from '../../../hooks/useAssetDetails';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import {
   isPermitSignatureRequest,
   isSIWESignatureRequest,
 } from '../../../utils';
-import { useConfirmContext } from '../../../context/confirm';
+import { useApproveTokenSimulation } from '../info/approve/hooks/use-approve-token-simulation';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
@@ -64,6 +65,7 @@ const getTitle = (
   t: IntlFunction,
   confirmation?: Confirmation,
   isNFT?: boolean,
+  customSpendingCap?: string,
 ) => {
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
@@ -71,6 +73,9 @@ const getTitle = (
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
         return t('confirmTitleApproveTransaction');
+      }
+      if (customSpendingCap === '0') {
+        return t('confirmTitleRevokeApproveTransaction');
       }
       return t('confirmTitlePermitSignature');
     case TransactionType.tokenMethodIncreaseAllowance:
@@ -95,6 +100,7 @@ const getDescription = (
   t: IntlFunction,
   confirmation?: Confirmation,
   isNFT?: boolean,
+  customSpendingCap?: string,
 ) => {
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
@@ -102,6 +108,9 @@ const getDescription = (
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
         return t('confirmTitleDescApproveTransaction');
+      }
+      if (customSpendingCap === '0') {
+        return '';
       }
       return t('confirmTitleDescERC20ApproveTransaction');
     case TransactionType.tokenMethodIncreaseAllowance:
@@ -122,20 +131,63 @@ const getDescription = (
   }
 };
 
+const isTransactionMeta = (
+  confirmation: Confirmation | undefined,
+): confirmation is TransactionMeta => {
+  return (
+    confirmation !== undefined &&
+    (confirmation as TransactionMeta).txParams !== undefined
+  );
+};
+
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
+  let customSpendingCap = '';
+  if (
+    isTransactionMeta(currentConfirmation) &&
+    [
+      TransactionType.tokenMethodApprove,
+      TransactionType.tokenMethodIncreaseAllowance,
+    ].includes(currentConfirmation.type as TransactionType)
+  ) {
+    const { decimals } = useAssetDetails(
+      currentConfirmation.txParams.to,
+      currentConfirmation.txParams.from,
+      currentConfirmation.txParams.data,
+    );
+
+    const { spendingCap } = useApproveTokenSimulation(
+      currentConfirmation,
+      decimals || '0',
+    );
+
+    customSpendingCap = spendingCap;
+  }
+
   const title = useMemo(
-    () => getTitle(t as IntlFunction, currentConfirmation, isNFT),
-    [currentConfirmation, isNFT],
+    () =>
+      getTitle(
+        t as IntlFunction,
+        currentConfirmation,
+        isNFT,
+        customSpendingCap,
+      ),
+    [currentConfirmation, isNFT, customSpendingCap],
   );
 
   const description = useMemo(
-    () => getDescription(t as IntlFunction, currentConfirmation, isNFT),
-    [currentConfirmation, isNFT],
+    () =>
+      getDescription(
+        t as IntlFunction,
+        currentConfirmation,
+        isNFT,
+        customSpendingCap,
+      ),
+    [currentConfirmation, isNFT, customSpendingCap],
   );
 
   if (!currentConfirmation) {
