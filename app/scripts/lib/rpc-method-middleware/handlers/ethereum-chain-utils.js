@@ -1,6 +1,5 @@
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { ApprovalType } from '@metamask/controller-utils';
-
 import {
   BUILT_IN_INFURA_NETWORKS,
   CHAIN_ID_TO_RPC_URL_MAP,
@@ -12,10 +11,18 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
-import { CaveatTypes } from '../../../../../shared/constants/permissions';
 import { UNKNOWN_TICKER_SYMBOL } from '../../../../../shared/constants/app';
-import { PermissionNames } from '../../../controllers/permissions';
 import { getValidUrl } from '../../util';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '../../multichain-api/caip25permissions';
+import { CaveatTypes } from '../../../../../shared/constants/permissions';
+import { PermissionNames } from '../../../controllers/permissions';
+import {
+  getPermittedEthChainIds,
+  addPermittedEthChainId,
+} from '../../multichain-api/adapters/caip-permission-adapter-permittedChains';
 
 export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   if (
@@ -35,7 +42,7 @@ export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
 }
 
 export function validateChainId(chainId) {
-  const _chainId = typeof chainId === 'string' && chainId.toLowerCase();
+  const _chainId = typeof chainId === 'string' ? chainId.toLowerCase() : '';
   if (!isPrefixedFormattedHexString(_chainId)) {
     throw ethErrors.rpc.invalidParams({
       message: `Expected 0x-prefixed, unpadded, non-zero hexadecimal string 'chainId'. Received:\n${chainId}`,
@@ -51,7 +58,7 @@ export function validateChainId(chainId) {
   return _chainId;
 }
 
-export function validateSwitchEthereumChainParams(req, end) {
+export function validateSwitchEthereumChainParams(req) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
     throw ethErrors.rpc.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
@@ -69,10 +76,10 @@ export function validateSwitchEthereumChainParams(req, end) {
     });
   }
 
-  return validateChainId(chainId, end);
+  return validateChainId(chainId);
 }
 
-export function validateAddEthereumChainParams(params, end) {
+export function validateAddEthereumChainParams(params) {
   if (!params || typeof params !== 'object') {
     throw ethErrors.rpc.invalidParams({
       message: `Expected single, object parameter. Received:\n${JSON.stringify(
@@ -101,7 +108,7 @@ export function validateAddEthereumChainParams(params, end) {
     });
   }
 
-  const _chainId = validateChainId(chainId, end);
+  const _chainId = validateChainId(chainId);
   if (!rpcUrls || !Array.isArray(rpcUrls) || rpcUrls.length === 0) {
     throw ethErrors.rpc.invalidParams({
       message: `Expected an array with at least one valid string HTTPS url 'rpcUrls', Received:\n${rpcUrls}`,
@@ -187,27 +194,50 @@ export async function switchChain(
   networkClientId,
   approvalFlowId,
   {
-    getChainPermissionsFeatureFlag,
     setActiveNetwork,
     endApprovalFlow,
     requestUserApproval,
     getCaveat,
-    requestPermittedChainsPermission,
+    requestPermissionApprovalForOrigin,
+    updateCaveat,
   },
 ) {
   try {
-    if (getChainPermissionsFeatureFlag()) {
-      const { value: permissionedChainIds } =
-        getCaveat({
-          target: PermissionNames.permittedChains,
-          caveatType: CaveatTypes.restrictNetworkSwitching,
-        }) ?? {};
+    const caip25Caveat = getCaveat({
+      target: Caip25EndowmentPermissionName,
+      caveatType: Caip25CaveatType,
+    });
 
-      if (
-        permissionedChainIds === undefined ||
-        !permissionedChainIds.includes(chainId)
-      ) {
-        await requestPermittedChainsPermission([chainId]);
+    if (caip25Caveat) {
+      const ethChainIds = getPermittedEthChainIds(caip25Caveat.value);
+
+      if (!ethChainIds.includes(chainId)) {
+        if (caip25Caveat.value.isMultichainOrigin) {
+          return end(
+            new Error(
+              'cannot switch to chain that was not permissioned in the multichain flow',
+            ),
+          ); // TODO: better error
+        }
+        await requestPermissionApprovalForOrigin({
+          [PermissionNames.permittedChains]: {
+            caveats: [
+              { type: CaveatTypes.restrictNetworkSwitching, value: [chainId] },
+            ],
+          },
+        });
+
+        const updatedCaveatValue = addPermittedEthChainId(
+          caip25Caveat.value,
+          chainId,
+        );
+
+        updateCaveat(
+          origin,
+          Caip25EndowmentPermissionName,
+          Caip25CaveatType,
+          updatedCaveatValue,
+        );
       }
     } else {
       await requestUserApproval({

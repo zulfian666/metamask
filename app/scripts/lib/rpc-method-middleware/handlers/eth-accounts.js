@@ -4,14 +4,14 @@ import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
  * A wrapper for `eth_accounts` that returns an empty array when permission is denied.
  */
 
-const requestEthereumAccounts = {
+const ethereumAccounts = {
   methodNames: [MESSAGE_TYPE.ETH_ACCOUNTS],
   implementation: ethAccountsHandler,
   hookNames: {
     getAccounts: true,
   },
 };
-export default requestEthereumAccounts;
+export default ethereumAccounts;
 
 /**
  * @typedef {Record<string, Function>} EthAccountsOptions
