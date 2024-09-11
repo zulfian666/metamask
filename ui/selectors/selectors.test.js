@@ -772,6 +772,7 @@ describe('Selectors', () => {
           "id": "mock-network-config-id",
           "nickname": undefined,
           "rpcPrefs": {
+            "blockExplorerUrl": undefined,
             "imageUrl": undefined,
           },
           "rpcUrl": "https://mock-rpc-endpoint.test",
@@ -853,7 +854,7 @@ describe('Selectors', () => {
           networkConfigurationsByChainId,
         },
       });
-      expect(networks).toHaveLength(2);
+      expect(Object.values(networks)).toHaveLength(2);
     });
 
     it('returns networks with showTestNetworks on', () => {
@@ -1163,6 +1164,11 @@ describe('Selectors', () => {
       mockState.metamask.notifications.test,
       mockState.metamask.notifications.test2,
     ]);
+  });
+  it('#getReadNotificationsCount', () => {
+    const readNotificationsCount =
+      selectors.getReadNotificationsCount(mockState);
+    expect(readNotificationsCount).toStrictEqual(1);
   });
   it('#getUnreadNotificationsCount', () => {
     const unreadNotificationCount =

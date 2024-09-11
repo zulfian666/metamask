@@ -872,7 +872,10 @@ export default class MetamaskController extends EventEmitter {
     this.ppomController = new PPOMController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'PPOMController',
-        allowedEvents: ['NetworkController:stateChange'],
+        allowedEvents: [
+          'NetworkController:stateChange',
+          'NetworkController:networkDidChange',
+        ],
         allowedActions: ['NetworkController:getNetworkClientById'],
       }),
       storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
@@ -1545,9 +1548,9 @@ export default class MetamaskController extends EventEmitter {
       (notification) => {
         this.metaMetricsController.trackEvent({
           category: MetaMetricsEventCategory.PushNotifications,
-          event: MetaMetricsEventName.NotificationReceived,
+          event: MetaMetricsEventName.PushNotificationReceived,
           properties: {
-            notification_channel: 'push',
+            notification_id: notification.id,
             notification_type: notification.type,
             chain_id: notification?.chain_id,
           },
@@ -1559,13 +1562,11 @@ export default class MetamaskController extends EventEmitter {
       (notification) => {
         this.metaMetricsController.trackEvent({
           category: MetaMetricsEventCategory.PushNotifications,
-          event: MetaMetricsEventName.NotificationClicked,
+          event: MetaMetricsEventName.PushNotificationClicked,
           properties: {
             notification_id: notification.id,
             notification_type: notification.type,
             chain_id: notification?.chain_id,
-            notification_is_read: notification.isRead,
-            click_type: 'push_notification',
           },
         });
       },
@@ -2036,45 +2037,40 @@ export default class MetamaskController extends EventEmitter {
       messenger: bridgeControllerMessenger,
     });
 
-    this.smartTransactionsController = new SmartTransactionsController(
-      {
-        getNetworkClientById: this.networkController.getNetworkClientById.bind(
-          this.networkController,
-        ),
-        onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-          networkControllerMessenger,
-          'NetworkController:stateChange',
-        ),
-        getNonceLock: this.txController.getNonceLock.bind(this.txController),
-        confirmExternalTransaction:
-          this.txController.confirmExternalTransaction.bind(this.txController),
-        getTransactions: this.txController.getTransactions.bind(
-          this.txController,
-        ),
-        provider: this.provider,
-        trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
-          this.metaMetricsController,
-        ),
-        getMetaMetricsProps: async () => {
-          const selectedAddress =
-            this.accountsController.getSelectedAccount().address;
-          const accountHardwareType = await getHardwareWalletType(
-            this._getMetaMaskState(),
-          );
-          const accountType = await this.getAccountType(selectedAddress);
-          const deviceModel = await this.getDeviceModel(selectedAddress);
-          return {
-            accountHardwareType,
-            accountType,
-            deviceModel,
-          };
-        },
+    const smartTransactionsControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'SmartTransactionsController',
+        allowedActions: ['NetworkController:getNetworkClientById'],
+        allowedEvents: ['NetworkController:stateChange'],
+      });
+    this.smartTransactionsController = new SmartTransactionsController({
+      supportedChainIds: getAllowedSmartTransactionsChainIds(),
+      getNonceLock: this.txController.getNonceLock.bind(this.txController),
+      confirmExternalTransaction:
+        this.txController.confirmExternalTransaction.bind(this.txController),
+      trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+      state: initState.SmartTransactionsController,
+      messenger: smartTransactionsControllerMessenger,
+      getTransactions: this.txController.getTransactions.bind(
+        this.txController,
+      ),
+      getMetaMetricsProps: async () => {
+        const selectedAddress =
+          this.accountsController.getSelectedAccount().address;
+        const accountHardwareType = await getHardwareWalletType(
+          this._getMetaMaskState(),
+        );
+        const accountType = await this.getAccountType(selectedAddress);
+        const deviceModel = await this.getDeviceModel(selectedAddress);
+        return {
+          accountHardwareType,
+          accountType,
+          deviceModel,
+        };
       },
-      {
-        supportedChainIds: getAllowedSmartTransactionsChainIds(),
-      },
-      initState.SmartTransactionsController,
-    );
+    });
 
     const isExternalNameSourcesEnabled = () =>
       this.preferencesController.store.getState().useExternalNameSources;
@@ -6582,16 +6578,15 @@ export default class MetamaskController extends EventEmitter {
     let rpcPrefs = {};
 
     if (chainId) {
-      const { networkConfigurationsByChainId } = this.networkController.state;
+      const networkConfiguration =
+        this.networkController.state.networkConfigurationsByChainId?.[chainId];
 
-      const matchingNetworkConfig = Object.values(
-        networkConfigurationsByChainId,
-      ).find(
-        (networkConfiguration) => networkConfiguration.chainId === chainId,
-      );
+      const blockExplorerUrl =
+        networkConfiguration?.blockExplorerUrls?.[
+          networkConfiguration?.defaultBlockExplorerUrlIndex
+        ];
 
-      // todo
-      rpcPrefs = matchingNetworkConfig?.rpcPrefs ?? {};
+      rpcPrefs = { blockExplorerUrl };
     }
 
     try {
