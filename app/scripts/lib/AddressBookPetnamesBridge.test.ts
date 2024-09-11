@@ -7,7 +7,7 @@ import {
 } from '@metamask/name-controller';
 import {
   AddressBookController,
-  AddressBookState,
+  AddressBookControllerState,
 } from '@metamask/address-book-controller';
 import { AddressBookPetnamesBridge } from './AddressBookPetnamesBridge';
 import { PetnamesBridgeMessenger } from './AbstractPetnamesBridge';
@@ -18,10 +18,10 @@ const NAME_2_MOCK = 'testName2';
 const CHAIN_ID_MOCK = '0x1';
 
 function createAddressBookControllerMock(
-  state: AddressBookState,
+  state: AddressBookControllerState,
 ): jest.Mocked<AddressBookController> & {
   // Override the definition of state. Otherwise state is readonly.
-  state: AddressBookState;
+  state: AddressBookControllerState;
 } {
   return {
     state,
@@ -81,7 +81,7 @@ function createNameState(address: string, name: string): NameControllerState {
   };
 }
 
-const EMPTY_ADDRESS_BOOK_STATE: AddressBookState = {
+const EMPTY_ADDRESS_BOOK_STATE: AddressBookControllerState = {
   addressBook: {},
 };
 
@@ -96,7 +96,7 @@ function createAddressBookState(
   address: string,
   name: string,
   isEns: boolean,
-): AddressBookState {
+): AddressBookControllerState {
   return {
     ...EMPTY_ADDRESS_BOOK_STATE,
     addressBook: {
