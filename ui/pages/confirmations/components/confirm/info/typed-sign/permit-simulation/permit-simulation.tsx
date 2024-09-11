@@ -54,6 +54,9 @@ const PermitSimulation: React.FC<{
   }, [exchangeRate, value]);
 
   const { tokenValue, tokenValueMaxPrecision } = useMemo(() => {
+    if (!value) {
+      return { tokenValue: null, tokenValueMaxPrecision: null };
+    }
     const tokenAmount = calcTokenAmount(value, tokenDecimals);
 
     return {
@@ -63,7 +66,7 @@ const PermitSimulation: React.FC<{
   }, [tokenDecimals, value]);
 
   return (
-    <ConfirmInfoSection>
+    <ConfirmInfoSection data-testid="confirmation__simulation_section">
       <ConfirmInfoRow
         label={t('simulationDetailsTitle')}
         tooltip={t('simulationDetailsTitleTooltip')}
@@ -85,6 +88,7 @@ const PermitSimulation: React.FC<{
                 interactive
               >
                 <Text
+                  data-testid="simulation-token-value"
                   backgroundColor={BackgroundColor.backgroundAlternative}
                   borderRadius={BorderRadius.XL}
                   paddingInline={2}

@@ -107,7 +107,6 @@
     "traits": "object",
     "previousUserTraits": "object",
     "fragments": "object",
-    "dataCollectionForMarketing": "boolean",
     "segmentApiCalls": "object"
   },
   "MetamaskNotificationsController": {
@@ -174,7 +173,6 @@
     "useNonceField": false,
     "usePhishDetect": true,
     "dismissSeedBackUpReminder": true,
-    "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
@@ -203,8 +201,9 @@
       "smartTransactionsOptInStatus": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
       "petnamesEnabled": true,
-      "isRedesignedConfirmationsDeveloperEnabled": "boolean",
-      "redesignedConfirmationsEnabled": true
+      "redesignedConfirmationsEnabled": true,
+      "redesignedTransactionsEnabled": "boolean",
+      "isRedesignedConfirmationsDeveloperEnabled": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -223,10 +222,8 @@
   "QueuedRequestController": { "queuedRequestCount": 0 },
   "SelectedNetworkController": { "domains": "object" },
   "SignatureController": {
-    "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
     "unapprovedTypedMessages": "object",
-    "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgCount": 0,
     "unapprovedTypedMessagesCount": 0
   },
@@ -275,7 +272,8 @@
       "swapsStxBatchStatusRefreshTime": 10000,
       "swapsStxStatusDeadline": 180,
       "swapsStxGetTransactionsRefreshTime": 10000,
-      "swapsStxMaxFeeMultiplier": 2
+      "swapsStxMaxFeeMultiplier": 2,
+      "swapsFeatureFlags": {}
     }
   },
   "TokenListController": {

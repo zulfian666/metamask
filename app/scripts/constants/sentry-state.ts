@@ -206,7 +206,6 @@ export const SENTRY_BACKGROUND_STATE = {
   PreferencesController: {
     advancedGasFee: true,
     currentLocale: true,
-    disabledRpcMethodPreferences: true,
     dismissSeedBackUpReminder: true,
     featureFlags: true,
     forgottenPassword: true,
@@ -222,6 +221,7 @@ export const SENTRY_BACKGROUND_STATE = {
       autoLockTimeLimit: true,
       hideZeroBalanceTokens: true,
       redesignedConfirmationsEnabled: true,
+      redesignedTransactionsEnabled: false,
       isRedesignedConfirmationsDeveloperEnabled: false,
       showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
@@ -229,6 +229,7 @@ export const SENTRY_BACKGROUND_STATE = {
       smartTransactionsOptInStatus: true,
       useNativeCurrencyAsPrimaryCurrency: true,
       petnamesEnabled: true,
+      showConfirmationAdvancedDetails: true,
     },
     useExternalServices: false,
     selectedAddress: false,
@@ -261,8 +262,6 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   SelectedNetworkController: { domains: false },
   SignatureController: {
-    unapprovedMsgCount: true,
-    unapprovedMsgs: false,
     unapprovedPersonalMsgCount: true,
     unapprovedPersonalMsgs: false,
     unapprovedTypedMessages: false,
