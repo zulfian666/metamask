@@ -18,6 +18,7 @@ const VERSION = '0.0.1-test';
 const FAKE_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
+const TEST_GA_COOKIE_ID = '123456.123455';
 const DUMMY_ACTION_ID = 'DUMMY_ACTION_ID';
 const MOCK_EXTENSION_ID = 'testid';
 
@@ -51,6 +52,7 @@ const DEFAULT_TEST_CONTEXT = {
   page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
   referrer: undefined,
   userAgent: window.navigator.userAgent,
+  marketingCampaignCookieId: null,
 };
 
 const DEFAULT_SHARED_PROPERTIES = {
@@ -161,6 +163,9 @@ describe('MetaMetricsController', function () {
       expect(metaMetricsController.state.metaMetricsId).toStrictEqual(
         TEST_META_METRICS_ID,
       );
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(null);
       expect(metaMetricsController.locale).toStrictEqual(
         LOCALE.replace('_', '-'),
       );
@@ -1243,7 +1248,78 @@ describe('MetaMetricsController', function () {
       expect(Object.keys(segmentApiCalls).length === 0).toStrictEqual(true);
     });
   });
-
+  describe('setMarketingCampaignCookieId', function () {
+    it('should update marketingCampaignCookieId in the context when cookieId is available', async function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+        dataCollectionForMarketing: true,
+      });
+      metaMetricsController.setMarketingCampaignCookieId(TEST_GA_COOKIE_ID);
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(TEST_GA_COOKIE_ID);
+      const spy = jest.spyOn(segment, 'track');
+      metaMetricsController.submitEvent(
+        {
+          event: 'Fake Event',
+          category: 'Unit Test',
+          properties: {
+            test: 1,
+          },
+        },
+        { isOptIn: true },
+      );
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(
+        {
+          event: 'Fake Event',
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: {
+            ...DEFAULT_TEST_CONTEXT,
+            marketingCampaignCookieId: TEST_GA_COOKIE_ID,
+          },
+          properties: {
+            test: 1,
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        },
+        spy.mock.calls[0][1],
+      );
+    });
+    it('should update the value of marketingCampaignCookieId based on participateInMetaMetrics', async function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+        dataCollectionForMarketing: true,
+      });
+      metaMetricsController.setMarketingCampaignCookieId(TEST_GA_COOKIE_ID);
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(TEST_GA_COOKIE_ID);
+      await metaMetricsController.setParticipateInMetaMetrics(false);
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(null);
+    });
+    it('should update the value of marketingCampaignCookieId based on dataCollectionForMarketing', async function () {
+      const metaMetricsController = getMetaMetricsController({
+        participateInMetaMetrics: true,
+        metaMetricsId: TEST_META_METRICS_ID,
+        dataCollectionForMarketing: true,
+      });
+      metaMetricsController.setMarketingCampaignCookieId(TEST_GA_COOKIE_ID);
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(TEST_GA_COOKIE_ID);
+      await metaMetricsController.setDataCollectionForMarketing(false);
+      expect(
+        metaMetricsController.state.marketingCampaignCookieId,
+      ).toStrictEqual(null);
+    });
+  });
   afterEach(function () {
     // flush the queues manually after each test
     segment.flush();
