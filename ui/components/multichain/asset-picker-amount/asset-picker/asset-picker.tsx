@@ -24,10 +24,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
-import {
-  getCurrentNetwork,
-  getTestNetworkBackgroundColor,
-} from '../../../../selectors';
+import { getCurrentNetwork } from '../../../../selectors';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -41,6 +38,12 @@ import {
   NFT,
 } from '../asset-picker-modal/types';
 import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
+import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-modal-network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  GOERLI_DISPLAY_NAME,
+  SEPOLIA_DISPLAY_NAME,
+} from '../../../../../shared/constants/network';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -60,9 +63,13 @@ export type AssetPickerProps = {
   ) => void;
   onClick?: () => void;
   isDisabled?: boolean;
+  networkProps?: Pick<
+    React.ComponentProps<typeof AssetPickerModalNetwork>,
+    'network' | 'networks' | 'onNetworkChange'
+  >;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModal>,
-  'visibleTabs' | 'header' | 'sendingAsset'
+  'visibleTabs' | 'header' | 'sendingAsset' | 'customTokenListGenerator'
 >;
 
 // A component that lets the user pick from a list of assets.
@@ -70,10 +77,12 @@ export function AssetPicker({
   header,
   asset,
   onAssetChange,
+  networkProps,
   sendingAsset,
   onClick,
   isDisabled = false,
   visibleTabs,
+  customTokenListGenerator,
 }: AssetPickerProps) {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const t = useI18nContext();
@@ -95,7 +104,7 @@ export function AssetPicker({
 
   // Badge details
   const currentNetwork = useSelector(getCurrentNetwork);
-  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+  const selectedNetwork = networkProps?.network ?? currentNetwork;
 
   const handleAssetPickerTitle = (): string | undefined => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -107,8 +116,23 @@ export function AssetPicker({
     return undefined;
   };
 
+  const [isSelectingNetwork, setIsSelectingNetwork] = useState(false);
+
   return (
     <>
+      {networkProps && (
+        <AssetPickerModalNetwork
+          isOpen={isSelectingNetwork}
+          onClose={() => {
+            setIsSelectingNetwork(false);
+          }}
+          onBack={() => {
+            setIsSelectingNetwork(false);
+            setShowAssetPickerModal(true);
+          }}
+          {...networkProps}
+        />
+      )}
       {/* This is the Modal that ask to choose token to send */}
       <AssetPickerModal
         visibleTabs={visibleTabs}
@@ -125,9 +149,15 @@ export function AssetPicker({
           setShowAssetPickerModal(false);
         }}
         sendingAsset={sendingAsset}
+        network={networkProps?.network ? networkProps.network : undefined}
+        onNetworkPickerClick={() => {
+          setShowAssetPickerModal(false);
+          setIsSelectingNetwork(true);
+        }}
         defaultActiveTabKey={
           asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
         }
+        customTokenListGenerator={customTokenListGenerator}
       />
 
       <Button
@@ -154,50 +184,74 @@ export function AssetPicker({
         }}
         title={handleAssetPickerTitle()}
       >
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
-          <Box display={Display.Flex}>
-            <BadgeWrapper
-              badge={
-                <AvatarNetwork
-                  size={AvatarNetworkSize.Xs}
-                  name={currentNetwork?.nickname ?? ''}
-                  src={currentNetwork?.rpcPrefs?.imageUrl}
-                  backgroundColor={testNetworkBackgroundColor}
-                  borderColor={
-                    primaryTokenImage
-                      ? BorderColor.borderMuted
-                      : BorderColor.borderDefault
-                  }
-                />
-              }
-            >
-              <AvatarToken
-                borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
-                src={primaryTokenImage ?? undefined}
-                size={AvatarTokenSize.Md}
-                name={symbol}
-                {...(isNFT && { backgroundColor: BackgroundColor.transparent })}
-              />
-            </BadgeWrapper>
-          </Box>
-
-          <Tooltip disabled={!isSymbolLong} title={symbol} position="bottom">
-            <Text className="asset-picker__symbol" variant={TextVariant.bodyMd}>
-              {formattedSymbol}
-            </Text>
-            {isNFT && asset?.tokenId && (
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
+        {asset ? (
+          <Box display={Display.Flex} alignItems={AlignItems.center} gap={3}>
+            <Box display={Display.Flex}>
+              <BadgeWrapper
+                badge={
+                  <AvatarNetwork
+                    size={AvatarNetworkSize.Xs}
+                    name={selectedNetwork?.nickname ?? ''}
+                    src={
+                      selectedNetwork?.rpcPrefs?.imageUrl ??
+                      (selectedNetwork?.chainId &&
+                        CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                          selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                        ])
+                    }
+                    backgroundColor={
+                      Object.entries({
+                        [GOERLI_DISPLAY_NAME]: BackgroundColor.goerli,
+                        [SEPOLIA_DISPLAY_NAME]: BackgroundColor.sepolia,
+                      }).find(([tickerSubstring]) =>
+                        selectedNetwork?.ticker?.includes(tickerSubstring),
+                      )?.[1]
+                    }
+                    borderColor={
+                      primaryTokenImage
+                        ? BorderColor.borderMuted
+                        : BorderColor.borderDefault
+                    }
+                  />
+                }
               >
-                #
-                {String(asset.tokenId).length < ELLIPSIFY_LENGTH
-                  ? asset.tokenId
-                  : ellipsify(String(asset.tokenId), 6, 4)}
+                <AvatarToken
+                  borderRadius={isNFT ? BorderRadius.LG : BorderRadius.full}
+                  src={primaryTokenImage ?? undefined}
+                  size={AvatarTokenSize.Md}
+                  name={symbol}
+                  {...(isNFT && {
+                    backgroundColor: BackgroundColor.transparent,
+                  })}
+                />
+              </BadgeWrapper>
+            </Box>
+
+            <Tooltip disabled={!isSymbolLong} title={symbol} position="bottom">
+              <Text
+                className="asset-picker__symbol"
+                variant={TextVariant.bodyMd}
+              >
+                {formattedSymbol}
               </Text>
-            )}
-          </Tooltip>
-        </Box>
+              {isNFT && asset?.tokenId && (
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  #
+                  {String(asset.tokenId).length < ELLIPSIFY_LENGTH
+                    ? asset.tokenId
+                    : ellipsify(String(asset.tokenId), 6, 4)}
+                </Text>
+              )}
+            </Tooltip>
+          </Box>
+        ) : (
+          <Text className="asset-picker__fallback" variant={TextVariant.bodyMd}>
+            {t('swapSelectToken')}
+          </Text>
+        )}
       </Button>
     </>
   );

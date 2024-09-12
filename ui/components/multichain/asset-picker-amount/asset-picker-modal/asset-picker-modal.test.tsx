@@ -70,6 +70,7 @@ describe('AssetPickerModal', () => {
 
   const defaultProps = {
     header: 'sendSelectReceiveAsset',
+    onNetworkPickerClick: jest.fn(),
     isOpen: true,
     onClose: onCloseMock,
     asset: {
@@ -293,5 +294,58 @@ describe('AssetPickerModal', () => {
         address: '0xtoken1',
       }),
     ).toBe(true);
+  });
+
+  it('should render network picker when onNetworkPickerClick prop is defined', () => {
+    const { getByText, getAllByRole } = renderWithProvider(
+      <AssetPickerModal
+        {...defaultProps}
+        header="selectNetworkHeader"
+        network={{
+          ticker: 'ETH',
+          chainId: '0x1',
+          rpcUrl: 'https://rpcurl',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://explorerurl',
+            imageUrl: 'https://image.com',
+          },
+          nickname: 'Network name',
+        }}
+      />,
+      store,
+    );
+
+    const modalTitle = getByText('selectNetworkHeader');
+    expect(modalTitle).toBeInTheDocument();
+
+    expect(getAllByRole('img')).toHaveLength(2);
+    const modalContent = getByText('Network name');
+    expect(modalContent).toBeInTheDocument();
+  });
+
+  it('should not render network picker when onNetworkPickerClick prop is not defined', () => {
+    const { getByText, getAllByRole } = renderWithProvider(
+      <AssetPickerModal
+        {...defaultProps}
+        onNetworkPickerClick={undefined}
+        header="selectNetworkHeader"
+        network={{
+          ticker: 'ETH',
+          chainId: '0x1',
+          rpcUrl: 'https://rpcurl',
+          rpcPrefs: {
+            blockExplorerUrl: 'https://explorerurl',
+            imageUrl: 'https://image.com',
+          },
+          nickname: 'Network name',
+        }}
+      />,
+      store,
+    );
+
+    const modalTitle = getByText('selectNetworkHeader');
+    expect(modalTitle).toBeInTheDocument();
+
+    expect(getAllByRole('img')).toHaveLength(1);
   });
 });
