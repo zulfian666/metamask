@@ -16,7 +16,11 @@ import {
   RecipientRow,
 } from '../../shared/transaction-details/transaction-details';
 
-const Spender = () => {
+const Spender = ({
+  isSetApprovalForAll,
+}: {
+  isSetApprovalForAll?: boolean;
+}) => {
   const t = useI18nContext();
 
   const decodedResponse = useDecodedTransactionData();
@@ -35,7 +39,10 @@ const Spender = () => {
 
   return (
     <>
-      <ConfirmInfoRow label={t('spender')} tooltip={t('spenderTooltipDesc')}>
+      <ConfirmInfoRow
+        label={t(isSetApprovalForAll ? 'permissionFor' : 'spender')}
+        tooltip={t('spenderTooltipDesc')}
+      >
         <ConfirmInfoRowAddress address={spender} />
       </ConfirmInfoRow>
 
@@ -44,14 +51,18 @@ const Spender = () => {
   );
 };
 
-export const ApproveDetails = () => {
+export const ApproveDetails = ({
+  isSetApprovalForAll,
+}: {
+  isSetApprovalForAll?: boolean;
+}) => {
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
 
   return (
     <ConfirmInfoSection>
-      <Spender />
+      <Spender isSetApprovalForAll={isSetApprovalForAll} />
       <OriginRow />
       {showAdvancedDetails && (
         <>
