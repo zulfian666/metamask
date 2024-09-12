@@ -1,5 +1,6 @@
 import React, { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
 import { ButtonVariant, UserInputEventType } from '@metamask/snaps-sdk';
+import { useSelector } from 'react-redux';
 import { Button, ButtonSize, IconSize } from '../../../component-library';
 import {
   AlignItems,
@@ -8,6 +9,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { SnapIcon } from '../snap-icon';
+import { getHideSnapBranding } from '../../../../selectors';
 
 type SnapFooterButtonProps = {
   name?: string;
@@ -23,6 +25,9 @@ export const SnapFooterButton: FunctionComponent<SnapFooterButtonProps> = ({
   ...props
 }) => {
   const { handleEvent, snapId } = useSnapInterfaceContext();
+  const hideSnapBranding = useSelector((state) =>
+    getHideSnapBranding(state, snapId),
+  );
 
   const handleSnapAction = (event: ReactMouseEvent<HTMLElement>) => {
     event.preventDefault();
@@ -49,7 +54,7 @@ export const SnapFooterButton: FunctionComponent<SnapFooterButtonProps> = ({
         flexDirection: FlexDirection.Row,
       }}
     >
-      {isSnapAction && (
+      {isSnapAction && !hideSnapBranding && (
         <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} marginRight={2} />
       )}
       {children}
