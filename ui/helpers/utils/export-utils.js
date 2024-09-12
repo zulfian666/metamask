@@ -26,11 +26,15 @@ export async function exportAsFile(filename, data, contentType) {
     throw new Error(`Unsupported file type: ${contentType}`);
   }
 
-  if (supportsShowSaveFilePicker()) {
-    // Preferred method for downloads
-    await saveFileUsingFilePicker(filename, data, contentType);
-  } else {
-    saveFileUsingDataUri(filename, data, contentType);
+  try {
+    if (supportsShowSaveFilePicker()) {
+      // Preferred method for downloads
+      await saveFileUsingFilePicker(filename, data, contentType);
+    } else {
+      saveFileUsingDataUri(filename, data, contentType);
+    }
+  } catch (error) {
+    throw new Error('Failed to download state log.');
   }
 }
 /**

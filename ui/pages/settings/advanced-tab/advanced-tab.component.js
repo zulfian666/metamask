@@ -134,15 +134,19 @@ export default class AdvancedTab extends PureComponent {
               type="secondary"
               large
               onClick={() => {
-                window.logStateString((err, result) => {
+                window.logStateString(async (err, result) => {
                   if (err) {
                     displayWarning(t('stateLogError'));
                   } else {
-                    exportAsFile(
-                      `${t('stateLogFileName')}.json`,
-                      result,
-                      ExportableContentType.JSON,
-                    );
+                    try {
+                      await exportAsFile(
+                        `${t('stateLogFileName')}.json`,
+                        result,
+                        ExportableContentType.JSON,
+                      );
+                    } catch (error) {
+                      displayWarning(error);
+                    }
                   }
                 });
               }}
