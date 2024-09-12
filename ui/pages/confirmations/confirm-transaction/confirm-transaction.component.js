@@ -4,6 +4,8 @@ import { Route, Switch, useHistory, useParams } from 'react-router-dom';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
+  MESSAGE_TYPE,
+  TRACE_ENABLED_SIGN_METHODS,
 } from '../../../../shared/constants/app';
 import Loading from '../../../components/ui/loading-screen';
 import {
@@ -103,11 +105,15 @@ const ConfirmTransaction = () => {
       return undefined;
     }
 
+    const traceId = TRACE_ENABLED_SIGN_METHODS.includes(type)
+      ? transaction.msgParams?.requestId?.toString()
+      : id;
+
     return await endBackgroundTrace({
       name: TraceName.NotificationDisplay,
-      id,
+      id: traceId,
     });
-  }, [id, isNotification]);
+  }, [id, isNotification, type, transaction.msgParams]);
 
   const transactionId = id;
   const isValidTokenMethod = isTokenMethodAction(type);
