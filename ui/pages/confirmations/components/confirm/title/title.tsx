@@ -4,6 +4,8 @@ import {
 } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
 
+import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
+import { getHighestSeverity } from '../../../../../components/app/alert-system/utils';
 import { Box, Text } from '../../../../../components/component-library';
 import {
   TextAlign,
@@ -12,15 +14,14 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getHighestSeverity } from '../../../../../components/app/alert-system/utils';
-import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
+import { useConfirmContext } from '../../../context/confirm';
 import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import {
   isPermitSignatureRequest,
   isSIWESignatureRequest,
 } from '../../../utils';
-import { useConfirmContext } from '../../../context/confirm';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
+import { useDecodedTransactionData } from '../info/hooks/useDecodedTransactionData';
 
 function ConfirmBannerAlert({ ownerId }: { ownerId: string }) {
   const t = useI18nContext();
@@ -64,6 +65,7 @@ const getTitle = (
   t: IntlFunction,
   confirmation?: Confirmation,
   isNFT?: boolean,
+  isRevokeSetApprovalForAll?: boolean,
 ) => {
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
@@ -76,6 +78,9 @@ const getTitle = (
       }
       return t('confirmTitlePermitSignature');
     case TransactionType.tokenMethodSetApprovalForAll:
+      if (isRevokeSetApprovalForAll) {
+        return t('confirmTitleSetApprovalForAllRevokeTransaction');
+      }
       return t('setApprovalForAllRedesignedTitle');
     case TransactionType.personalSign:
       if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
@@ -95,6 +100,7 @@ const getDescription = (
   t: IntlFunction,
   confirmation?: Confirmation,
   isNFT?: boolean,
+  isRevokeSetApprovalForAll?: boolean,
 ) => {
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
@@ -107,6 +113,9 @@ const getDescription = (
       }
       return t('confirmTitleDescERC20ApproveTransaction');
     case TransactionType.tokenMethodSetApprovalForAll:
+      if (isRevokeSetApprovalForAll) {
+        return '';
+      }
       return t('confirmTitleDescApproveTransaction');
     case TransactionType.personalSign:
       if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
@@ -128,14 +137,39 @@ const ConfirmTitle: React.FC = memo(() => {
 
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
+  console.log({ currentConfirmation });
+
+  let isRevokeSetApprovalForAll = false;
+  if (
+    currentConfirmation?.type === TransactionType.tokenMethodSetApprovalForAll
+  ) {
+    const decodedResponse = useDecodedTransactionData();
+
+    isRevokeSetApprovalForAll =
+      decodedResponse.value?.data[0].name === 'setApprovalForAll' &&
+      decodedResponse.value?.data[0].params[1].value === false;
+  }
+
   const title = useMemo(
-    () => getTitle(t as IntlFunction, currentConfirmation, isNFT),
-    [currentConfirmation, isNFT],
+    () =>
+      getTitle(
+        t as IntlFunction,
+        currentConfirmation,
+        isNFT,
+        isRevokeSetApprovalForAll,
+      ),
+    [currentConfirmation, isNFT, isRevokeSetApprovalForAll],
   );
 
   const description = useMemo(
-    () => getDescription(t as IntlFunction, currentConfirmation, isNFT),
-    [currentConfirmation, isNFT],
+    () =>
+      getDescription(
+        t as IntlFunction,
+        currentConfirmation,
+        isNFT,
+        isRevokeSetApprovalForAll,
+      ),
+    [currentConfirmation, isNFT, isRevokeSetApprovalForAll],
   );
 
   if (!currentConfirmation) {

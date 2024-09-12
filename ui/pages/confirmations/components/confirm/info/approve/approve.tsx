@@ -77,25 +77,29 @@ const ApproveStaticSimulation = () => {
   );
 
   const simulationElements = (
-    <>
-      <Box display={Display.Flex}>
-        <Box
-          display={Display.Inline}
-          marginInlineEnd={1}
-          minWidth={BlockSize.Zero}
-        >
-          {tokenAmount === UNLIMITED_MSG ? (
-            <Tooltip title={formattedTokenNum}>{formattedTokenText}</Tooltip>
-          ) : (
-            formattedTokenText
-          )}
+    <ConfirmInfoRow
+      label={t(isNFT ? 'simulationApproveHeading' : 'spendingCap')}
+    >
+      <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
+        <Box display={Display.Flex}>
+          <Box
+            display={Display.Inline}
+            marginInlineEnd={1}
+            minWidth={BlockSize.Zero}
+          >
+            {tokenAmount === UNLIMITED_MSG ? (
+              <Tooltip title={formattedTokenNum}>{formattedTokenText}</Tooltip>
+            ) : (
+              formattedTokenText
+            )}
+          </Box>
+          <Name
+            value={transactionMeta.txParams.to as string}
+            type={NameType.ETHEREUM_ADDRESS}
+          />
         </Box>
-        <Name
-          value={transactionMeta.txParams.to as string}
-          type={NameType.ETHEREUM_ADDRESS}
-        />
       </Box>
-    </>
+    </ConfirmInfoRow>
   );
 
   return (
@@ -103,9 +107,6 @@ const ApproveStaticSimulation = () => {
       title={t('simulationDetailsTitle')}
       titleTooltip={t('simulationDetailsTitleTooltip')}
       description={t('simulationDetailsApproveDesc')}
-      simulationHeading={
-        isNFT ? t('simulationApproveHeading') : t('spendingCap')
-      }
       simulationElements={simulationElements}
     />
   );
