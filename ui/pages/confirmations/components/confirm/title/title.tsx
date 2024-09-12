@@ -68,13 +68,15 @@ const getTitle = (
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return t('confirmTitleTransaction');
+    case TransactionType.deployContract:
+      return t('confirmTitleDeployContract');
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
         return t('confirmTitleApproveTransaction');
       }
       return t('confirmTitlePermitSignature');
-    case TransactionType.deployContract:
-      return t('confirmTitleDeployContract');
+    case TransactionType.tokenMethodSetApprovalForAll:
+      return t('setApprovalForAllRedesignedTitle');
     case TransactionType.personalSign:
       if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
         return t('confirmTitleSIWESignature');
@@ -97,13 +99,15 @@ const getDescription = (
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
       return '';
+    case TransactionType.deployContract:
+      return t('confirmTitleDescDeployContract');
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
         return t('confirmTitleDescApproveTransaction');
       }
       return t('confirmTitleDescERC20ApproveTransaction');
-    case TransactionType.deployContract:
-      return t('confirmTitleDescDeployContract');
+    case TransactionType.tokenMethodSetApprovalForAll:
+      return t('confirmTitleDescApproveTransaction');
     case TransactionType.personalSign:
       if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
         return t('confirmTitleDescSIWESignature');

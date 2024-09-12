@@ -3810,6 +3810,9 @@
   "permissionDetails": {
     "message": "Permission details"
   },
+  "permissionFor": {
+    "message": "Permission for"
+  },
   "permissionRequest": {
     "message": "Permission request"
   },
@@ -4776,6 +4779,9 @@
   "setApprovalForAll": {
     "message": "Set approval for all"
   },
+  "setApprovalForAllRedesignedTitle": {
+    "message": "Withdrawal request"
+  },
   "setApprovalForAllTitle": {
     "message": "Approve $1 with no spend limit",
     "description": "The token symbol that is being approved"
@@ -4891,6 +4897,9 @@
   },
   "simulationDetailsOutgoingHeading": {
     "message": "You send"
+  },
+  "simulationDetailsSetApprovalForAllDesc": {
+    "message": "You're giving permission for someone else to withdraw NFTs from your account."
   },
   "simulationDetailsTitle": {
     "message": "Estimated changes"
@@ -6566,6 +6575,9 @@
   },
   "whatsThis": {
     "message": "What's this?"
+  },
+  "withdrawing": {
+    "message": "Withdrawing"
   },
   "wrongChainId": {
     "message": "This chain ID doesn’t match the network name."

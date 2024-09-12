@@ -9,6 +9,7 @@ import mockState from '../mock-state.json';
 import {
   genUnapprovedApproveConfirmation,
   genUnapprovedContractInteractionConfirmation,
+  genUnapprovedSetApprovalForAllConfirmation,
 } from './contract-interaction';
 import { unapprovedPersonalSignMsg } from './personal_sign';
 import { unapprovedTypedSignMsgV4 } from './typed_sign';
@@ -173,5 +174,11 @@ export const getMockContractInteractionConfirmState = (
 export const getMockApproveConfirmState = () => {
   return getMockConfirmStateForTransaction(
     genUnapprovedApproveConfirmation({ chainId: '0x5' }),
+  );
+};
+
+export const getMockSetApprovalForAllConfirmState = () => {
+  return getMockConfirmStateForTransaction(
+    genUnapprovedSetApprovalForAllConfirmation({ chainId: '0x5' }),
   );
 };
