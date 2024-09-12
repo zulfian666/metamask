@@ -4,17 +4,19 @@ import { getRemoteTokens } from '../selectors';
 import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
 import { useNames } from './useName';
 import { useFirstPartyContractNames } from './useFirstPartyContractName';
+import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 
 export type UseDisplayNameRequest = {
   value: string;
-  type: NameType;
   preferContractSymbol?: boolean;
+  type: NameType;
 };
 
 export type UseDisplayNameResponse = {
   name: string | null;
   hasPetname: boolean;
   contractDisplayName?: string;
+  image?: string;
 };
 
 export function useDisplayNames(
@@ -27,6 +29,7 @@ export function useDisplayNames(
 
   const nameEntries = useNames(nameRequests);
   const firstPartyContractNames = useFirstPartyContractNames(nameRequests);
+  const nftCollections = useNftCollectionsMetadata(nameRequests);
   const values = requests.map(({ value }) => value);
 
   const contractInfo = useSelector((state) =>
@@ -42,6 +45,15 @@ export function useDisplayNames(
     const firstPartyContractName = firstPartyContractNames[index];
     const singleContractInfo = contractInfo[index];
     const watchedNftName = watchedNftNames[value.toLowerCase()]?.name;
+    const nftCollectionProperties = nftCollections[value.toLowerCase()];
+
+    let nftCollectionName;
+    let nftCollectionImage;
+
+    if (nftCollectionProperties?.isSpam === false) {
+      nftCollectionName = nftCollectionProperties?.name;
+      nftCollectionImage = nftCollectionProperties?.image;
+    }
 
     const contractDisplayName =
       preferContractSymbol && singleContractInfo?.symbol
@@ -51,6 +63,7 @@ export function useDisplayNames(
     const name =
       nameEntry?.name ||
       firstPartyContractName ||
+      nftCollectionName ||
       contractDisplayName ||
       watchedNftName ||
       null;
@@ -61,6 +74,7 @@ export function useDisplayNames(
       name,
       hasPetname,
       contractDisplayName,
+      image: nftCollectionImage,
     };
   });
 }
@@ -68,8 +82,8 @@ export function useDisplayNames(
 /**
  * Attempts to resolve the name for the given parameters.
  *
- * @param value
- * @param type
+ * @param value - The address or contract address to resolve.
+ * @param type - The type of value, e.g. NameType.ETHEREUM_ADDRESS.
  * @param preferContractSymbol - Applies to recognized contracts when no petname is saved:
  * If true the contract symbol (e.g. WBTC) will be used instead of the contract name.
  * @returns An object with two properties:
@@ -81,5 +95,5 @@ export function useDisplayName(
   type: NameType,
   preferContractSymbol: boolean = false,
 ): UseDisplayNameResponse {
-  return useDisplayNames([{ value, type, preferContractSymbol }])[0];
+  return useDisplayNames([{ preferContractSymbol, type, value }])[0];
 }

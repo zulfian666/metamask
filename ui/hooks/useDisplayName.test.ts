@@ -5,6 +5,7 @@ import { getNftContractsByAddressOnCurrentChain } from '../selectors/nft';
 import { useDisplayName } from './useDisplayName';
 import { useNames } from './useName';
 import { useFirstPartyContractNames } from './useFirstPartyContractName';
+import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
 
 jest.mock('react-redux', () => ({
   // TODO: Replace `any` with type
@@ -18,6 +19,10 @@ jest.mock('./useName', () => ({
 
 jest.mock('./useFirstPartyContractName', () => ({
   useFirstPartyContractNames: jest.fn(),
+}));
+
+jest.mock('./useNftCollectionsMetadata', () => ({
+  useNftCollectionsMetadata: jest.fn(),
 }));
 
 jest.mock('../selectors', () => ({
@@ -62,6 +67,7 @@ describe('useDisplayName', () => {
   const getNftContractsByAddressOnCurrentChainMock = jest.mocked(
     getNftContractsByAddressOnCurrentChain,
   );
+  const useNftCollectionsMetadataMock = jest.mocked(useNftCollectionsMetadata);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -78,6 +84,7 @@ describe('useDisplayName', () => {
     getNftContractsByAddressOnCurrentChainMock.mockReturnValue(
       NO_WATCHED_NFT_NAME_FOUND_RETURN_VALUE,
     );
+    useNftCollectionsMetadataMock.mockReturnValue({});
   });
 
   it('handles no name found', () => {
@@ -151,5 +158,43 @@ describe('useDisplayName', () => {
       name: WATCHED_NFT_NAME_MOCK,
       hasPetname: false,
     });
+  });
+
+  it('returns nft collection name from metadata if no other name is found', () => {
+    const IMAGE_MOCK = 'url';
+
+    useNftCollectionsMetadataMock.mockReturnValue({
+      [VALUE_MOCK.toLowerCase()]: {
+        name: CONTRACT_NAME_MOCK,
+        image: IMAGE_MOCK,
+        isSpam: false,
+      },
+    });
+
+    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK, false)).toEqual({
+      name: CONTRACT_NAME_MOCK,
+      hasPetname: false,
+      contractDisplayName: undefined,
+      image: IMAGE_MOCK,
+    });
+  });
+
+  it('does not return nft collection name if collection is marked as spam', () => {
+    const IMAGE_MOCK = 'url';
+
+    useNftCollectionsMetadataMock.mockReturnValue({
+      [VALUE_MOCK.toLowerCase()]: {
+        name: CONTRACT_NAME_MOCK,
+        image: IMAGE_MOCK,
+        isSpam: true,
+      },
+    });
+
+    expect(useDisplayName(VALUE_MOCK, TYPE_MOCK, false)).toEqual(
+      expect.objectContaining({
+        name: null,
+        image: undefined,
+      }),
+    );
   });
 });
