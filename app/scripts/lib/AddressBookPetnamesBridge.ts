@@ -88,6 +88,6 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge {
    * @override
    */
   onSourceChange(listener: () => void): void {
-    this.#addressBookController.subscribe(listener);
+    this.messenger.subscribe('AddressBookController:stateChange', listener);
   }
 }
