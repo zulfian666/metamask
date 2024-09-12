@@ -23,6 +23,7 @@ export const REDESIGN_USER_TRANSACTION_TYPES = [
 
 export const REDESIGN_DEV_TRANSACTION_TYPES = [
   ...REDESIGN_USER_TRANSACTION_TYPES,
+  TransactionType.tokenMethodApprove,
   TransactionType.tokenMethodSetApprovalForAll,
 ];
 
