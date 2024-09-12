@@ -120,10 +120,7 @@ import {
   getOrderedConnectedAccountsForConnectedDapp,
   getSubjectMetadata,
 } from './permissions';
-import {
-  getSelectedInternalAccount
-}
- from "./accounts";
+import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import { createDeepEqualSelector } from './util';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
 
@@ -380,10 +377,6 @@ export function getSelectedInternalAccountWithBalance(state) {
   };
 
   return selectedAccountWithBalance;
-}
-
-export function getInternalAccounts(state) {
-  return Object.values(state.metamask.internalAccounts.accounts);
 }
 
 export function getInternalAccount(state, accountId) {
