@@ -120,6 +120,10 @@ import {
   getOrderedConnectedAccountsForConnectedDapp,
   getSubjectMetadata,
 } from './permissions';
+import {
+  getSelectedInternalAccount
+}
+ from "./accounts";
 import { createDeepEqualSelector } from './util';
 import { getMultichainBalances, getMultichainNetwork } from './multichain';
 

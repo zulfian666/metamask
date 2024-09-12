@@ -34,10 +34,10 @@ import {
   getNativeCurrencyImage,
   getNetworkConfigurations,
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
   getShouldShowFiat,
   getShowFiatInTestnets,
 } from './selectors';
+import { getSelectedInternalAccount } from './accounts';
 
 export type RatesState = {
   metamask: RatesControllerState;
