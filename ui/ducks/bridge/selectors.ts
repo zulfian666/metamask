@@ -1,6 +1,11 @@
 import { NetworkState } from '@metamask/network-controller';
 import { uniqBy } from 'lodash';
-import { getAllNetworks, getIsBridgeEnabled } from '../../selectors';
+import {
+  getAllNetworks,
+  getIsBridgeEnabled,
+  getSwapsDefaultToken,
+  SwapsEthToken,
+} from '../../selectors';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import {
   BridgeControllerState,
@@ -12,9 +17,9 @@ import {
 } from '../../../shared/constants/network';
 import { createDeepEqualSelector } from '../../selectors/util';
 import { getProviderConfig } from '../metamask/metamask';
+import { SwapsTokenObject } from '../../../shared/constants/swaps';
 import { BridgeState } from './bridge';
 
-// TODO add swaps state
 type BridgeAppState = {
   metamask: NetworkState & { bridgeState: BridgeControllerState } & {
     useExternalServices: boolean;
@@ -57,6 +62,26 @@ export const getToChains = createDeepEqualSelector(
       ),
     ),
 );
+
+export const getFromToken = (
+  state: BridgeAppState,
+): SwapsTokenObject | SwapsEthToken => {
+  return state.bridge.fromToken?.address
+    ? state.bridge.fromToken
+    : getSwapsDefaultToken(state);
+};
+
+export const getToToken = (
+  state: BridgeAppState,
+): SwapsTokenObject | SwapsEthToken | undefined => {
+  return state.bridge.toToken;
+};
+
+export const getFromAmount = (state: BridgeAppState): string | undefined =>
+  state.bridge.fromTokenInputValue;
+export const getToAmount = (_state: BridgeAppState) => {
+  return '0';
+};
 
 export const getIsBridgeTx = createDeepEqualSelector(
   getFromChain,
