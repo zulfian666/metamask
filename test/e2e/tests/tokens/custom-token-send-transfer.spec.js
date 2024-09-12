@@ -114,6 +114,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           smartContract,
         );
         await unlockWallet(driver);
+        console.log('FOO');
 
         // transfer token from dapp
         await openDapp(driver, contractAddress);
