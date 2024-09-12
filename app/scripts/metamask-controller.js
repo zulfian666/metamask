@@ -5613,11 +5613,17 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.upsertNetworkConfiguration.bind(
             this.networkController,
           ),
-        setActiveNetwork: async (networkClientId) => {
-          await this.networkController.setActiveNetwork(networkClientId);
+        setActiveNetwork: async (
+          networkClientId,
+          { originIsSnap = false } = {},
+        ) => {
+          if (!originIsSnap) {
+            await this.networkController.setActiveNetwork(networkClientId);
+          }
           // if the origin has the eth_accounts permission
           // we set per dapp network selection state
           if (
+            originIsSnap ||
             this.permissionController.hasPermission(
               origin,
               PermissionNames.eth_accounts,
@@ -5628,6 +5634,16 @@ export default class MetamaskController extends EventEmitter {
               networkClientId,
             );
           }
+        },
+        grantChainPermissions: (chainId) => {
+          this.permissionController.grantPermissionsIncremental({
+            subject: { origin },
+            approvedPermissions: {
+              [PermissionNames.permittedChains]: {
+                caveats: [CaveatFactories.restrictNetworkSwitching(chainId)],
+              },
+            },
+          });
         },
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
         getCurrentChainIdForDomain: (domain) => {
