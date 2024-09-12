@@ -6,8 +6,6 @@ import { useUserPreferencedCurrency } from '../../../../hooks/useUserPreferenced
 import {
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  getShouldHideZeroBalanceTokens,
-  getSelectedAccount,
   getPreferences,
 } from '../../../../selectors';
 import {
@@ -35,19 +33,18 @@ import {
   TokenListItem,
   ImportTokenLink,
 } from '../../../multichain';
-import { useAccountTotalFiatBalance } from '../../../../hooks/useAccountTotalFiatBalance';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import {
   showPrimaryCurrency,
   showSecondaryCurrency,
 } from '../../../../../shared/modules/currency-display.utils';
-import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   RAMPS_CARD_VARIANT_TYPES,
   RampsCard,
 } from '../../../multichain/ramps-card/ramps-card';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
+import AssetListControlBar from './asset-list-control-bar';
 ///: END:ONLY_INCLUDE_IF
 
 export type TokenWithBalance = {
@@ -55,6 +52,7 @@ export type TokenWithBalance = {
   symbol: string;
   string: string;
   image: string;
+  tokenFiatAmount?: string;
 };
 
 type AssetListProps = {
@@ -63,6 +61,8 @@ type AssetListProps = {
 };
 
 const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
+  const [tokenList, setTokenList] = useState<TokenWithBalance[]>([]);
+  const [loading, setLoading] = useState(false);
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const nativeCurrency = useSelector(getMultichainNativeCurrency);
   const showFiat = useSelector(getMultichainShouldShowFiat);
@@ -80,10 +80,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
-  const selectedAccount = useSelector(getSelectedAccount);
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
 
   const {
     currency: primaryCurrency,
@@ -111,24 +107,6 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
   const isTokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
-
-  const accountTotalFiatBalance = useAccountTotalFiatBalance(
-    selectedAccount,
-    shouldHideZeroBalanceTokens,
-  );
-
-  const tokensWithBalances =
-    accountTotalFiatBalance.tokensWithBalances as TokenWithBalance[];
-
-  const { loading } = accountTotalFiatBalance;
-
-  tokensWithBalances.forEach((token) => {
-    // token.string is the balance displayed in the TokenList UI
-    token.string = roundToDecimalPlacesRemovingExtraZeroes(
-      token.string,
-      5,
-    ) as string;
-  });
 
   const balanceIsZero = useSelector(
     getMultichainSelectedAccountCachedBalanceIsZero,
@@ -176,6 +154,12 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         ) : null
         ///: END:ONLY_INCLUDE_IF
       }
+      <AssetListControlBar
+        tokenList={tokenList}
+        setTokenList={setTokenList}
+        setLoading={setLoading}
+      />
+
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={nativeCurrency}
@@ -210,7 +194,7 @@ const AssetList = ({ onClickAsset, showTokensLinks }: AssetListProps) => {
         showPercentage
       />
       <TokenList
-        tokens={tokensWithBalances}
+        tokens={tokenList}
         loading={loading}
         onTokenClick={(tokenAddress: string) => {
           onClickAsset(tokenAddress);
