@@ -25,6 +25,11 @@ import {
   NETWORK_TYPES,
   TEST_NETWORK_IDS,
 } from '../../shared/constants/network';
+import {
+  DraftTransaction,
+  FeeLevel,
+  MultichainSendState,
+} from '../ducks/multichain-send/multichain-send';
 import { AccountsState } from './accounts';
 import {
   getCurrentChainId,
@@ -70,6 +75,10 @@ export type MultichainNetwork = {
   chainId: CaipChainId;
   network: // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
   ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
+};
+
+export type MultichainReduxSendState = {
+  multichainSend: MultichainSendState;
 };
 
 export const MultichainNetworkPropType = PropTypes.shape({
@@ -386,7 +395,7 @@ export const getMultichainCoinRates = (state: MultichainState) => {
   return state.metamask.rates;
 };
 
-function getBtcCachedBalance(state: MultichainState) {
+export function getBtcCachedBalance(state: MultichainState) {
   const balances = getMultichainBalances(state);
   const account = getSelectedInternalAccount(state);
   const asset = getMultichainIsMainnet(state)
@@ -424,4 +433,58 @@ export function getMultichainConversionRate(
   return getMultichainIsEvm(state, account)
     ? getConversionRate(state)
     : getMultichainCoinRates(state)?.[ticker.toLowerCase()]?.conversionRate;
+}
+
+export function getCurrentMultichainDraftTransactionId(
+  state: MultichainReduxSendState,
+) {
+  return state.multichainSend.currentTransactionUUID;
+}
+
+export function getCurrentMultichainDraftTransaction(
+  state: MultichainReduxSendState,
+): DraftTransaction | null {
+  const draftTransactionExists = getCurrentMultichainDraftTransactionId(state);
+  if (!draftTransactionExists) {
+    return null;
+  }
+  const draftTransaction =
+    state.multichainSend.draftTransactions[draftTransactionExists];
+  return draftTransaction;
+}
+
+export function getCurrentMultichainDraftTransactionRecipient(
+  state: MultichainReduxSendState,
+): DraftTransaction['transactionParams']['recipient'] {
+  const draftTransaction = getCurrentMultichainDraftTransaction(state);
+
+  if (!draftTransaction) {
+    return {
+      address: '',
+      valid: false,
+      error: '',
+    };
+  }
+
+  return draftTransaction.transactionParams.recipient;
+}
+
+export function getMultichainDraftTransactionFee(
+  state: MultichainReduxSendState,
+): DraftTransaction['transactionParams']['fee'] {
+  const draftTransaction = getCurrentMultichainDraftTransaction(state);
+
+  if (!draftTransaction) {
+    return {
+      fee: '0',
+      unit: '',
+      feeInFiat: '',
+      feeLevel: FeeLevel.Average,
+      confirmationTime: '',
+      error: '',
+      isLoading: false,
+    };
+  }
+
+  return draftTransaction.transactionParams.fee;
 }

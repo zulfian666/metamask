@@ -29,6 +29,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   BUILD_QUOTE_ROUTE,
+  MULTICHAIN_SEND_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   SEND_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -36,6 +37,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   SwapsEthToken,
   getCurrentKeyring,
+  getSelectedInternalAccount,
   ///: END:ONLY_INCLUDE_IF
   getUseExternalServices,
   getSelectedAccount,
@@ -66,6 +68,10 @@ import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
+import { isBtcAccount } from '../../../selectors/accounts';
+import { startNewMultichainDraftTransaction } from '../../../ducks/multichain-send/multichain-send';
+import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { getMultichainProviderConfig } from '../../../selectors/multichain';
 ///: END:ONLY_INCLUDE_IF
 
 const CoinButtons = ({
@@ -101,7 +107,12 @@ const CoinButtons = ({
   const location = useLocation();
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   ///: END:ONLY_INCLUDE_IF
+  const multichainNetwork = useMultichainSelector(
+    getMultichainProviderConfig,
+    selectedAccount,
+  );
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
 
@@ -228,8 +239,31 @@ const CoinButtons = ({
       },
       { excludeMetaMetricsId: false },
     );
-    await dispatch(startNewDraftTransaction({ type: AssetType.native }));
-    history.push(SEND_ROUTE);
+    if (isBtcAccount(selectedAccount)) {
+      // // Client to create the account using the Bitcoin Snap
+      // const client = new KeyringClient(new BitcoinWalletSnapSender());
+
+      // // This will trigger the Snap account creation flow (+ account renaming)
+      // await client.submitRequest({
+      //   id: uuid(),
+      //   scope: chainId as CaipChainId,
+      //   account: selectedAccount.id,
+      //   request: {
+      //     method: BtcMethod.SendMany,
+      //     params: {},
+      //   },
+      // });
+      await dispatch(
+        startNewMultichainDraftTransaction({
+          account: selectedAccount,
+          network: multichainNetwork.chainId as CaipChainId,
+        }),
+      );
+      history.push(MULTICHAIN_SEND_ROUTE);
+    } else {
+      await dispatch(startNewDraftTransaction({ type: AssetType.native }));
+      history.push(SEND_ROUTE);
+    }
   }, [chainId]);
 
   const handleSwapOnClick = useCallback(async () => {

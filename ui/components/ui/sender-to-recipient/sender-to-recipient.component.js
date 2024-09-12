@@ -8,12 +8,12 @@ import Identicon from '../identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import Name from '../../app/name/name';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import NicknamePopovers from '../../app/modals/nickname-popovers';
-import { Icon, IconName } from '../../component-library';
+import { Icon, IconName, Box } from '../../component-library';
 import { usePetnamesEnabled } from '../../../hooks/usePetnamesEnabled';
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import {
   DEFAULT_VARIANT,
   CARDS_VARIANT,
@@ -26,7 +26,7 @@ const variantHash = {
   [FLAT_VARIANT]: 'sender-to-recipient--flat',
 };
 
-function SenderAddress({
+export function SenderAddress({
   addressOnly,
   checksummedSenderAddress,
   senderName,
@@ -63,7 +63,7 @@ function SenderAddress({
     >
       <div className="sender-to-recipient__sender-icon">
         <Identicon
-          address={toChecksumHexAddress(senderAddress)}
+          address={normalizeSafeAddress(senderAddress)}
           diameter={24}
         />
       </div>
@@ -74,7 +74,7 @@ function SenderAddress({
         containerClassName="sender-to-recipient__tooltip-container"
         onHidden={() => setAddressCopied(false)}
       >
-        <div className="sender-to-recipient__name">
+        <div className="sender-to-recipient__name" data-testId="sender-address">
           {addressOnly ? (
             <span>
               {`${senderName || shortenAddress(checksummedSenderAddress)}`}
@@ -235,13 +235,14 @@ export default function SenderToRecipient({
   recipientIsOwnedAccount,
 }) {
   const t = useI18nContext();
-  const checksummedSenderAddress = toChecksumHexAddress(senderAddress);
-  const checksummedRecipientAddress = toChecksumHexAddress(recipientAddress);
+  const checksummedSenderAddress = normalizeSafeAddress(senderAddress);
+  const checksummedRecipientAddress = normalizeSafeAddress(recipientAddress);
 
   return (
-    <div
+    <Box
       className={classnames('sender-to-recipient', variantHash[variant])}
       data-testid="sender-to-recipient"
+      padding={4}
     >
       <SenderAddress
         checksummedSenderAddress={checksummedSenderAddress}
@@ -269,7 +270,7 @@ export default function SenderToRecipient({
           <div className="sender-to-recipient__name">{t('newContract')}</div>
         </div>
       )}
-    </div>
+    </Box>
   );
 }
 

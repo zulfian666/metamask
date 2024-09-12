@@ -2908,6 +2908,10 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
   },
+  "multichainRecipientAddressPlaceholder": {
+    "message": "Enter a valid $1 address",
+    "description": "$1 is the network name"
+  },
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -4496,6 +4500,10 @@
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
   },
+  "review": {
+    "message": "Review",
+    "description": "Review button for the multichain send flow."
+  },
   "reviewAlerts": {
     "message": "Review alerts"
   },
@@ -4533,6 +4541,10 @@
   },
   "safeTransferFrom": {
     "message": "Safe transfer from"
+  },
+  "satProtection": {
+    "message": "Sat protection included",
+    "description": "Sat protection is a Bitcoin specific feature that protects against a user inadvertently sending a satoshi with an inscription."
   },
   "save": {
     "message": "Save"
@@ -6053,6 +6065,10 @@
   "transactionCancelSuccess": {
     "message": "Transaction successfully cancelled at $2"
   },
+  "transactionConfirmationEstimate": {
+    "message": "Estimated transaction time is $1",
+    "description": "$1 is the estimated time in minutes for the transaction to be confirmed."
+  },
   "transactionConfirmed": {
     "message": "Transaction confirmed at $2."
   },
@@ -6139,6 +6155,9 @@
   },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."
+  },
+  "transactionSubmittedTitle": {
+    "message": "Transaction submitted"
   },
   "transactionUpdated": {
     "message": "Transaction updated at $2."

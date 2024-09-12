@@ -766,8 +766,8 @@
     },
     "@metamask/abi-utils": {
       "packages": {
-        "@metamask/utils": true,
-        "@metamask/utils>@metamask/superstruct": true
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/accounts-controller": {
@@ -947,7 +947,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -1052,7 +1052,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -1151,7 +1151,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -1199,7 +1199,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -1518,8 +1518,8 @@
       "packages": {
         "@metamask/keyring-api>bech32": true,
         "@metamask/keyring-api>uuid": true,
-        "@metamask/utils": true,
-        "@metamask/utils>@metamask/superstruct": true
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/keyring-api>uuid": {
@@ -1567,7 +1567,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -1592,7 +1592,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -1724,7 +1724,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -1804,7 +1804,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -1842,7 +1842,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -1880,7 +1880,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2090,7 +2090,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2124,7 +2124,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2170,7 +2170,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2228,7 +2228,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2366,7 +2366,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2399,7 +2399,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2636,7 +2636,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -2865,8 +2865,8 @@
         "@metamask/snaps-utils>marked": true,
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@noble/hashes": true,
         "chalk": true,
@@ -2908,8 +2908,8 @@
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/snaps-utils": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true
       }
     },
@@ -2947,8 +2947,8 @@
       },
       "packages": {
         "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "@metamask/utils>@metamask/superstruct": true
+        "@metamask/superstruct": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/snaps-sdk>@metamask/key-tree": {
@@ -2987,8 +2987,8 @@
         "@metamask/snaps-utils>marked": true,
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/utils>@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@noble/hashes": true,
         "chalk": true,
@@ -3026,8 +3026,8 @@
     "@metamask/snaps-utils>@metamask/snaps-registry": {
       "packages": {
         "@metamask/message-signing-snap>@noble/curves": true,
+        "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/utils>@metamask/superstruct": true,
         "@noble/hashes": true
       }
     },
@@ -3212,7 +3212,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,
@@ -3227,7 +3227,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/utils>@metamask/superstruct": true,
+        "@metamask/superstruct": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "@noble/hashes": true,

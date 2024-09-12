@@ -67,6 +67,8 @@ import {
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
   SEND_ROUTE,
+  MULTICHAIN_SEND_ROUTE,
+  MULTICHAIN_CONFIRM_TRANSACTION_ROUTE,
   SWAPS_ROUTE,
   SETTINGS_ROUTE,
   UNLOCK_ROUTE,
@@ -122,6 +124,8 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 ///: END:ONLY_INCLUDE_IF
 
 import { SendPage } from '../../components/multichain/pages/send';
+import { MultichainSendPage } from '../../components/multichain/pages/multichain-send';
+import { MultichainConfirmTransactionPage } from '../../components/multichain/pages/multichain-confirm-transaction';
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import { getURLHost } from '../../helpers/utils/util';
 import {
@@ -361,6 +365,16 @@ export default class Routes extends Component {
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
           component={ConfirmTransaction}
         />
+        <Authenticated
+          path={MULTICHAIN_SEND_ROUTE}
+          component={MultichainSendPage}
+          exact
+        />
+        <Authenticated
+          path={`${MULTICHAIN_CONFIRM_TRANSACTION_ROUTE}/:id?`}
+          component={MultichainConfirmTransactionPage}
+          exact
+        />
         <Authenticated path={SEND_ROUTE} component={SendPage} exact />
         <Authenticated
           path={`${TOKEN_DETAILS}/:address/`}
@@ -570,7 +584,25 @@ export default class Routes extends Component {
         exact: false,
       }),
     );
-    if (isMultichainSend) {
+
+    const isMultichainSendConfirmation = Boolean(
+      matchPath(location.pathname, {
+        path: MULTICHAIN_SEND_ROUTE,
+        exact: false,
+      }),
+    );
+
+    const isMultichainSendPage = Boolean(
+      matchPath(location.pathname, {
+        path: MULTICHAIN_CONFIRM_TRANSACTION_ROUTE,
+        exact: false,
+      }),
+    );
+    if (
+      isMultichainSend ||
+      isMultichainSendConfirmation ||
+      isMultichainSendPage
+    ) {
       return true;
     }
 

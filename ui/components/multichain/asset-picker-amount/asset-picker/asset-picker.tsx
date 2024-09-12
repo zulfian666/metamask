@@ -24,10 +24,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
-import {
-  getCurrentNetwork,
-  getTestNetworkBackgroundColor,
-} from '../../../../selectors';
+import { getTestNetworkBackgroundColor } from '../../../../selectors';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -41,6 +38,12 @@ import {
   NFT,
 } from '../asset-picker-modal/types';
 import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
+import {
+  getMultichainCurrentNetwork,
+  getMultichainIsEvm,
+} from '../../../../selectors/multichain';
+import { MultichainAssetPickerModal } from '../asset-picker-modal/multichain-asset-picker-modal';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -94,7 +97,8 @@ export function AssetPicker({
       : symbol;
 
   // Badge details
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const currentNetwork = useMultichainSelector(getMultichainCurrentNetwork);
+  const isEvm = useMultichainSelector(getMultichainIsEvm);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   const handleAssetPickerTitle = (): string | undefined => {
@@ -110,30 +114,52 @@ export function AssetPicker({
   return (
     <>
       {/* This is the Modal that ask to choose token to send */}
-      <AssetPickerModal
-        visibleTabs={visibleTabs}
-        header={header}
-        isOpen={showAssetPickerModal}
-        onClose={() => setShowAssetPickerModal(false)}
-        asset={asset}
-        onAssetChange={(
-          token:
-            | AssetWithDisplayData<ERC20Asset>
-            | AssetWithDisplayData<NativeAsset>,
-        ) => {
-          onAssetChange(token);
-          setShowAssetPickerModal(false);
-        }}
-        sendingAsset={sendingAsset}
-        defaultActiveTabKey={
-          asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
-        }
-      />
+      {isEvm ? (
+        <AssetPickerModal
+          visibleTabs={visibleTabs}
+          header={header}
+          isOpen={showAssetPickerModal}
+          onClose={() => setShowAssetPickerModal(false)}
+          asset={asset}
+          onAssetChange={(
+            token:
+              | AssetWithDisplayData<ERC20Asset>
+              | AssetWithDisplayData<NativeAsset>,
+          ) => {
+            onAssetChange(token);
+            setShowAssetPickerModal(false);
+          }}
+          sendingAsset={sendingAsset}
+          defaultActiveTabKey={
+            asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
+          }
+        />
+      ) : (
+        <MultichainAssetPickerModal
+          visibleTabs={visibleTabs}
+          header={header}
+          isOpen={showAssetPickerModal}
+          onClose={() => setShowAssetPickerModal(false)}
+          asset={asset}
+          onAssetChange={(
+            token:
+              | AssetWithDisplayData<ERC20Asset>
+              | AssetWithDisplayData<NativeAsset>,
+          ) => {
+            onAssetChange(token);
+            setShowAssetPickerModal(false);
+          }}
+          sendingAsset={sendingAsset}
+          defaultActiveTabKey={
+            asset?.type === AssetType.NFT ? TabName.NFTS : TabName.TOKENS
+          }
+        />
+      )}
 
       <Button
         data-testid="asset-picker-button"
         className="asset-picker"
-        disabled={isDisabled}
+        disabled={isDisabled || !isEvm}
         display={Display.Flex}
         alignItems={AlignItems.center}
         gap={2}
@@ -146,7 +172,7 @@ export function AssetPicker({
           setShowAssetPickerModal(true);
           onClick?.();
         }}
-        endIconName={IconName.ArrowDown}
+        endIconName={isEvm ? IconName.ArrowDown : undefined}
         endIconProps={{
           color: IconColor.iconDefault,
           marginInlineStart: 0,
