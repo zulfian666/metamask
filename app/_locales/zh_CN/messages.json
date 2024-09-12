@@ -41,6 +41,9 @@
   "QRHardwareWalletSteps1Title": {
     "message": "关联您的二维码硬件钱包"
   },
+  "QRHardwareWalletSteps2Description": {
+    "message": "Ngrave Zero"
+  },
   "SIWEAddressInvalid": {
     "message": "登录请求中的地址与您用于登录的账户地址不匹配。"
   },
@@ -132,6 +135,9 @@
   },
   "accountActivityText": {
     "message": "选择您想要接收通知的账户："
+  },
+  "accountBalance": {
+    "message": "账户余额"
   },
   "accountDetails": {
     "message": "账户详情"
@@ -249,6 +255,9 @@
   "addEthereumChainWarningModalTitle": {
     "message": "您正在为以太坊主网添加新的 RPC 提供商"
   },
+  "addEthereumWatchOnlyAccount": {
+    "message": "查看以太坊账户（测试版）"
+  },
   "addFriendsAndAddresses": {
     "message": "添加您信任的朋友和地址"
   },
@@ -272,6 +281,10 @@
   },
   "addNetwork": {
     "message": "添加网络"
+  },
+  "addNetworkConfirmationTitle": {
+    "message": "添加 $1",
+    "description": "$1 represents network name"
   },
   "addNetworkTooltipWarning": {
     "message": "此网络连接依赖于第三方。此连接可能不太可靠，或使第三方可进行活动跟踪。$1",
@@ -338,6 +351,17 @@
   "addressCopied": {
     "message": "地址已复制！"
   },
+  "addressMismatch": {
+    "message": "网站地址不匹配"
+  },
+  "addressMismatchOriginal": {
+    "message": "当前 URL：$1",
+    "description": "$1 replaced by origin URL in confirmation request"
+  },
+  "addressMismatchPunycode": {
+    "message": "Punycode 版本：$1",
+    "description": "$1 replaced by punycode version of the URL in confirmation request"
+  },
   "advanced": {
     "message": "高级"
   },
@@ -402,6 +426,9 @@
   },
   "alertDisableTooltip": {
     "message": "这可以在“设置 > 提醒”中进行更改"
+  },
+  "alertMessageAddressMismatchWarning": {
+    "message": "攻击者有时会通过对网站地址进行细微更改来模仿网站。在继续操作之前，请确保您是与目标网站进行交互。"
   },
   "alertMessageGasEstimateFailed": {
     "message": "我们无法提供准确的费用，估算可能较高。我们建议您输入自定义的燃料限制，但交易仍存在失败风险。"
@@ -1018,6 +1045,21 @@
   "confirmRpcUrlDeletionMessage": {
     "message": "您确定要删除 RPC（远程过程调用）URL 吗？您的信息将不会保存到此网络。"
   },
+  "confirmTitleApproveTransaction": {
+    "message": "许可请求"
+  },
+  "confirmTitleDeployContract": {
+    "message": "部署合约"
+  },
+  "confirmTitleDescApproveTransaction": {
+    "message": "此网站需要获得许可来提取您的 NFT。"
+  },
+  "confirmTitleDescDeployContract": {
+    "message": "该网站希望您部署一份合约"
+  },
+  "confirmTitleDescERC20ApproveTransaction": {
+    "message": "此网站需要获得许可来提取您的代币"
+  },
   "confirmTitleDescPermitSignature": {
     "message": "此网站需要获得许可来使用您的代币。"
   },
@@ -1111,6 +1153,9 @@
   "connectedSites": {
     "message": "已连接的网站"
   },
+  "connectedSitesAndSnaps": {
+    "message": "连接的网站和 Snap"
+  },
   "connectedSitesDescription": {
     "message": "$1 已连接到这些网站。他们可以查看您的账户地址。",
     "description": "$1 is the account name"
@@ -1121,6 +1166,9 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask 已连接到此网站，但尚未连接任何账户"
+  },
+  "connectedSnaps": {
+    "message": "连接的 Snap"
   },
   "connectedWith": {
     "message": "已连接"
@@ -1231,6 +1279,9 @@
   },
   "copyAddress": {
     "message": "复制地址到剪贴板"
+  },
+  "copyAddressShort": {
+    "message": "复制地址"
   },
   "copyPrivateKey": {
     "message": "复制私钥"
@@ -1630,6 +1681,9 @@
   "editANickname": {
     "message": "编辑昵称"
   },
+  "editAccounts": {
+    "message": "编辑账户"
+  },
   "editAddressNickname": {
     "message": "编辑地址昵称"
   },
@@ -1709,6 +1763,9 @@
   },
   "editNetworkLink": {
     "message": "编辑原始网络"
+  },
+  "editNetworksTitle": {
+    "message": "编辑网络"
   },
   "editNonceField": {
     "message": "编辑 nonce"
@@ -2836,6 +2893,9 @@
   "more": {
     "message": "更多"
   },
+  "multichainAddEthereumChainConfirmationDescription": {
+    "message": "您正在将此网络添加到 MetaMask 并授予该网站其使用许可。"
+  },
   "multipleSnapConnectionWarning": {
     "message": "$1 想连接 $2 个 snap。",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2956,6 +3016,9 @@
   "networkDetails": {
     "message": "网络详情"
   },
+  "networkFee": {
+    "message": "网络费"
+  },
   "networkIsBusy": {
     "message": "网络繁忙。燃料价格较高，估值较不准确。"
   },
@@ -3034,11 +3097,19 @@
     "message": "我们无法连接到 $1",
     "description": "$1 represents the network name"
   },
+  "networkSwitchMessage": {
+    "message": "网络已切换至 $1",
+    "description": "$1 represents the network name"
+  },
   "networkURL": {
     "message": "网络 URL"
   },
   "networkURLDefinition": {
     "message": "用于访问此网络的 URL。"
+  },
+  "networkUrlErrorWarning": {
+    "message": "攻击者有时会通过对网站地址进行细微更改来模仿网站。在继续操作之前，请确保您是与目标网站进行交互。Punycode 版本：$1",
+    "description": "$1 replaced by RPC URL for network"
   },
   "networks": {
     "message": "网络"
@@ -3787,6 +3858,14 @@
     "message": "允许 $1 访问您的 MetaMask 首选语言设置。这可用于进行本地化，以及使用您的语言显示$1的内容。",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
+  "permission_getPreferences": {
+    "message": "查看您的首选语言和法币等信息。",
+    "description": "The description for the `snap_getPreferences` permission"
+  },
+  "permission_getPreferencesDescription": {
+    "message": "让 $1 访问 MetaMask 设置中的首选语言和法币等信息。这有助于 $1 显示符合您偏好的内容。 ",
+    "description": "An extended description for the `snap_getPreferences` permission. $1 is the snap name."
+  },
   "permission_homePage": {
     "message": "显示自定义屏幕",
     "description": "The description for the `endowment:page-home` permission"
@@ -4493,6 +4572,10 @@
     "message": "由 $1 提供支持",
     "description": "The security provider that is providing data"
   },
+  "seeAllPermissions": {
+    "message": "查看所有许可",
+    "description": "Used for revealing more content (e.g. permission list, etc.)"
+  },
   "seeDetails": {
     "message": "查看详情"
   },
@@ -4745,6 +4828,12 @@
   },
   "signingInWith": {
     "message": "使用以下登录方式"
+  },
+  "simulationApproveHeading": {
+    "message": "提取"
+  },
+  "simulationDetailsApproveDesc": {
+    "message": "您正在授予其他人从您的账户中提取 NFT 的许可。"
   },
   "simulationDetailsFailed": {
     "message": "加载估算时出错。"
@@ -5088,6 +5177,9 @@
   "spender": {
     "message": "消费者"
   },
+  "spenderTooltipDesc": {
+    "message": "这是可以提取您的 NFT 的地址。"
+  },
   "spendingCap": {
     "message": "支出上限"
   },
@@ -5100,6 +5192,9 @@
   },
   "spendingCapRequest": {
     "message": "$1的支出上限请求"
+  },
+  "spendingCapTooltipDesc": {
+    "message": "他人可代表您访问该代币金额并进行消费。"
   },
   "srpInputNumberOfWords": {
     "message": "我有一个包含$1个单词的私钥助记词",
@@ -5813,6 +5908,9 @@
   "testNetworks": {
     "message": "测试网络"
   },
+  "testnets": {
+    "message": "测试网"
+  },
   "theme": {
     "message": "主题"
   },
@@ -6361,6 +6459,13 @@
   "warningTooltipText": {
     "message": "$1 第三方可能会支出您的全部代币余额，无需进一步通知或同意。请自定义较低的支出上限以保护自己。",
     "description": "$1 is a warning icon with text 'Be careful' in 'warning' colour"
+  },
+  "watchEthereumAccountsDescription": {
+    "message": "启用此选项后，您将能够通过公共地址或 ENS（Ethereum 域名服务）名称查看以太坊账户。如需有关此测试功能的反馈，请完成此 $1。",
+    "description": "$1 is the link to a product feedback form"
+  },
+  "watchEthereumAccountsToggle": {
+    "message": "查看以太坊账户（测试版）"
   },
   "weak": {
     "message": "弱"
