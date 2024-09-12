@@ -13,18 +13,19 @@ const NETWORK_CONFIGURATION_DATA = mockNetworkState(
     id: 'test-networkConfigurationId-1',
     rpcUrl: 'https://testrpc.com',
     chainId: CHAIN_IDS.GOERLI,
-    nickname: '0X5',
-    rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
+    name: '0X5',
+    blockExplorerUrl: 'https://etherscan.io',
+    rpcEndpoints: [{ networkClientId: 'test-networkConfigurationId-1' }],
   },
   {
     id: 'test-networkConfigurationId-2',
     rpcUrl: 'http://localhost:8545',
     chainId: '0x539',
-    ticker: 'ETH',
-    nickname: 'Localhost 8545',
-    rpcPrefs: {},
+    nativeCurrency: 'ETH',
+    name: 'Localhost 8545',
+    rpcEndpoints: [{ networkClientId: 'test-networkConfigurationId-2' }],
   },
-).networkConfigurations;
+).networkConfigurationsByChainId;
 
 describe('preferences controller', () => {
   let controllerMessenger;
@@ -77,7 +78,7 @@ describe('preferences controller', () => {
     preferencesController = new PreferencesController({
       initLangCode: 'en_US',
       tokenListController,
-      networkConfigurations: NETWORK_CONFIGURATION_DATA,
+      networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
       messenger: preferencesMessenger,
     });
   });
@@ -361,7 +362,7 @@ describe('preferences controller', () => {
         initState: {
           useTokenDetection: false,
         },
-        networkConfigurations: NETWORK_CONFIGURATION_DATA,
+        networkConfigurationsByChainId: NETWORK_CONFIGURATION_DATA,
       });
       const state = preferencesControllerExistingUser.store.getState();
       expect(state.useTokenDetection).toStrictEqual(false);

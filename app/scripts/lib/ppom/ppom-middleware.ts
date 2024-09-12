@@ -14,7 +14,7 @@ import { SIGNING_METHODS } from '../../../../shared/constants/transaction';
 import { PreferencesController } from '../../controllers/preferences';
 import { AppStateController } from '../../controllers/app-state';
 import { LOADING_SECURITY_ALERT_RESPONSE } from '../../../../shared/constants/security-provider';
-import { getProviderConfig } from '../../../../ui/ducks/metamask/metamask';
+import { getCurrentChainId } from '../../../../ui/selectors';
 import { trace, TraceContext, TraceName } from '../../../../shared/lib/trace';
 import {
   generateSecurityAlertId,
@@ -78,9 +78,7 @@ export function createPPOMMiddleware<
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
 
-      const { chainId } = getProviderConfig({
-        metamask: networkController.state,
-      });
+      const chainId = getCurrentChainId({ metamask: networkController.state });
       const isSupportedChain = await isChainSupported(chainId);
 
       if (
