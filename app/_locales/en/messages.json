@@ -2541,6 +2541,9 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Invalid input! Secret Recovery Phrase is case sensitive."
   },
+  "invalidSymbolLength": {
+    "message": "Symbol must be $1 characters or fewer."
+  },
   "ipfsGateway": {
     "message": "IPFS gateway"
   },
@@ -5895,9 +5898,6 @@
   },
   "symbol": {
     "message": "Symbol"
-  },
-  "symbolBetweenZeroTwelve": {
-    "message": "Symbol must be 11 characters or fewer."
   },
   "tenPercentIncreased": {
     "message": "10% increase"
