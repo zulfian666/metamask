@@ -322,6 +322,7 @@ export const ARBITRUM = 'arbitrum';
 export const ZKSYNC_ERA = 'zksync';
 export const LINEA = 'linea';
 export const BASE = 'base';
+export const LOCALHOST = 'localhost';
 
 export const SWAPS_CLIENT_ID = 'extension';
 

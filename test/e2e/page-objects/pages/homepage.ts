@@ -2,8 +2,9 @@ import { strict as assert } from 'assert';
 import { Driver } from '../../webdriver/driver';
 import { DEFAULT_GANACHE_ETH_BALANCE_DEC } from '../../constants';
 import HeaderNavbar from './header-navbar';
+import SendTokenPage from './send/send-token-page';
 
-class HomePage {
+export default class HomePage {
   private driver: Driver;
 
   private sendButton: string;
@@ -38,7 +39,7 @@ class HomePage {
       '[data-testid="transaction-list-item-primary-currency"]';
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async check_pageIsLoaded(): Promise<HomePage> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.sendButton,
@@ -50,6 +51,7 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
+    return this;
   }
 
   async check_expectedBalanceIsDisplayed(
@@ -72,8 +74,9 @@ class HomePage {
     );
   }
 
-  async startSendFlow(): Promise<void> {
+  async startSendFlow(): Promise<SendTokenPage> {
     await this.driver.clickElement(this.sendButton);
+    return new SendTokenPage(this.driver);
   }
 
   async goToActivityList(): Promise<void> {
@@ -161,5 +164,3 @@ class HomePage {
     );
   }
 }
-
-export default HomePage;

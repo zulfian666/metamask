@@ -1,4 +1,5 @@
 import { Driver } from '../../webdriver/driver';
+import HomePage from './homepage';
 
 class LoginPage {
   private driver: Driver;
@@ -19,7 +20,7 @@ class LoginPage {
     };
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async check_pageIsLoaded(): Promise<LoginPage> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.welcomeBackMessage,
@@ -31,6 +32,7 @@ class LoginPage {
       throw e;
     }
     console.log('Login page is loaded');
+    return this;
   }
 
   async fillPassword(password: string): Promise<void> {
@@ -39,6 +41,13 @@ class LoginPage {
 
   async clickUnlockButton(): Promise<void> {
     await this.driver.clickElement(this.unlockButton);
+  }
+
+  async login(password: string): Promise<HomePage> {
+    await this.fillPassword(password);
+    await this.clickUnlockButton();
+    // user lands on homepage after logging in with password
+    return new HomePage(this.driver).check_pageIsLoaded();
   }
 }
 

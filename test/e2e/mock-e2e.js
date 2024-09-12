@@ -268,35 +268,38 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [
-          {
-            ethereum: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            bsc: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            polygon: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            avalanche: {
-              fallbackToV1: false,
-              mobileActive: true,
-              extensionActive: true,
-            },
-            smartTransactions: {
-              mobileActive: false,
-              extensionActive: false,
-            },
-            updated_at: '2022-03-17T15:54:00.360Z',
+        json: {
+          ethereum: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
           },
-        ],
+          bsc: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          polygon: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          avalanche: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          localhost: {
+            fallbackToV1: false,
+            mobileActive: true,
+            extensionActive: true,
+          },
+          smartTransactions: {
+            mobileActive: false,
+            extensionActive: true,
+          },
+          updated_at: '2022-03-17T15:54:00.360Z',
+        },
       };
     });
 

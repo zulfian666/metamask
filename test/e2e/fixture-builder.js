@@ -95,7 +95,7 @@ function onboardingFixture() {
           fees: {},
           liveness: true,
           smartTransactions: {
-            [CHAIN_IDS.MAINNET]: [],
+            [CHAIN_IDS.LOCALHOST]: [],
           },
         },
       },
@@ -553,6 +553,14 @@ class FixtureBuilder {
   withPreferencesControllerTxSimulationsDisabled() {
     return this.withPreferencesController({
       useTransactionSimulations: false,
+    });
+  }
+
+  withPreferencesControllerSmartTransactionsOptedIn() {
+    return this.withPreferencesController({
+      preferences: {
+        smartTransactionsOptInStatus: true,
+      },
     });
   }
 
