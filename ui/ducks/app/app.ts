@@ -34,7 +34,10 @@ type AppState = {
     tokenId?: string;
     ignoreErc20Token?: boolean;
   };
+  showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
+  selectedAccountsForDappConnection: object;
+  selectedNetworksForDappConnection: object;
   keyringRemovalSnapModal: {
     snapName: string;
     result: 'success' | 'failure' | 'none';
@@ -126,7 +129,10 @@ const initialState: AppState = {
   qrCodeData: null,
   networkDropdownOpen: false,
   importNftsModal: { open: false },
+  showPermittedNetworkToastOpen: false,
   showIpfsModalOpen: false,
+  selectedAccountsForDappConnection: {},
+  selectedNetworksForDappConnection: {},
   showBasicFunctionalityModal: false,
   externalServicesOnboardingToggleState: true,
   keyringRemovalSnapModal: {
@@ -260,6 +266,18 @@ export default function reduceApp(
       return {
         ...appState,
         showIpfsModalOpen: false,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: true,
+      };
+
+    case actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE:
+      return {
+        ...appState,
+        showPermittedNetworkToastOpen: false,
       };
 
     case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
@@ -532,6 +550,18 @@ export default function reduceApp(
       return {
         ...appState,
         requestAccountTabs: action.value,
+      };
+
+    case actionConstants.SET_SELECTED_ACCOUNTS_FOR_DAPP_CONNECTIONS:
+      return {
+        ...appState,
+        selectedAccountsForDappConnection: action.payload,
+      };
+
+    case actionConstants.SET_SELECTED_NETWORKS_FOR_DAPP_CONNECTIONS:
+      return {
+        ...appState,
+        selectedNetworksForDappConnection: action.payload,
       };
 
     case actionConstants.SET_OPEN_METAMASK_TAB_IDS:

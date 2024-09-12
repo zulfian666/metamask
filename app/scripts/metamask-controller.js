@@ -3147,6 +3147,13 @@ export default class MetamaskController extends EventEmitter {
         getProviderConfig({
           metamask: this.networkController.state,
         }),
+      grantPermissionsIncremental:
+        this.permissionController.grantPermissionsIncremental.bind(
+          this.permissionController,
+        ),
+      grantPermissions: this.permissionController.grantPermissions.bind(
+        this.permissionController,
+      ),
       setSecurityAlertsEnabled:
         preferencesController.setSecurityAlertsEnabled.bind(
           preferencesController,
@@ -5550,7 +5557,7 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController.requestPermissions.bind(
             this.permissionController,
             { origin },
-            { eth_accounts: {} },
+            { eth_accounts: {}, [PermissionNames.permittedChains]: {} },
           ),
         requestPermittedChainsPermission: (chainIds) =>
           this.permissionController.requestPermissionsIncremental(
@@ -5565,10 +5572,23 @@ export default class MetamaskController extends EventEmitter {
               },
             },
           ),
-        requestPermissionsForOrigin:
-          this.permissionController.requestPermissions.bind(
-            this.permissionController,
+        grantPermittedChainsPermissionIncremental: (chainIds) =>
+          this.permissionController.grantPermissionsIncremental({
+            subject: { origin },
+            approvedPermissions: {
+              [PermissionNames.permittedChains]: {
+                caveats: [
+                  CaveatFactories[CaveatTypes.restrictNetworkSwitching](
+                    chainIds,
+                  ),
+                ],
+              },
+            },
+          }),
+        requestPermissionsForOrigin: (requestedPermissions) =>
+          this.permissionController.requestPermissions(
             { origin },
+            { [PermissionNames.permittedChains]: {}, ...requestedPermissions },
           ),
         revokePermissionsForOrigin: (permissionKeys) => {
           try {

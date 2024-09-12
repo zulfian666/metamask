@@ -3,7 +3,7 @@ import {
   CaveatTypes,
   RestrictedMethods,
 } from '../../../../shared/constants/permissions';
-import { CaveatFactories } from './specifications';
+import { CaveatFactories, PermissionNames } from './specifications';
 
 export function getPermissionBackgroundApiMethods(permissionController) {
   const addMoreAccounts = (origin, accountOrAccounts) => {
@@ -26,7 +26,6 @@ export function getPermissionBackgroundApiMethods(permissionController) {
     // To add more than one account when already connected to the dapp
     addMorePermittedAccounts: (origin, accounts) =>
       addMoreAccounts(origin, accounts),
-
     removePermittedAccount: (origin, account) => {
       const { value: existingAccounts } = permissionController.getCaveat(
         origin,
@@ -55,6 +54,49 @@ export function getPermissionBackgroundApiMethods(permissionController) {
           remainingAccounts,
         );
       }
+    },
+
+    removePermittedChain: (origin, chain) => {
+      const { value: existingChains } = permissionController.getCaveat(
+        origin,
+        RestrictedMethods.permittedChains,
+        CaveatTypes.restrictNetworkSwitching,
+      );
+
+      const remainingChains = existingChains.filter(
+        (existingChain) => existingChain !== chain,
+      );
+
+      if (remainingChains.length === existingChains.length) {
+        return;
+      }
+
+      if (remainingChains.length === 0) {
+        permissionController.revokePermission(
+          origin,
+          RestrictedMethods.permittedChains,
+        );
+      } else {
+        permissionController.updateCaveat(
+          origin,
+          RestrictedMethods.permittedChains,
+          CaveatTypes.restrictNetworkSwitching,
+          remainingChains,
+        );
+      }
+    },
+
+    requestAccountsAndChainPermissionsWithId: async (origin) => {
+      const id = nanoid();
+      permissionController.requestPermissions(
+        { origin },
+        {
+          [PermissionNames.eth_accounts]: {},
+          [PermissionNames.permittedChains]: {},
+        },
+        { id },
+      );
+      return id;
     },
 
     requestAccountsPermissionWithId: async (origin) => {

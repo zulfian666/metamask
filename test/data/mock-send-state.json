@@ -12,6 +12,7 @@
   "appState": {
     "networkDropdownOpen": false,
     "importNftsModal": { "open": false },
+    "showPermittedNetworkToastOpen": false,
     "gasIsLoading": false,
     "isLoading": false,
     "importTokensModalOpen": false,
@@ -26,6 +27,8 @@
       }
     },
     "showIpfsModalOpen": false,
+    "selectedAccountsForDappConnection": {},
+    "selectedNetworksForDappConnection": {},
     "showKeyringRemovalSnapModal": false,
     "showWhatsNewPopup": false,
     "warning": null,

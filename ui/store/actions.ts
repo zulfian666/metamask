@@ -116,6 +116,11 @@ import { getMethodDataAsync } from '../../shared/lib/four-byte';
 import { DecodedTransactionDataResponse } from '../../shared/types/transaction-decode';
 import { LastInteractedConfirmationInfo } from '../pages/confirmations/types/confirm';
 import { EndTraceRequest } from '../../shared/lib/trace';
+import {
+  CaveatFactories,
+  PermissionNames,
+} from '../../app/scripts/controllers/permissions/specifications';
+import { CaveatTypes } from '../../shared/constants/permissions';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -1839,6 +1844,24 @@ export function removePermittedAccount(
   };
 }
 
+export function removePermittedChain(
+  origin: string,
+  chain: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await new Promise<void>((resolve, reject) => {
+      callBackgroundMethod('removePermittedChain', [origin, chain], (error) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve();
+      });
+    });
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function showAccountsPage() {
   return {
     type: actionConstants.SHOW_ACCOUNTS_PAGE,
@@ -2599,6 +2622,18 @@ export function hideImportNftsModal(): Action {
   };
 }
 
+export function hidePermittedNetworkToast(): Action {
+  return {
+    type: actionConstants.SHOW_PERMITTED_NETWORK_TOAST_CLOSE,
+  };
+}
+
+export function showPermittedNetworkToast(): Action {
+  return {
+    type: actionConstants.SHOW_PERMITTED_NETWORK_TOAST_OPEN,
+  };
+}
+
 // TODO: Replace `any` with type
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function setConfirmationExchangeRates(value: Record<string, any>) {
@@ -3192,10 +3227,26 @@ export function toggleNetworkMenu(payload?: {
   };
 }
 
-export function setAccountDetailsAddress(address: string) {
+export function setAccountDetailsAddress(address: string[]) {
   return {
     type: actionConstants.SET_ACCOUNT_DETAILS_ADDRESS,
     payload: address,
+  };
+}
+
+export function setSelectedAccountsForDappConnection(
+  addresses: string[],
+): void {
+  return {
+    type: actionConstants.SET_SELECTED_ACCOUNTS_FOR_DAPP_CONNECTIONS,
+    payload: addresses,
+  };
+}
+
+export function setSelectedNetworksForDappConnection(addresses: []) {
+  return {
+    type: actionConstants.SET_SELECTED_NETWORKS_FOR_DAPP_CONNECTIONS,
+    payload: addresses,
   };
 }
 
@@ -3842,6 +3893,19 @@ export function requestAccountsPermissionWithId(
   return async (dispatch: MetaMaskReduxDispatch) => {
     const id = await submitRequestToBackground(
       'requestAccountsPermissionWithId',
+      [origin],
+    );
+    await forceUpdateMetamaskState(dispatch);
+    return id;
+  };
+}
+
+export function requestAccountsAndChainPermissionsWithId(
+  origin: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const id = await submitRequestToBackground(
+      'requestAccountsAndChainPermissionsWithId',
       [origin],
     );
     await forceUpdateMetamaskState(dispatch);
@@ -5563,6 +5627,42 @@ export async function getNextAvailableAccountName(
     'getNextAvailableAccountName',
     [keyring],
   );
+}
+
+export async function grantPermittedChain(
+  selectedTabOrigin: string,
+  chainId?: [],
+): Promise<string> {
+  return await submitRequestToBackground<void>('grantPermissionsIncremental', [
+    {
+      subject: { origin: selectedTabOrigin },
+      approvedPermissions: {
+        [PermissionNames.permittedChains]: {
+          caveats: [
+            CaveatFactories[CaveatTypes.restrictNetworkSwitching]([chainId]),
+          ],
+        },
+      },
+    },
+  ]);
+}
+
+export async function grantPermittedChains(
+  selectedTabOrigin: string,
+  chainIds: [],
+): Promise<string> {
+  return await submitRequestToBackground<void>('grantPermissions', [
+    {
+      subject: { origin: selectedTabOrigin },
+      approvedPermissions: {
+        [PermissionNames.permittedChains]: {
+          caveats: [
+            CaveatFactories[CaveatTypes.restrictNetworkSwitching](chainIds),
+          ],
+        },
+      },
+    },
+  ]);
 }
 
 export async function decodeTransactionData({

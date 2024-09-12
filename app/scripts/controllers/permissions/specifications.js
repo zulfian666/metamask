@@ -1,7 +1,6 @@
 import {
   constructPermission,
   PermissionType,
-  SubjectType,
 } from '@metamask/permission-controller';
 import {
   caveatSpecifications as snapsCaveatsSpecifications,
@@ -209,9 +208,13 @@ export const getPermissionSpecifications = ({
       permissionType: PermissionType.Endowment,
       targetName: PermissionNames.permittedChains,
       allowedCaveats: [CaveatTypes.restrictNetworkSwitching],
-      subjectTypes: [SubjectType.Website],
 
       factory: (permissionOptions, requestData) => {
+        if (requestData === undefined) {
+          return constructPermission({
+            ...permissionOptions,
+          });
+        }
         if (!requestData.approvedChainIds) {
           throw new Error(
             `${PermissionNames.permittedChains}: No approved networks specified.`,
